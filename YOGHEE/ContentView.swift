@@ -8,8 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isShowingSplash = true
+    
     var body: some View {
-        HomeView()
+        ZStack {
+            if isShowingSplash {
+                SplashView()
+                    .transition(.opacity)
+            } else {
+                HomeView()
+                    .transition(.opacity)
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    isShowingSplash = false
+                }
+            }
+        }
     }
 }
 
