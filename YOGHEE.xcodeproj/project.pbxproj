@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
+		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */,
+				52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +89,7 @@
 			name = YOGHEE;
 			packageProductDependencies = (
 				52D6B92B2E50DEBF00F60E39 /* KakaoSDK */,
+				52D6B92E2E50E27B00F60E39 /* Alamofire */,
 			);
 			productName = YOGHEE;
 			productReference = 52F308812E3F4CD10066ED1B /* YOGHEE.app */;
@@ -118,6 +121,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				52D6B92A2E50DEBF00F60E39 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
+				52D6B92D2E50E27B00F60E39 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 52F308822E3F4CD10066ED1B /* Products */;
@@ -360,6 +364,14 @@
 				kind = branch;
 			};
 		};
+		52D6B92D2E50E27B00F60E39 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -367,6 +379,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52D6B92A2E50DEBF00F60E39 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
 			productName = KakaoSDK;
+		};
+		52D6B92E2E50E27B00F60E39 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52D6B92D2E50E27B00F60E39 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
