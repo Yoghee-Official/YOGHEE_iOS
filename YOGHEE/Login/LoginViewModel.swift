@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Combine
+import KakaoSDKUser
+import KakaoSDKAuth
 
 // MARK: - Intent
 enum LoginIntent {
@@ -18,6 +20,7 @@ struct LoginState {
     var isLoading: Bool = false
     var errorMessage: String? = nil
     var isLoggedIn: Bool = false
+    var userInfo: KakaoSDKUser.User? = nil
 }
 
 // MARK: - Effect
@@ -29,7 +32,6 @@ enum LoginEffect {
 @MainActor
 class LoginViewModel: ObservableObject {
     @Published private(set) var state = LoginState()
-    private var cancellables = Set<AnyCancellable>()
     
     func handleIntent(_ intent: LoginIntent) {
         switch intent {
@@ -42,19 +44,59 @@ class LoginViewModel: ObservableObject {
         state.isLoading = true
         state.errorMessage = nil
         
-        // 카카오 로그인 시뮬레이션 (실제 구현 시에는 카카오 SDK 사용)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.state.isLoading = false
-            
-            // 성공 시뮬레이션 (실제로는 카카오 로그인 결과에 따라 처리)
-            let isSuccess = Bool.random()
-            
-            if isSuccess {
-                self.state.isLoggedIn = true
-                self.handleEffect(.navigateToHome)
-            } else {
-                self.state.errorMessage = "카카오 로그인에 실패했습니다. 다시 시도해주세요."
-                self.handleEffect(.showError("로그인 실패"))
+        // 카카오톡 앱으로 로그인 시도
+        if UserApi.isKakaoTalkLoginAvailable() {
+            UserApi.shared.loginWithKakaoTalk { [weak self] oauthToken, error in
+                DispatchQueue.main.async {
+                    self?.handleKakaoLoginResult(oauthToken: oauthToken, error: error)
+                }
+            }
+        } else {
+            // 카카오톡 앱이 없으면 웹으로 로그인
+            UserApi.shared.loginWithKakaoAccount { [weak self] oauthToken, error in
+                DispatchQueue.main.async {
+                    self?.handleKakaoLoginResult(oauthToken: oauthToken, error: error)
+                }
+            }
+        }
+    }
+    
+    private func handleKakaoLoginResult(oauthToken: OAuthToken?, error: Error?) {
+        state.isLoading = false
+        
+        if let error = error {
+            state.errorMessage = "로그인 실패: \(error.localizedDescription)"
+            print("카카오 로그인 에러: \(error)")
+            return
+        }
+        
+        guard let oauthToken = oauthToken else {
+            state.errorMessage = "로그인 토큰을 받지 못했습니다."
+            return
+        }
+        
+        print("카카오 로그인 성공!")
+        print("Access Token: \(oauthToken.accessToken)")
+        
+        // 사용자 정보 가져오기
+        fetchUserInfo()
+    }
+    
+    private func fetchUserInfo() {
+        UserApi.shared.me { [weak self] user, error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.state.errorMessage = "사용자 정보 조회 실패: \(error.localizedDescription)"
+                    print("사용자 정보 조회 에러: \(error)")
+                    return
+                }
+                
+                if let user = user {
+                    self?.state.userInfo = user
+                    self?.state.isLoggedIn = true
+                    print("사용자 정보: \(user.kakaoAccount?.profile?.nickname ?? "알 수 없음")")
+                    self?.handleEffect(.navigateToHome)
+                }
             }
         }
     }
@@ -65,6 +107,7 @@ class LoginViewModel: ObservableObject {
             // 네비게이션 처리는 View에서 담당
             break
         case .showError(let message):
+            state.errorMessage = message
             print("Error: \(message)")
         }
     }
