@@ -44,7 +44,7 @@ class LoginViewModel: ObservableObject {
         state.isLoading = true
         state.errorMessage = nil
         
-        // 카카오톡 앱으로 로그인 시도
+        // 카카오톡 앱으로 인가코드 받기 시도
         if UserApi.isKakaoTalkLoginAvailable() {
             UserApi.shared.loginWithKakaoTalk { [weak self] oauthToken, error in
                 DispatchQueue.main.async {
@@ -52,8 +52,8 @@ class LoginViewModel: ObservableObject {
                 }
             }
         } else {
-            // 카카오톡 앱이 없으면 웹으로 로그인
-            UserApi.shared.loginWithKakaoAccount { [weak self] oauthToken, error in
+            // 카카오톡 앱이 없으면 웹으로 인가코드 받기
+            UserApi.shared.loginWithKakaoTalk { [weak self] oauthToken, error in
                 DispatchQueue.main.async {
                     self?.handleKakaoLoginResult(oauthToken: oauthToken, error: error)
                 }
@@ -76,10 +76,13 @@ class LoginViewModel: ObservableObject {
         }
         
         print("카카오 로그인 성공!")
-        print("Access Token: \(oauthToken.accessToken)")
+        print("Authorization Code: \(oauthToken.accessToken)")
         
-        // 사용자 정보 가져오기
-        fetchUserInfo()
+        // 인가코드를 서버에 전송
+        AuthViewModel.shared.handleSSOLogin(code: oauthToken.accessToken, ssoType: .kakao)
+        
+        // 사용자 정보 가져오기 -> 테스트 코드 주석
+        // fetchUserInfo()
     }
     
     private func fetchUserInfo() {
