@@ -1,6 +1,5 @@
 import Foundation
 
-// SSO 타입 열거형
 enum SSOType: String, CaseIterable {
     case kakao = "k"
     case google = "g"
@@ -15,15 +14,14 @@ enum SSOType: String, CaseIterable {
     }
 }
 
-// SSO 로그인 응답 모델
 struct SSOLoginResponse: Codable {
-    let token: String?
-    let message: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case token = "token"
-        case message = "message"
-    }
+    let code: Int?
+    let status: String?
+    let data: String?
+//    enum CodingKeys: String, CodingKey {
+//        case token = "token"
+//        case message = "message"
+//    }
 }
 
 // 에러 응답 모델

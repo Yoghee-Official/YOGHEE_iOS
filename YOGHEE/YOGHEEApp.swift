@@ -12,8 +12,11 @@ import KakaoSDKAuth
 @main
 struct YOGHEEApp: App {
     init() {
-        let nativeAppKey: String = "4658f101e43fb7489f830c7dfa84e1e9" // info로 숨기기
-        KakaoSDK.initSDK(appKey: nativeAppKey)
+        guard let appKey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_NATIVE_APP_KEY") as? String, !appKey.isEmpty else {
+            assertionFailure("KAKAO_NATIVE_APP_KEY가 Info.plist에 설정되어 있지 않습니다.")
+            return
+        }
+        KakaoSDK.initSDK(appKey: appKey)
     }
     
     var body: some Scene {
