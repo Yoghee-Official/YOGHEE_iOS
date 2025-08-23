@@ -4,7 +4,7 @@ import Alamofire
 class APIService {
     static let shared = APIService()
     
-    private let baseURL = "http://223.130.146.13:3333"
+    private let baseURL = "https://www.yoghee.xyz"
     
     private init() {}
     

@@ -79,7 +79,7 @@ class LoginViewModel: ObservableObject {
         print("Authorization Code: \(oauthToken.accessToken)")
         
         // 인가코드를 서버에 전송
-        AuthViewModel.shared.handleSSOLogin(code: oauthToken.accessToken, ssoType: .kakao)
+        AuthViewModel.shared.handleSSOLogin(token: oauthToken.accessToken, ssoType: .kakao)
         
         // 사용자 정보 가져오기 -> 테스트 코드 주석
         // fetchUserInfo()
