@@ -1,5 +1,5 @@
 //
-//  LoginViewModel.swift
+//  LoginContainer.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 8/3/25.
@@ -30,7 +30,7 @@ enum LoginEffect {
 }
 
 @MainActor
-class LoginViewModel: ObservableObject {
+class LoginContainer: ObservableObject {
     @Published private(set) var state = LoginState()
     
     func handleIntent(_ intent: LoginIntent) {
@@ -79,7 +79,7 @@ class LoginViewModel: ObservableObject {
         print("Authorization Code: \(oauthToken.accessToken)")
         
         // 인가코드를 서버에 전송
-        AuthViewModel.shared.handleSSOLogin(token: oauthToken.accessToken, ssoType: .kakao)
+        AuthManager.shared.handleSSOLogin(token: oauthToken.accessToken, ssoType: .kakao)
         
         // 사용자 정보 가져오기 -> 테스트 코드 주석
         // fetchUserInfo()
