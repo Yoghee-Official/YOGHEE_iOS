@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject private var viewModel = LoginViewModel()
+    @StateObject private var container = LoginContainer()
     @State private var id: String = ""
     @State private var password: String = ""
     
@@ -17,12 +17,13 @@ struct LoginView: View {
             Spacer()
             
             HStack(spacing: 8) {
-                Text("YOGHEE")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundColor(.black)
+                Image("Yoghee")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 16)
                 
                 Text("로그인")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.system(size: 20, weight: .regular))
                     .foregroundColor(.black)
             }
             .padding(.bottom, 40)
@@ -34,25 +35,13 @@ struct LoginView: View {
                 SecureField("비밀번호", text: $password)
                     .textFieldStyle(CustomTextFieldStyle())
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 30)
+            .padding(.horizontal, 34)
+            .padding(.bottom, 60)
             
-            HStack {
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(Color.gray.opacity(0.3))
-                
-                Text("OR")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(Color.gray.opacity(0.6))
-                    .padding(.horizontal, 16)
-                
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(Color.gray.opacity(0.3))
-            }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 30)
+            Text("OR")
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(Color.gray.opacity(0.6))
+                .padding(.bottom, 30)
             
             HStack(spacing: 20) {
                 Button(action: {
@@ -71,7 +60,7 @@ struct LoginView: View {
                 }
                 
                 Button(action: {
-                    viewModel.handleIntent(.kakaoLogin)
+                    container.handleIntent(.kakaoLogin)
                 }) {
                     Image(systemName: "message.fill")
                         .font(.system(size: 20))
@@ -86,7 +75,7 @@ struct LoginView: View {
                 }
                 
                 Button(action: {
-                    // Google 로그인
+                    // TODO: Google 로그인
                 }) {
                     Text("G")
                         .font(.system(size: 20, weight: .bold))
@@ -106,8 +95,8 @@ struct LoginView: View {
                 // TODO: 아이디/비밀번호 찾기
             }) {
                 Text("아이디 / 비밀번호 찾기")
-                    .font(.system(size: 14))
-                    .foregroundColor(Color.gray.opacity(0.6))
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundColor(Color.init(red: 179/255, green: 179/255, blue: 179/255))
             }
             .padding(.bottom, 30)
             
@@ -122,20 +111,19 @@ struct LoginView: View {
                     .background(Color.brown.opacity(0.8))
                     .cornerRadius(25)
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 100)
             .padding(.bottom, 20)
             
             HStack(spacing: 4) {
                 Text("계정이 없으신가요?")
-                    .font(.system(size: 14))
-                    .foregroundColor(Color.gray.opacity(0.6))
+                    .font(.system(size: 12))
                 
                 Button(action: {
                     // TODO: 회원가입
                 }) {
                     Text("회원가입")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(Color.gray.opacity(0.8))
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.black)
                 }
             }
             
@@ -143,11 +131,12 @@ struct LoginView: View {
         }
         .background(Color.offWhite)
         .navigationBarHidden(true)
+        .statusBarHidden(true) // Status bar 제거
         
         // Loading & Error States
         .overlay(
             VStack {
-                if viewModel.state.isLoading {
+                if container.state.isLoading {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .scaleEffect(1.2)
@@ -156,7 +145,7 @@ struct LoginView: View {
                         .cornerRadius(10)
                 }
                 
-                if let errorMessage = viewModel.state.errorMessage {
+                if let errorMessage = container.state.errorMessage {
                     Text(errorMessage)
                         .font(.caption)
                         .foregroundColor(.red)

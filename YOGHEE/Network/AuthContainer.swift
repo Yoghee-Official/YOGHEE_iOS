@@ -1,16 +1,26 @@
-import Foundation
+//
+//  AuthManager.swift
+//  YOGHEE
+//
+//  Created by 0ofKim on 8/3/25.
+//
+
 import SwiftUI
+import Combine
 
 @MainActor
-class AuthViewModel: ObservableObject {
-    static let shared = AuthViewModel() // 싱글톤 추가
+class AuthManager: ObservableObject {
+    static let shared = AuthManager()
     
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var authToken: String?
     private var isProcessingLogin = false // 중복 호출 방지
     
-    private init() {} // private init으로 싱글톤 보장
+    private init() {
+        // 앱 시작 시 저장된 토큰 확인
+        checkSavedToken()
+    }
     
     /// 인증 상태 확인 (토큰 존재 여부로 판단)
     var isAuthenticated: Bool {
@@ -19,7 +29,7 @@ class AuthViewModel: ObservableObject {
     
     /// SSO 로그인 처리
     /// - Parameters:
-    ///   - code: SSO 인가코드
+    ///   - token: SSO 인가코드
     ///   - ssoType: SSO 타입
     func handleSSOLogin(token: String, ssoType: SSOType) {
         // 중복 호출 방지
@@ -43,19 +53,17 @@ class AuthViewModel: ObservableObject {
                 
                 print("📥 API 응답 받음")
                 print("SSOLoginResponse: \(response)")
-//                print("Token: \(response.token ?? "nil")")
-//                print("Message: \(response.message ?? "nil")")
-//                
-//                if let token = response.token {
-//                    print("✅ 토큰 저장 중...")
-//                    authToken = token
-//                    // 토큰을 UserDefaults나 Keychain에 저장
-//                    UserDefaults.standard.set(token, forKey: "authToken")
-//                    print("✅ 로그인 성공!")
-//                } else {
-//                    print("❌ 토큰이 nil입니다")
-//                    errorMessage = response.message ?? "로그인에 실패했습니다."
-//                }
+                
+                if let jwtToken = response.data {
+                    print("✅ 토큰 저장 중...")
+                    authToken = jwtToken
+                    // 토큰을 UserDefaults에 저장
+                    UserDefaults.standard.set(jwtToken, forKey: "authToken")
+                    print("✅ 로그인 성공!")
+                } else {
+                    print("❌ 토큰이 nil입니다")
+                    errorMessage = "로그인에 실패했습니다."
+                }
             } catch {
                 print("❌ 에러 발생: \(error)")
                 errorMessage = error.localizedDescription
@@ -79,4 +87,4 @@ class AuthViewModel: ObservableObject {
             authToken = token
         }
     }
-} 
+}
