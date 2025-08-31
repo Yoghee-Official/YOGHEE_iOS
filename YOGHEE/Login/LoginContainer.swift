@@ -13,32 +13,75 @@ import KakaoSDKAuth
 // MARK: - Intent
 enum LoginIntent {
     case kakaoLogin
+    case normalLogin
+    case updateId(String)
+    case updatePassword(String)
+    case clearError
 }
 
 // MARK: - State
 struct LoginState {
+    var id: String = ""
+    var password: String = ""
+    
     var isLoading: Bool = false
     var errorMessage: String? = nil
-    var isLoggedIn: Bool = false
-    var userInfo: KakaoSDKUser.User? = nil
+    var hasLoginError: Bool = false
+    
+    var isLoginButtonEnabled: Bool {
+        return !id.isEmpty && !password.isEmpty && !hasLoginError && !isLoading
+    }
 }
 
 // MARK: - Effect
+// TODO: Effect 기능은 추후 구현 예정
+/*
 enum LoginEffect {
     case navigateToHome
     case showError(String)
 }
+*/
 
 @MainActor
 class LoginContainer: ObservableObject {
     @Published private(set) var state = LoginState()
+    // TODO: Effect 기능은 추후 구현 예정
+    // @Published var effect: LoginEffect? = nil
     
     func handleIntent(_ intent: LoginIntent) {
         switch intent {
         case .kakaoLogin:
             performKakaoLogin()
+        case .normalLogin:
+            performNormalLogin(id: state.id, password: state.password)
+        case .updateId(let id):
+            state.id = id
+            if state.hasLoginError {
+                state.hasLoginError = false
+                state.errorMessage = nil
+            }
+        case .updatePassword(let password):
+            state.password = password
+            if state.hasLoginError {
+                state.hasLoginError = false
+                state.errorMessage = nil
+            }
+        case .clearError:
+            state.hasLoginError = false
+            state.errorMessage = nil
         }
     }
+    
+    // TODO: Effect 기능은 추후 구현 예정
+    /*
+    func clearEffect() {
+        effect = nil
+    }
+    
+    private func sendEffect(_ newEffect: LoginEffect) {
+        effect = newEffect
+    }
+    */
     
     private func performKakaoLogin() {
         state.isLoading = true
@@ -80,38 +123,20 @@ class LoginContainer: ObservableObject {
         
         // 인가코드를 서버에 전송
         AuthManager.shared.handleSSOLogin(token: oauthToken.accessToken, ssoType: .kakao)
+    }
+    
+    private func performNormalLogin(id: String, password: String) {
+        state.isLoading = true
+        state.errorMessage = nil
+        state.hasLoginError = false
         
-        // 사용자 정보 가져오기 -> 테스트 코드 주석
-        // fetchUserInfo()
-    }
-    
-    private func fetchUserInfo() {
-        UserApi.shared.me { [weak self] user, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    self?.state.errorMessage = "사용자 정보 조회 실패: \(error.localizedDescription)"
-                    print("사용자 정보 조회 에러: \(error)")
-                    return
-                }
-                
-                if let user = user {
-                    self?.state.userInfo = user
-                    self?.state.isLoggedIn = true
-                    print("사용자 정보: \(user.kakaoAccount?.profile?.nickname ?? "알 수 없음")")
-                    self?.handleEffect(.navigateToHome)
-                }
-            }
-        }
-    }
-    
-    private func handleEffect(_ effect: LoginEffect) {
-        switch effect {
-        case .navigateToHome:
-            // 네비게이션 처리는 View에서 담당
-            break
-        case .showError(let message):
-            state.errorMessage = message
-            print("Error: \(message)")
+        // 임시로 로그인 실패를 시뮬레이션
+        // TODO: 실제 API 호출로 대체
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.state.isLoading = false
+            // 임시로 항상 실패하도록 설정 (테스트용)
+            self?.state.hasLoginError = true
+            self?.state.errorMessage = "* 아이디/비밀번호가 맞지않습니다."
         }
     }
 }
