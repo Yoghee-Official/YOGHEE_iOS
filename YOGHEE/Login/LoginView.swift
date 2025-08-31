@@ -12,6 +12,10 @@ struct LoginView: View {
     @State private var id: String = ""
     @State private var password: String = ""
     
+    private var isLoginEnabled: Bool {
+        !id.isEmpty && !password.isEmpty
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 11) {
@@ -27,12 +31,12 @@ struct LoginView: View {
             .frame(height: 24)
             .padding(.top, 51)
             
-            VStack(spacing: 36) {
+            VStack(spacing: 14) {
                 TextField("아이디", text: $id)
-                    .textFieldStyle(CustomTextFieldStyle())
+                    .textFieldStyle(CustomTextFieldStyle(type: .id, text: id))
                 
                 SecureField("비밀번호", text: $password)
-                    .textFieldStyle(CustomTextFieldStyle())
+                    .textFieldStyle(CustomTextFieldStyle(type: .password, text: password))
             }
             .padding(.top, 55)
             .padding(.horizontal, 39)
@@ -104,15 +108,19 @@ struct LoginView: View {
             
             Button(action: {
                 // TODO: 로그인
+                if isLoginEnabled {
+                    // 로그인 로직 실행
+                }
             }) {
                 Text("로그인")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 48)
-                    .background(Color(red: 0.36, green: 0.27, blue: 0.2).opacity(0.5))
+                    .background(Color(red: 0.36, green: 0.27, blue: 0.2).opacity(isLoginEnabled ? 1.0 : 0.5))
                     .cornerRadius(30)
             }
+            .disabled(!isLoginEnabled)
             .padding(.top, 34)
             .padding(.horizontal, 97)
             
@@ -136,43 +144,44 @@ struct LoginView: View {
         .background(Color.init(red: 0.99, green: 0.98, blue: 0.96))
         .navigationBarHidden(true)
 //        .statusBarHidden(true) << 필요한건지 확인
-        
-        // Loading & Error States
-//        .overlay(
-//            VStack {
-//                if container.state.isLoading {
-//                    ProgressView()
-//                        .progressViewStyle(CircularProgressViewStyle())
-//                        .scaleEffect(1.2)
-//                        .padding()
-//                        .background(Color.white.opacity(0.9))
-//                        .cornerRadius(10)
-//                }
-//                
-//                if let errorMessage = container.state.errorMessage {
-//                    Text(errorMessage)
-//                        .font(.caption)
-//                        .foregroundColor(.red)
-//                        .padding()
-//                        .background(Color.white.opacity(0.9))
-//                        .cornerRadius(8)
-//                        .padding(.horizontal, 20)
-//                }
-//            }
-//        )
     }
 }
 
 // Custom TextField Style
 struct CustomTextFieldStyle: TextFieldStyle {
+    enum CustomTextFieldType {
+        case id
+        case password
+    }
+    let type: CustomTextFieldType
+    let text: String
+    
     func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .padding(.horizontal, 23)
-            .padding(.vertical, 32)
-            .background(Color.white)
-            .frame(height: 64)
-            .cornerRadius(92)
-            .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 0)
+        VStack(alignment: .leading, spacing: 0) {
+            configuration
+                .padding(.horizontal, 23)
+                .padding(.vertical, 32)
+                .background(Color.white)
+                .frame(height: 64)
+                .cornerRadius(92)
+                .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 0)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 92)
+                        .inset(by: 0.5)
+                        .stroke(text.isEmpty ? Color(red: 1, green: 0.33, blue: 0.13) : Color.clear, lineWidth: 1)
+                )
+            
+            HStack {
+                Text(text.isEmpty ? "* 필수입력 항목입니다." : "")
+                    .font(.system(size: 11))
+                    .foregroundColor(Color(red: 1, green: 0.33, blue: 0.13))
+                    .padding(.leading, 27)
+                    .opacity(text.isEmpty ? 1.0 : 0.0)
+                Spacer()
+            }
+            .frame(height: 14)
+            .padding(.top, 8)
+        }
     }
 }
 
