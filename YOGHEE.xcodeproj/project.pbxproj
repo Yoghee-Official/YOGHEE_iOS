@@ -7,36 +7,42 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		520B246F2E720EDE000A3D5E /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B245B2E720EDE000A3D5E /* Extension+Color.swift */; };
+		520B24702E720EDE000A3D5E /* LoginContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B245D2E720EDE000A3D5E /* LoginContainer.swift */; };
+		520B24712E720EDE000A3D5E /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B245E2E720EDE000A3D5E /* LoginView.swift */; };
+		520B24722E720EDE000A3D5E /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24612E720EDE000A3D5E /* AuthModels.swift */; };
+		520B24732E720EDE000A3D5E /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24632E720EDE000A3D5E /* APIService.swift */; };
+		520B24742E720EDE000A3D5E /* APIService+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24642E720EDE000A3D5E /* APIService+Auth.swift */; };
+		520B24752E720EDE000A3D5E /* AuthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24652E720EDE000A3D5E /* AuthContainer.swift */; };
+		520B24762E720EDE000A3D5E /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24672E720EDE000A3D5E /* SplashView.swift */; };
+		520B24772E720EDE000A3D5E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B246A2E720EDE000A3D5E /* ContentView.swift */; };
+		520B24782E720EDE000A3D5E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B246B2E720EDE000A3D5E /* HomeView.swift */; };
+		520B24792E720EDE000A3D5E /* YOGHEEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B246D2E720EDE000A3D5E /* YOGHEEApp.swift */; };
+		520B247A2E720EDE000A3D5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 520B24692E720EDE000A3D5E /* Assets.xcassets */; };
+		520B247D2E74F20A000A3D5E /* HomeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B247C2E74F206000A3D5E /* HomeContainer.swift */; };
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
 		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		520B245B2E720EDE000A3D5E /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
+		520B245D2E720EDE000A3D5E /* LoginContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginContainer.swift; sourceTree = "<group>"; };
+		520B245E2E720EDE000A3D5E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		520B24612E720EDE000A3D5E /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
+		520B24632E720EDE000A3D5E /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		520B24642E720EDE000A3D5E /* APIService+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIService+Auth.swift"; sourceTree = "<group>"; };
+		520B24652E720EDE000A3D5E /* AuthContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthContainer.swift; sourceTree = "<group>"; };
+		520B24672E720EDE000A3D5E /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		520B24692E720EDE000A3D5E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		520B246A2E720EDE000A3D5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		520B246B2E720EDE000A3D5E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		520B246C2E720EDE000A3D5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		520B246D2E720EDE000A3D5E /* YOGHEEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YOGHEEApp.swift; sourceTree = "<group>"; };
+		520B247C2E74F206000A3D5E /* HomeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContainer.swift; sourceTree = "<group>"; };
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		52D6B95B2E59964500F60E39 /* Exceptions for "YOGHEE" folder in "YOGHEE" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 52F308802E3F4CD10066ED1B /* YOGHEE */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		52F308832E3F4CD10066ED1B /* YOGHEE */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				52D6B95B2E59964500F60E39 /* Exceptions for "YOGHEE" folder in "YOGHEE" target */,
-			);
-			path = YOGHEE;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		52F3087E2E3F4CD10066ED1B /* Frameworks */ = {
@@ -51,11 +57,80 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		520B245C2E720EDE000A3D5E /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				520B245B2E720EDE000A3D5E /* Extension+Color.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		520B245F2E720EDE000A3D5E /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				520B245D2E720EDE000A3D5E /* LoginContainer.swift */,
+				520B245E2E720EDE000A3D5E /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		520B24602E720EDE000A3D5E /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				520B247C2E74F206000A3D5E /* HomeContainer.swift */,
+				520B246B2E720EDE000A3D5E /* HomeView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		520B24622E720EDE000A3D5E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				520B24612E720EDE000A3D5E /* AuthModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		520B24662E720EDE000A3D5E /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				520B24622E720EDE000A3D5E /* Models */,
+				520B24632E720EDE000A3D5E /* APIService.swift */,
+				520B24642E720EDE000A3D5E /* APIService+Auth.swift */,
+				520B24652E720EDE000A3D5E /* AuthContainer.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		520B24682E720EDE000A3D5E /* Splash */ = {
+			isa = PBXGroup;
+			children = (
+				520B24672E720EDE000A3D5E /* SplashView.swift */,
+			);
+			path = Splash;
+			sourceTree = "<group>";
+		};
+		520B246E2E720EDE000A3D5E /* YOGHEE */ = {
+			isa = PBXGroup;
+			children = (
+				520B245C2E720EDE000A3D5E /* Extension */,
+				520B245F2E720EDE000A3D5E /* Login */,
+				520B24602E720EDE000A3D5E /* Main */,
+				520B24662E720EDE000A3D5E /* Network */,
+				520B24682E720EDE000A3D5E /* Splash */,
+				520B24692E720EDE000A3D5E /* Assets.xcassets */,
+				520B246A2E720EDE000A3D5E /* ContentView.swift */,
+				520B246C2E720EDE000A3D5E /* Info.plist */,
+				520B246D2E720EDE000A3D5E /* YOGHEEApp.swift */,
+			);
+			path = YOGHEE;
+			sourceTree = "<group>";
+		};
 		52F308782E3F4CD10066ED1B = {
 			isa = PBXGroup;
 			children = (
 				523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */,
-				52F308832E3F4CD10066ED1B /* YOGHEE */,
+				520B246E2E720EDE000A3D5E /* YOGHEE */,
 				52F308822E3F4CD10066ED1B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,9 +157,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				52F308832E3F4CD10066ED1B /* YOGHEE */,
 			);
 			name = YOGHEE;
 			packageProductDependencies = (
@@ -138,6 +210,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				520B247A2E720EDE000A3D5E /* Assets.xcassets in Resources */,
 				523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -149,6 +222,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				520B246F2E720EDE000A3D5E /* Extension+Color.swift in Sources */,
+				520B24702E720EDE000A3D5E /* LoginContainer.swift in Sources */,
+				520B24712E720EDE000A3D5E /* LoginView.swift in Sources */,
+				520B24722E720EDE000A3D5E /* AuthModels.swift in Sources */,
+				520B24732E720EDE000A3D5E /* APIService.swift in Sources */,
+				520B24742E720EDE000A3D5E /* APIService+Auth.swift in Sources */,
+				520B24752E720EDE000A3D5E /* AuthContainer.swift in Sources */,
+				520B24762E720EDE000A3D5E /* SplashView.swift in Sources */,
+				520B24772E720EDE000A3D5E /* ContentView.swift in Sources */,
+				520B24782E720EDE000A3D5E /* HomeView.swift in Sources */,
+				520B247D2E74F20A000A3D5E /* HomeContainer.swift in Sources */,
+				520B24792E720EDE000A3D5E /* YOGHEEApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
