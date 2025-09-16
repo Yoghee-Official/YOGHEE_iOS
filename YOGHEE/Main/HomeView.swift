@@ -11,17 +11,45 @@ struct HomeView: View {
     @StateObject private var container = HomeContainer()
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack(spacing: 16) {
-                ForEach(container.state.modules) { module in
-                    ModuleCardView(module: module) {
-                        container.handleIntent(HomeIntent.selectModule(module.id))
+        VStack(spacing: 0) {
+            HeaderView()
+                .frame(height: 59)
+            
+            ScrollView(.vertical, showsIndicators: false) {
+                LazyVStack(spacing: 16) {
+                    ForEach(container.state.modules) { module in
+                        ModuleCardView(module: module) {
+                            container.handleIntent(HomeIntent.selectModule(module.id))
+                        }
                     }
                 }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
         }
+        .background(Color(red: 0.99, green: 0.98, blue: 0.96))
+    }
+}
+
+// MARK: - Header View
+struct HeaderView: View {
+    var body: some View {
+        HStack {
+            Text("YOGHEE")
+                .font(.system(size: 20, weight: .bold))
+                .foregroundColor(.primary)
+            
+            Spacer()
+            
+            Button(action: {
+                // 알림 버튼 액션
+            }) {
+                Image(systemName: "bell")
+                    .font(.system(size: 18))
+                    .foregroundColor(.primary)
+            }
+        }
+        .padding(.horizontal, 20)
         .background(Color(red: 0.99, green: 0.98, blue: 0.96))
     }
 }
