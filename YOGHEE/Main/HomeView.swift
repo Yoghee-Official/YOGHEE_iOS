@@ -12,7 +12,7 @@ struct HomeView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HeaderView()
+            HeaderView(container: container)
                 .frame(height: 59)
             
             ScrollView(.vertical, showsIndicators: false) {
@@ -33,11 +33,34 @@ struct HomeView: View {
 
 // MARK: - Header View
 struct HeaderView: View {
+    @ObservedObject var container: HomeContainer
+    
     var body: some View {
         HStack {
             Text("YOGHEE")
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.primary)
+            
+            Spacer()
+            
+            // 토글 버튼
+            HStack(spacing: 8) {
+                ToggleButton(
+                    title: "하루수련",
+                    isSelected: container.state.selectedTrainingMode == .daily,
+                    action: {
+                        container.handleIntent(HomeIntent.toggleTrainingMode(.daily))
+                    }
+                )
+                
+                ToggleButton(
+                    title: "정규수련",
+                    isSelected: container.state.selectedTrainingMode == .regular,
+                    action: {
+                        container.handleIntent(HomeIntent.toggleTrainingMode(.regular))
+                    }
+                )
+            }
             
             Spacer()
             
@@ -51,6 +74,37 @@ struct HeaderView: View {
         }
         .padding(.horizontal, 20)
         .background(Color(red: 0.99, green: 0.98, blue: 0.96))
+    }
+}
+
+// MARK: - Toggle Button
+struct ToggleButton: View {
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(isSelected ? .white : .primary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(isSelected ? Color.primary : Color.gray.opacity(0.2))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(
+                            isSelected ? Color.primary : Color.gray.opacity(0.3), 
+                            lineWidth: 1
+                        )
+                )
+                .scaleEffect(isSelected ? 1.05 : 1.0)
+                .animation(.easeInOut(duration: 0.2), value: isSelected)
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
