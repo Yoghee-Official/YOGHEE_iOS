@@ -1,5 +1,5 @@
 //
-//  HomeContainer.swift
+//  HomeTabContainer.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 9/13/25.
@@ -40,7 +40,7 @@ struct HomeModule: Identifiable, Equatable {
 }
 
 @MainActor
-class HomeContainer: ObservableObject {
+class HomeTabContainer: ObservableObject {
     @Published private(set) var state = HomeState()
     
     init() {
