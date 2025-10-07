@@ -15,11 +15,20 @@
 		520B24742E720EDE000A3D5E /* APIService+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24642E720EDE000A3D5E /* APIService+Auth.swift */; };
 		520B24752E720EDE000A3D5E /* AuthContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24652E720EDE000A3D5E /* AuthContainer.swift */; };
 		520B24762E720EDE000A3D5E /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24672E720EDE000A3D5E /* SplashView.swift */; };
-		520B24772E720EDE000A3D5E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B246A2E720EDE000A3D5E /* ContentView.swift */; };
-		520B24782E720EDE000A3D5E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B246B2E720EDE000A3D5E /* HomeView.swift */; };
 		520B24792E720EDE000A3D5E /* YOGHEEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B246D2E720EDE000A3D5E /* YOGHEEApp.swift */; };
 		520B247A2E720EDE000A3D5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 520B24692E720EDE000A3D5E /* Assets.xcassets */; };
-		520B247D2E74F20A000A3D5E /* HomeContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B247C2E74F206000A3D5E /* HomeContainer.swift */; };
+		520B24832E82E711000A3D5E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24822E82E6F9000A3D5E /* ContentView.swift */; };
+		520B24852E82E71C000A3D5E /* ContentTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24842E82E717000A3D5E /* ContentTabContainer.swift */; };
+		520B24982E82E99E000A3D5E /* ContentTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24972E82E99B000A3D5E /* ContentTabView.swift */; };
+		520B249C2E82EB33000A3D5E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B249A2E82EB33000A3D5E /* MainTabView.swift */; };
+		520B24A02E82EC14000A3D5E /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B249E2E82EC14000A3D5E /* HomeTabView.swift */; };
+		520B24A32E82EC42000A3D5E /* ExploreTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24A12E82EC42000A3D5E /* ExploreTabContainer.swift */; };
+		520B24A42E82EC42000A3D5E /* ExploreTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24A22E82EC42000A3D5E /* ExploreTabView.swift */; };
+		520B24A72E82EC4E000A3D5E /* TeaTimeTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24A52E82EC4E000A3D5E /* TeaTimeTabContainer.swift */; };
+		520B24A82E82EC4E000A3D5E /* TeaTimeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24A62E82EC4E000A3D5E /* TeaTimeTabView.swift */; };
+		520B24AB2E82EC57000A3D5E /* MyPageTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24AA2E82EC57000A3D5E /* MyPageTabView.swift */; };
+		520B24AC2E82EC57000A3D5E /* MyPageTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24A92E82EC57000A3D5E /* MyPageTabContainer.swift */; };
+		520B24AE2E82EE06000A3D5E /* HomeTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24AD2E82EE06000A3D5E /* HomeTabContainer.swift */; };
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
 		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
@@ -35,11 +44,20 @@
 		520B24652E720EDE000A3D5E /* AuthContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthContainer.swift; sourceTree = "<group>"; };
 		520B24672E720EDE000A3D5E /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		520B24692E720EDE000A3D5E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		520B246A2E720EDE000A3D5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		520B246B2E720EDE000A3D5E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		520B246C2E720EDE000A3D5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		520B246D2E720EDE000A3D5E /* YOGHEEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YOGHEEApp.swift; sourceTree = "<group>"; };
-		520B247C2E74F206000A3D5E /* HomeContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContainer.swift; sourceTree = "<group>"; };
+		520B24822E82E6F9000A3D5E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		520B24842E82E717000A3D5E /* ContentTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTabContainer.swift; sourceTree = "<group>"; };
+		520B24972E82E99B000A3D5E /* ContentTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTabView.swift; sourceTree = "<group>"; };
+		520B249A2E82EB33000A3D5E /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		520B249E2E82EC14000A3D5E /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
+		520B24A12E82EC42000A3D5E /* ExploreTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreTabContainer.swift; sourceTree = "<group>"; };
+		520B24A22E82EC42000A3D5E /* ExploreTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreTabView.swift; sourceTree = "<group>"; };
+		520B24A52E82EC4E000A3D5E /* TeaTimeTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeaTimeTabContainer.swift; sourceTree = "<group>"; };
+		520B24A62E82EC4E000A3D5E /* TeaTimeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeaTimeTabView.swift; sourceTree = "<group>"; };
+		520B24A92E82EC57000A3D5E /* MyPageTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTabContainer.swift; sourceTree = "<group>"; };
+		520B24AA2E82EC57000A3D5E /* MyPageTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTabView.swift; sourceTree = "<group>"; };
+		520B24AD2E82EE06000A3D5E /* HomeTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabContainer.swift; sourceTree = "<group>"; };
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -77,8 +95,12 @@
 		520B24602E720EDE000A3D5E /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				520B247C2E74F206000A3D5E /* HomeContainer.swift */,
-				520B246B2E720EDE000A3D5E /* HomeView.swift */,
+				520B249A2E82EB33000A3D5E /* MainTabView.swift */,
+				520B24922E82E8B0000A3D5E /* Home */,
+				520B24932E82E8CF000A3D5E /* Content */,
+				520B24942E82E8DB000A3D5E /* Explore */,
+				520B24952E82E8E5000A3D5E /* TeaTime */,
+				520B24962E82E8EE000A3D5E /* MyPage */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -119,11 +141,56 @@
 				520B24662E720EDE000A3D5E /* Network */,
 				520B24682E720EDE000A3D5E /* Splash */,
 				520B24692E720EDE000A3D5E /* Assets.xcassets */,
-				520B246A2E720EDE000A3D5E /* ContentView.swift */,
 				520B246C2E720EDE000A3D5E /* Info.plist */,
+				520B24822E82E6F9000A3D5E /* ContentView.swift */,
 				520B246D2E720EDE000A3D5E /* YOGHEEApp.swift */,
 			);
 			path = YOGHEE;
+			sourceTree = "<group>";
+		};
+		520B24922E82E8B0000A3D5E /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				520B249E2E82EC14000A3D5E /* HomeTabView.swift */,
+				520B24AD2E82EE06000A3D5E /* HomeTabContainer.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		520B24932E82E8CF000A3D5E /* Content */ = {
+			isa = PBXGroup;
+			children = (
+				520B24972E82E99B000A3D5E /* ContentTabView.swift */,
+				520B24842E82E717000A3D5E /* ContentTabContainer.swift */,
+			);
+			path = Content;
+			sourceTree = "<group>";
+		};
+		520B24942E82E8DB000A3D5E /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				520B24A22E82EC42000A3D5E /* ExploreTabView.swift */,
+				520B24A12E82EC42000A3D5E /* ExploreTabContainer.swift */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
+		520B24952E82E8E5000A3D5E /* TeaTime */ = {
+			isa = PBXGroup;
+			children = (
+				520B24A62E82EC4E000A3D5E /* TeaTimeTabView.swift */,
+				520B24A52E82EC4E000A3D5E /* TeaTimeTabContainer.swift */,
+			);
+			path = TeaTime;
+			sourceTree = "<group>";
+		};
+		520B24962E82E8EE000A3D5E /* MyPage */ = {
+			isa = PBXGroup;
+			children = (
+				520B24AA2E82EC57000A3D5E /* MyPageTabView.swift */,
+				520B24A92E82EC57000A3D5E /* MyPageTabContainer.swift */,
+			);
+			path = MyPage;
 			sourceTree = "<group>";
 		};
 		52F308782E3F4CD10066ED1B = {
@@ -222,18 +289,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				520B24AE2E82EE06000A3D5E /* HomeTabContainer.swift in Sources */,
+				520B24AB2E82EC57000A3D5E /* MyPageTabView.swift in Sources */,
+				520B24AC2E82EC57000A3D5E /* MyPageTabContainer.swift in Sources */,
 				520B246F2E720EDE000A3D5E /* Extension+Color.swift in Sources */,
 				520B24702E720EDE000A3D5E /* LoginContainer.swift in Sources */,
 				520B24712E720EDE000A3D5E /* LoginView.swift in Sources */,
+				520B24A72E82EC4E000A3D5E /* TeaTimeTabContainer.swift in Sources */,
+				520B24A82E82EC4E000A3D5E /* TeaTimeTabView.swift in Sources */,
 				520B24722E720EDE000A3D5E /* AuthModels.swift in Sources */,
 				520B24732E720EDE000A3D5E /* APIService.swift in Sources */,
 				520B24742E720EDE000A3D5E /* APIService+Auth.swift in Sources */,
+				520B24982E82E99E000A3D5E /* ContentTabView.swift in Sources */,
 				520B24752E720EDE000A3D5E /* AuthContainer.swift in Sources */,
+				520B24A32E82EC42000A3D5E /* ExploreTabContainer.swift in Sources */,
+				520B24A42E82EC42000A3D5E /* ExploreTabView.swift in Sources */,
 				520B24762E720EDE000A3D5E /* SplashView.swift in Sources */,
-				520B24772E720EDE000A3D5E /* ContentView.swift in Sources */,
-				520B24782E720EDE000A3D5E /* HomeView.swift in Sources */,
-				520B247D2E74F20A000A3D5E /* HomeContainer.swift in Sources */,
+				520B249C2E82EB33000A3D5E /* MainTabView.swift in Sources */,
+				520B24A02E82EC14000A3D5E /* HomeTabView.swift in Sources */,
+				520B24832E82E711000A3D5E /* ContentView.swift in Sources */,
 				520B24792E720EDE000A3D5E /* YOGHEEApp.swift in Sources */,
+				520B24852E82E71C000A3D5E /* ContentTabContainer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

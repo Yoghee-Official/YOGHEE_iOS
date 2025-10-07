@@ -16,7 +16,7 @@ struct ContentView: View {
                 SplashView()
                     .transition(.opacity)
             } else {
-                HomeView()
+                MainTabView()
                     .transition(.opacity)
             }
         }

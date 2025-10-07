@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  HomeTabView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 8/3/25.
@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct HomeView: View {
-    @StateObject private var container = HomeContainer()
+// MARK: - Home Tab View
+struct HomeTabView: View {
+    @StateObject private var container = HomeTabContainer()
     
     var body: some View {
         VStack(spacing: 0) {
@@ -33,7 +34,7 @@ struct HomeView: View {
 
 // MARK: - Header View
 struct HeaderView: View {
-    @ObservedObject var container: HomeContainer
+    @ObservedObject var container: HomeTabContainer
     
     var body: some View {
         HStack {
@@ -137,5 +138,5 @@ struct ModuleCardView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeTabView()
 }
