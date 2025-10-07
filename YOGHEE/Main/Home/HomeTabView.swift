@@ -10,31 +10,41 @@ import SwiftUI
 // MARK: - Home Tab View
 struct HomeTabView: View {
     @StateObject private var container = HomeTabContainer()
+    @Binding var navigationPath: NavigationPath
     
     var body: some View {
-        VStack(spacing: 0) {
-            HeaderView(container: container)
-                .frame(height: 59)
-            
-            ScrollView(.vertical, showsIndicators: false) {
-                LazyVStack(spacing: 16) {
-                    ForEach(container.state.modules) { module in
-                        ModuleCardView(module: module) {
-                            container.handleIntent(HomeIntent.selectModule(module.id))
+        NavigationStack(path: $navigationPath) {
+            VStack(spacing: 0) {
+                HeaderView(container: container, navigationPath: $navigationPath)
+                    .frame(height: 59)
+                
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVStack(spacing: 16) {
+                        ForEach(container.state.modules) { module in
+                            ModuleCardView(module: module) {
+                                container.handleIntent(HomeIntent.selectModule(module.id))
+                            }
                         }
                     }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
+            }
+            .background(Color(red: 0.99, green: 0.98, blue: 0.96))
+            .navigationDestination(for: NavigationDestination.self) { destination in
+                switch destination {
+                case .notifications:
+                    NotificationListView()
+                }
             }
         }
-        .background(Color(red: 0.99, green: 0.98, blue: 0.96))
     }
 }
 
 // MARK: - Header View
 struct HeaderView: View {
     @ObservedObject var container: HomeTabContainer
+    @Binding var navigationPath: NavigationPath
     
     var body: some View {
         HStack {
@@ -66,7 +76,7 @@ struct HeaderView: View {
             Spacer()
             
             Button(action: {
-                // 알림 버튼 액션
+                navigationPath.append(NavigationDestination.notifications)
             }) {
                 Image(systemName: "bell")
                     .font(.system(size: 18))
@@ -138,5 +148,5 @@ struct ModuleCardView: View {
 }
 
 #Preview {
-    HomeTabView()
+    HomeTabView(navigationPath: .constant(NavigationPath()))
 }
