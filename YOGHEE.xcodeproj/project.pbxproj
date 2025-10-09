@@ -30,6 +30,8 @@
 		520B24AC2E82EC57000A3D5E /* MyPageTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24A92E82EC57000A3D5E /* MyPageTabContainer.swift */; };
 		520B24AE2E82EE06000A3D5E /* HomeTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520B24AD2E82EE06000A3D5E /* HomeTabContainer.swift */; };
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
+		528BDC5B2E8DED87002F84D9 /* NotificationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528BDC5A2E8DED87002F84D9 /* NotificationListView.swift */; };
+		528BDC5D2E8DEE9F002F84D9 /* NotificationListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528BDC5C2E8DEE98002F84D9 /* NotificationListContainer.swift */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
 		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
 /* End PBXBuildFile section */
@@ -59,6 +61,8 @@
 		520B24AA2E82EC57000A3D5E /* MyPageTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageTabView.swift; sourceTree = "<group>"; };
 		520B24AD2E82EE06000A3D5E /* HomeTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabContainer.swift; sourceTree = "<group>"; };
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
+		528BDC5A2E8DED87002F84D9 /* NotificationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListView.swift; sourceTree = "<group>"; };
+		528BDC5C2E8DEE98002F84D9 /* NotificationListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListContainer.swift; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -153,6 +157,8 @@
 			children = (
 				520B249E2E82EC14000A3D5E /* HomeTabView.swift */,
 				520B24AD2E82EE06000A3D5E /* HomeTabContainer.swift */,
+				528BDC5A2E8DED87002F84D9 /* NotificationListView.swift */,
+				528BDC5C2E8DEE98002F84D9 /* NotificationListContainer.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -290,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				520B24AE2E82EE06000A3D5E /* HomeTabContainer.swift in Sources */,
+				528BDC5B2E8DED87002F84D9 /* NotificationListView.swift in Sources */,
 				520B24AB2E82EC57000A3D5E /* MyPageTabView.swift in Sources */,
 				520B24AC2E82EC57000A3D5E /* MyPageTabContainer.swift in Sources */,
 				520B246F2E720EDE000A3D5E /* Extension+Color.swift in Sources */,
@@ -307,6 +314,7 @@
 				520B24762E720EDE000A3D5E /* SplashView.swift in Sources */,
 				520B249C2E82EB33000A3D5E /* MainTabView.swift in Sources */,
 				520B24A02E82EC14000A3D5E /* HomeTabView.swift in Sources */,
+				528BDC5D2E8DEE9F002F84D9 /* NotificationListContainer.swift in Sources */,
 				520B24832E82E711000A3D5E /* ContentView.swift in Sources */,
 				520B24792E720EDE000A3D5E /* YOGHEEApp.swift in Sources */,
 				520B24852E82E71C000A3D5E /* ContentTabContainer.swift in Sources */,

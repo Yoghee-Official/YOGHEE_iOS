@@ -32,6 +32,11 @@ struct HomeState: Equatable {
     var selectedTrainingMode: TrainingMode = .daily
 }
 
+// MARK: - Navigation Destination
+enum NavigationDestination: Hashable {
+    case notifications
+}
+
 // MARK: - Module Model
 struct HomeModule: Identifiable, Equatable {
     let id: Int

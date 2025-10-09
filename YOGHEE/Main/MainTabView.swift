@@ -10,26 +10,39 @@ import SwiftUI
 // MARK: - Main Tab Container
 struct MainTabView: View {
     @State private var selectedTab: TabItem = .home
+    @State private var homeNavigationPath = NavigationPath()
     
     var body: some View {
         ZStack {
             // 현재 선택된 탭의 뷰 표시
             allTabViews
             
-            // Floating Tab Bar
-            VStack {
-                Spacer()
-                FloatingTabBar(selectedTab: $selectedTab)
-                    .padding(.horizontal, 15)
-                    .padding(.bottom, 40)
+            // Floating Tab Bar - 1뎁스에서만 표시
+            if shouldShowTabBar {
+                VStack {
+                    Spacer()
+                    FloatingTabBar(selectedTab: $selectedTab)
+                        .padding(.horizontal, 15)
+                        .padding(.bottom, 40)
+                }
             }
+        }
+    }
+    
+    // TabBar 표시 여부 결정 (1뎁스에서만 표시)
+    private var shouldShowTabBar: Bool {
+        switch selectedTab {
+        case .home:
+            return homeNavigationPath.count == 0
+        case .content, .explore, .teatime, .mypage:
+            return true // 다른 탭들은 현재 네비게이션이 없으므로 항상 표시
         }
     }
     
     @ViewBuilder
     private var allTabViews: some View {
         // Home Tab
-        HomeTabView()
+        HomeTabView(navigationPath: $homeNavigationPath)
             .opacity(selectedTab == .home ? 1 : 0)
             .allowsHitTesting(selectedTab == .home)
         
@@ -64,7 +77,9 @@ struct FloatingTabBar: View {
             ForEach(TabItem.allCases, id: \.self) { tab in
                 TabBarItem(tab: tab, isSelected: selectedTab == tab) {
                     selectedTab = tab
+                    #if DEBUG
                     print("\(tab.title) 탭 클릭됨")
+                    #endif
                 }
             }
         }
