@@ -16,7 +16,7 @@ struct HomeTabView: View {
         NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
                 HeaderView(container: container, navigationPath: $navigationPath)
-                    .frame(height: 59)
+                    .frame(height: 60)
                 
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVStack(spacing: 16) {
@@ -26,7 +26,7 @@ struct HomeTabView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, 20)
+                    .padding(.horizontal, 15)
                     .padding(.top, 20)
                 }
             }
@@ -47,15 +47,15 @@ struct HeaderView: View {
     @Binding var navigationPath: NavigationPath
     
     var body: some View {
-        HStack {
-            Text("YOGHEE")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundColor(.primary)
+        HStack(spacing: 15) {
+            // 로고
+            Image("HeaderLogo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 23, height: 28)
             
-            Spacer()
-            
-            // 토글 버튼
-            HStack(spacing: 8) {
+            // 토글 버튼 그룹
+            HStack(spacing: 0) {
                 ToggleButton(
                     title: "하루수련",
                     isSelected: container.state.selectedTrainingMode == .daily,
@@ -72,19 +72,25 @@ struct HeaderView: View {
                     }
                 )
             }
+            .background(Color.white)
+            .cornerRadius(16)
             
             Spacer()
             
+            // 알림 아이콘
             Button(action: {
                 navigationPath.append(NavigationDestination.notifications)
             }) {
-                Image(systemName: "bell")
-                    .font(.system(size: 18))
-                    .foregroundColor(.primary)
+                Image("NotificationButton")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 34, height: 27)
             }
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 16)
+        .frame(height: 60)
         .background(Color(red: 0.99, green: 0.98, blue: 0.96))
+        // Figma guest 버전의 배경색: .background(Color.black)
     }
 }
 
@@ -97,23 +103,15 @@ struct ToggleButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundColor(isSelected ? .white : .primary)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+                .font(.system(size: 14, weight: .semibold))
+                // Figma uses Montserrat, fallback to system font
+                // .font(.custom("Montserrat-SemiBold", size: 14))
+                .foregroundColor(.black)
+                .frame(width: 71.5, height: 32)
                 .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(isSelected ? Color.primary : Color.gray.opacity(0.2))
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(isSelected ? Color(red: 214/255, green: 246/255, blue: 149/255) : Color.clear)
                 )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(
-                            isSelected ? Color.primary : Color.gray.opacity(0.3), 
-                            lineWidth: 1
-                        )
-                )
-                .scaleEffect(isSelected ? 1.05 : 1.0)
-                .animation(.easeInOut(duration: 0.2), value: isSelected)
         }
         .buttonStyle(PlainButtonStyle())
     }
