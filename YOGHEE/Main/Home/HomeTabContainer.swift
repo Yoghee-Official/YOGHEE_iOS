@@ -6,42 +6,56 @@
 //
 
 import SwiftUI
+import Foundation
 
 // MARK: - Intent
 enum HomeIntent {
-    case selectModule(Int)
+    case loadMainData
+    case selectItem(String, LayoutSectionType)
     case toggleTrainingMode(TrainingMode)
 }
 
 // MARK: - Training Mode
 enum TrainingMode: CaseIterable, Equatable {
-    case daily
+    case oneDay
     case regular
     
     var title: String {
         switch self {
-        case .daily: return "하루수련"
+        case .oneDay: return "하루수련"
         case .regular: return "정규수련"
+        }
+    }
+    
+    var apiType: String {
+        switch self {
+        case .oneDay: return "O"
+        case .regular: return "R"
         }
     }
 }
 
 // MARK: - State
 struct HomeState: Equatable {
-    var modules: [HomeModule] = []
-    var selectedTrainingMode: TrainingMode = .daily
+    var sections: [HomeSection] = []
+    var selectedTrainingMode: TrainingMode = .regular
+    var isLoading: Bool = false
+    var errorMessage: String?
+    
+    static func == (lhs: HomeState, rhs: HomeState) -> Bool {
+        return lhs.selectedTrainingMode == rhs.selectedTrainingMode &&
+               lhs.isLoading == rhs.isLoading &&
+               lhs.errorMessage == rhs.errorMessage &&
+               lhs.sections.count == rhs.sections.count
+    }
 }
 
 // MARK: - Navigation Destination
 enum NavigationDestination: Hashable {
     case notifications
-}
-
-// MARK: - Module Model
-struct HomeModule: Identifiable, Equatable {
-    let id: Int
-    let color: Color
-    let title: String
+    case classDetail(String)
+    case reviewDetail(String)
+    case categoryDetail(String)
 }
 
 @MainActor
@@ -49,47 +63,83 @@ class HomeTabContainer: ObservableObject {
     @Published private(set) var state = HomeState()
     
     init() {
-        state.modules = getModules(for: .daily)
+        loadMainData()
     }
     
     func handleIntent(_ intent: HomeIntent) {
         switch intent {
-        case .selectModule(let index):
-            print("Selected module index: \(index)")
+        case .loadMainData:
+            loadMainData()
+        case .selectItem(let itemId, let sectionType):
+            print("Selected item: \(itemId) from section: \(sectionType)")
             // TODO: 실제 네비게이션 구현
         case .toggleTrainingMode(let mode):
             state.selectedTrainingMode = mode
-            state.modules = getModules(for: mode)
+            loadMainData()
         }
     }
     
-    private func getModules(for mode: TrainingMode) -> [HomeModule] {
-        switch mode {
-        case .daily:
-            return Self.dailyModules
-        case .regular:
-            return Self.regularModules
+    private func loadMainData() {
+        state.isLoading = true
+        state.errorMessage = nil
+        
+        Task { @MainActor in
+            do {
+                let url = URL(string: "https://www.yoghee.xyz/api/main/?type=\(state.selectedTrainingMode.apiType)")!
+                let (data, _) = try await URLSession.shared.data(from: url)
+                let response = try JSONDecoder().decode(MainResponse.self, from: data)
+                
+                await MainActor.run {
+                    self.state.sections = self.createSections(from: response.data)
+                    self.state.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.state.errorMessage = "데이터 로딩 실패: \(error.localizedDescription)"
+                    self.state.isLoading = false
+                }
+            }
         }
     }
     
-    // MARK: - Module Data
-    private static let dailyModules: [HomeModule] = [
-        HomeModule(id: 0, color: .red, title: "빨간 모듈"),
-        HomeModule(id: 1, color: .orange, title: "주황 모듈"),
-        HomeModule(id: 2, color: .yellow, title: "노란 모듈"),
-        HomeModule(id: 3, color: .green, title: "초록 모듈"),
-        HomeModule(id: 4, color: .blue, title: "파란 모듈"),
-        HomeModule(id: 5, color: .indigo, title: "남색 모듈"),
-        HomeModule(id: 6, color: .purple, title: "보라 모듈")
-    ]
-    
-    private static let regularModules: [HomeModule] = [
-        HomeModule(id: 10, color: .purple, title: "정규 보라 모듈"),
-        HomeModule(id: 11, color: .indigo, title: "정규 남색 모듈"),
-        HomeModule(id: 12, color: .blue, title: "정규 파란 모듈"),
-        HomeModule(id: 13, color: .green, title: "정규 초록 모듈"),
-        HomeModule(id: 14, color: .yellow, title: "정규 노란 모듈"),
-        HomeModule(id: 15, color: .orange, title: "정규 주황 모듈"),
-        HomeModule(id: 16, color: .red, title: "정규 빨간 모듈")
-    ]
+    private func createSections(from data: MainData) -> [HomeSection] {
+        var sections: [HomeSection] = []
+        
+        // layoutOrder에 따라 섹션 생성 - 추천 랭킹 모듈만 활성화
+        for layoutType in data.layoutOrder {
+            guard let sectionType = LayoutSectionType(rawValue: layoutType) else { continue }
+            
+            switch sectionType {
+//            case .todayClass:
+//                if !data.todayClass.isEmpty {
+//                    sections.append(HomeSection(type: .todayClass, items: data.todayClass))
+//                }
+            case .recommendClass:
+                if !data.recommendClass.isEmpty {
+                    sections.append(HomeSection(type: .recommendClass, items: data.recommendClass))
+                }
+//            case .customizedClass:
+//                if !data.customizedClass.isEmpty {
+//                    sections.append(HomeSection(type: .customizedClass, items: data.customizedClass))
+//                }
+//            case .category:
+//                if !data.yogaCategory.isEmpty {
+//                    sections.append(HomeSection(type: .category, items: data.yogaCategory))
+//                }
+//            case .hotClass:
+//                if !data.hotClass.isEmpty {
+//                    sections.append(HomeSection(type: .hotClass, items: data.hotClass))
+//                }
+//            case .newReview:
+//                if !data.newReview.isEmpty {
+//                    sections.append(HomeSection(type: .newReview, items: data.newReview))
+//                }
+            default:
+                // 추천 랭킹 외 모듈들은 주석 처리됨
+                break
+            }
+        }
+        
+        return sections
+    }
 }

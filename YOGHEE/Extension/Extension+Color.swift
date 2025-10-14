@@ -17,4 +17,5 @@ extension Color {
     static let Info: Color = Color(red: 0.7, green: 0.7, blue: 0.7)
     static let CleanWhite: Color = .white
     static let DarkBlack: Color = .black
+    static let SandBeige: Color = Color(red: 0.99, green: 0.98, blue: 0.96)
 }
