@@ -126,10 +126,10 @@ class HomeTabContainer: ObservableObject {
 //                if !data.yogaCategory.isEmpty {
 //                    sections.append(HomeSection(type: .category, items: data.yogaCategory))
 //                }
-//            case .hotClass:
-//                if !data.hotClass.isEmpty {
-//                    sections.append(HomeSection(type: .hotClass, items: data.hotClass))
-//                }
+            case .hotClass:
+                if !data.hotClass.isEmpty {
+                    sections.append(HomeSection(type: .hotClass, items: data.hotClass))
+                }
             case .newReview:
                 if !data.newReview.isEmpty {
                     sections.append(HomeSection(type: .newReview, items: data.newReview))

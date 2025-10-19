@@ -1,5 +1,5 @@
 //
-//  CustomizedClass.swift
+//  HotClass.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 10/19/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomizedClassModuleView: View {
+struct HotClassModuleView: View {
     let items: [any HomeSectionItem]
     let onItemTap: (String) -> Void
     
@@ -23,9 +23,9 @@ struct CustomizedClassModuleView: View {
                 HStack(spacing: 12) {
                     ForEach(items.indices, id: \.self) { index in
                         ClassItemView(
-                            type: .CustomizedClass,
+                            type: .HotClass,
                             item: items[index],
-                            ranking: nil,
+                            ranking: index + 1,
                             onTap: { onItemTap(items[index].id) }
                         )
                         .frame(width: cardWidth, height: cardHeight)
