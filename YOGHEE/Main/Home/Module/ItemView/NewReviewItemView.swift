@@ -1,5 +1,5 @@
 //
-//  NewReview.swift
+//  NewReviewItemView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 10/19/25.
@@ -7,44 +7,14 @@
 
 import SwiftUI
 
-// MARK: - New Review Module View
-struct NewReviewModuleView: View {
-    let items: [any HomeSectionItem]
-    let onItemTap: (String) -> Void
-    
-    private let cardWidth: CGFloat = 343.ratio()
-    private let cardHeight: CGFloat = 120.ratio()
-    private let cardSpacing: CGFloat = 12.0
-    
-    var body: some View {
-        if items.isEmpty {
-            EmptyView()
-        } else {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: cardSpacing) {
-                    ForEach(items.indices, id: \.self) { index in
-                        NewReviewCardView(
-                            item: items[index],
-                            onTap: { onItemTap(items[index].id) }
-                        )
-                        .frame(width: cardWidth, height: cardHeight)
-                    }
-                }
-                .padding(.horizontal, 16)
-            }
-            .frame(height: cardHeight)
-        }
-    }
-}
-
 // MARK: - New Review Card View
-struct NewReviewCardView: View {
+struct NewReviewItemView: View {
     let item: any HomeSectionItem
     let onTap: () -> Void
     
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 1) {
+            HStack() {
                 // 왼쪽: 썸네일 이미지
                 AsyncImage(url: URL(string: item.imageURL)) { image in
                     image
@@ -88,11 +58,12 @@ struct NewReviewCardView: View {
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
-                .frame(width: 247, height: 100)
+                .frame(width: 247.ratio(), height: 100.ratio())
             }
-            .frame(width: 343, height: 120)
-            .background(Color.white)
+            .frame(width: 343.ratio(), height: 120.ratio())
+            .background(Color.CleanWhite)
             .cornerRadius(8)
+            .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 0)
             .padding(10)
         }
         .buttonStyle(.plain)

@@ -16,13 +16,18 @@ struct MainResponse: Codable {
 
 // MARK: - Main Data
 struct MainData: Codable {
-    let todayClass: [YogaClass]
+    let todayClass: [TodayClass]
     let recommendClass: [YogaClass]
     let customizedClass: [CustomizedClass]
     let hotClass: [HotClass]
     let newReview: [Review]
     let yogaCategory: [YogaCategory]
     let layoutOrder: [String]
+}
+
+// MARK: - Yoga Class
+struct TodayClass: Codable {
+    let alertText: String? // TODO: 서버 데이터 내려오면 수정 필요. 일단 내가 임의로 작성
 }
 
 // MARK: - Yoga Class
@@ -96,7 +101,7 @@ enum LayoutSectionType: String, CaseIterable {
     var title: String {
         switch self {
         case .todayClass:
-            return "오늘의 수업"
+            return ""
         case .recommendClass:
             return "추천 랭킹"
         case .customizedClass:
@@ -106,7 +111,7 @@ enum LayoutSectionType: String, CaseIterable {
         case .hotClass:
             return "요가 수련 TOP 10"
         case .newReview:
-            return "최신 리뷰"
+            return "리뷰 둘러보기"
         }
     }
 }
@@ -149,6 +154,13 @@ extension HotClass: HomeSectionItem {
     var id: String { classId }
     var title: String { className }
     var imageURL: String { thumbnail }
+}
+
+extension TodayClass: HomeSectionItem {
+    //TODO: 서버 데이터 내려올 때 까지 임의로
+    var id: String { alertText ?? "today_class" }
+    var title: String { alertText ?? "오늘 예약된 수련이 없습니다." }
+    var imageURL: String { "" } // TodayClass는 알림만 있으므로 빈 문자열
 }
 
 extension Review: HomeSectionItem {

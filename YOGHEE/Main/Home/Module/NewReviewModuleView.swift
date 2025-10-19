@@ -1,5 +1,5 @@
 //
-//  HotClass.swift
+//  NewReviewModuleView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 10/19/25.
@@ -7,25 +7,24 @@
 
 import SwiftUI
 
-struct HotClassModuleView: View {
+// MARK: - New Review Module View
+struct NewReviewModuleView: View {
     let items: [any HomeSectionItem]
     let onItemTap: (String) -> Void
     
-    private let cardWidth: CGFloat = 145
-    private let cardHeight: CGFloat = 225
+    private let cardWidth: CGFloat = 343.ratio()
+    private let cardHeight: CGFloat = 120.ratio()
+    private let cardSpacing: CGFloat = 12.0
     
     var body: some View {
         if items.isEmpty {
             EmptyView()
         } else {
-            // 수평 스크롤 카드 리스트
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                HStack(spacing: cardSpacing) {
                     ForEach(items.indices, id: \.self) { index in
-                        ClassItemView(
-                            type: .HotClass,
+                        NewReviewItemView(
                             item: items[index],
-                            ranking: index + 1,
                             onTap: { onItemTap(items[index].id) }
                         )
                         .frame(width: cardWidth, height: cardHeight)

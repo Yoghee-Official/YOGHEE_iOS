@@ -21,7 +21,7 @@ struct ExploreTabView: View {
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(red: 0.99, green: 0.98, blue: 0.96))
+        .background(Color.SandBeige)
     }
 }
 

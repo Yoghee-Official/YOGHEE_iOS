@@ -110,6 +110,9 @@ class HomeTabContainer: ObservableObject {
             guard let sectionType = LayoutSectionType(rawValue: layoutType) else { continue }
             
             switch sectionType {
+            case .todayClass:
+                // todayClass는 빈 배열이어도 섹션 추가 (빈 상태 메시지 표시)
+                sections.append(HomeSection(type: .todayClass, items: data.todayClass))
             case .recommendClass:
                 if !data.recommendClass.isEmpty {
                     sections.append(HomeSection(type: .recommendClass, items: data.recommendClass))
@@ -118,10 +121,6 @@ class HomeTabContainer: ObservableObject {
                 if !data.customizedClass.isEmpty {
                     sections.append(HomeSection(type: .customizedClass, items: data.customizedClass))
                 }
-//            case .todayClass:
-//                if !data.todayClass.isEmpty {
-//                    sections.append(HomeSection(type: .todayClass, items: data.todayClass))
-//                }
 //            case .category:
 //                if !data.yogaCategory.isEmpty {
 //                    sections.append(HomeSection(type: .category, items: data.yogaCategory))
