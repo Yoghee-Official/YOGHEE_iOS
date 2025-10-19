@@ -92,15 +92,13 @@ struct RankingBadgeView: View {
     
     var body: some View {
         ZStack {
-            // 배경 (빨간색 원)
-            Circle()
-                .fill(Color(red: 1.0, green: 0.33, blue: 0.13))
-                .frame(width: 24, height: 24)
+            Image("RankingIcon")
+                .resizable()
+                .frame(width: 20, height: 20)
             
-            // 랭킹 숫자 (흰색)
             Text("\(rank)")
-                .font(.system(size: 12, weight: .bold))
-                .foregroundColor(.white)
+                .font(.system(size: 12))
+                .foregroundColor(Color.DarkBlack)
         }
         .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)
     }
