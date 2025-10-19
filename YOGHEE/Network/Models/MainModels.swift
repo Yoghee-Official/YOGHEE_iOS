@@ -100,7 +100,7 @@ enum LayoutSectionType: String, CaseIterable {
         case .recommendClass:
             return "추천 랭킹"
         case .customizedClass:
-            return "맞춤 수업"
+            return "관심있게 보는 요가 수련"
         case .category:
             return "요가 카테고리"
         case .hotClass:
