@@ -105,22 +105,22 @@ class HomeTabContainer: ObservableObject {
     private func createSections(from data: MainData) -> [HomeSection] {
         var sections: [HomeSection] = []
         
-        // layoutOrder에 따라 섹션 생성 - 추천 랭킹 모듈만 활성화
+        // layoutOrder에 따라 섹션 생성 - 추천 랭킹과 맞춤 수업 모듈 활성화
         for layoutType in data.layoutOrder {
             guard let sectionType = LayoutSectionType(rawValue: layoutType) else { continue }
             
             switch sectionType {
-//            case .todayClass:
-//                if !data.todayClass.isEmpty {
-//                    sections.append(HomeSection(type: .todayClass, items: data.todayClass))
-//                }
             case .recommendClass:
                 if !data.recommendClass.isEmpty {
                     sections.append(HomeSection(type: .recommendClass, items: data.recommendClass))
                 }
-//            case .customizedClass:
-//                if !data.customizedClass.isEmpty {
-//                    sections.append(HomeSection(type: .customizedClass, items: data.customizedClass))
+            case .customizedClass:
+                if !data.customizedClass.isEmpty {
+                    sections.append(HomeSection(type: .customizedClass, items: data.customizedClass))
+                }
+//            case .todayClass:
+//                if !data.todayClass.isEmpty {
+//                    sections.append(HomeSection(type: .todayClass, items: data.todayClass))
 //                }
 //            case .category:
 //                if !data.yogaCategory.isEmpty {
@@ -134,9 +134,7 @@ class HomeTabContainer: ObservableObject {
 //                if !data.newReview.isEmpty {
 //                    sections.append(HomeSection(type: .newReview, items: data.newReview))
 //                }
-            default:
-                // 추천 랭킹 외 모듈들은 주석 처리됨
-                break
+            default: break
             }
         }
         
