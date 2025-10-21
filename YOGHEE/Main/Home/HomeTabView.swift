@@ -159,6 +159,8 @@ struct SectionView: View {
                 RecommendClassModuleView(items: section.items, onItemTap: onItemTap)
             case .customizedClass:
                 CustomizedClassModuleView(items: section.items, onItemTap: onItemTap)
+            case .hotClass:
+                HotClassModuleView(items: section.items, onItemTap: onItemTap)
             case .newReview:
                 NewReviewModuleView(items: section.items, onItemTap: onItemTap)
             default:
