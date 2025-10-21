@@ -23,7 +23,7 @@ struct RecommendClassModuleView: View {
             EmptyView()
         } else {
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
+                HStack(spacing: 12) {
                     ForEach(displayItems.indices, id: \.self) { index in
                         RecommendRankingCardView(
                             item: displayItems[index],
@@ -32,7 +32,7 @@ struct RecommendClassModuleView: View {
                         .frame(width: cardWidth, height: cardHeight)
                     }
                 }
-                .padding(.horizontal, 15)
+                .padding(.horizontal, 16)
             }
             .frame(height: cardHeight)
         }
@@ -78,7 +78,6 @@ struct RecommendRankingCardView: View {
             ZStack(alignment: .top) {
                 backgroundColor
                     .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    .shadow(color: .black.opacity(0.07), radius: 10, x: 0, y: 0)
                 
                 VStack(spacing: 8) {
                     Text(displayTitle)
