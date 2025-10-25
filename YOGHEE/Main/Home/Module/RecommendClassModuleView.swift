@@ -1,5 +1,5 @@
 //
-//  RecommendClass.swift
+//  RecommendClassModuleView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 10/19/25.

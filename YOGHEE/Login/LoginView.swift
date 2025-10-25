@@ -140,7 +140,7 @@ struct LoginView: View {
             
             Spacer()
         }
-        .background(Color.init(red: 0.99, green: 0.98, blue: 0.96))
+        .background(Color.SandBeige)
         .navigationBarHidden(true)
         // TODO: Effect 기능은 추후 구현 예정
         /*

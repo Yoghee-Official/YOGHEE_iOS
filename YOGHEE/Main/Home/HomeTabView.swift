@@ -48,7 +48,7 @@ struct HomeTabView: View {
                     .padding(.top, 20)
                 }
             }
-            .background(Color(red: 0.99, green: 0.98, blue: 0.96))
+            .background(Color.SandBeige)
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .notifications:
@@ -114,7 +114,7 @@ struct HeaderView: View {
         }
         .padding(.horizontal, 16)
         .frame(height: 60)
-        .background(Color(red: 0.99, green: 0.98, blue: 0.96))
+        .background(Color.SandBeige)
     }
 }
 
@@ -146,15 +146,18 @@ struct SectionView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(section.title)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(.black)
-                Spacer()
+            if !section.title.isEmpty {
+                HStack {
+                    Text(section.title)
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.black)
+                }
+                .padding(.horizontal, 16) // TODO: 임의로 16 준 상태인데, 모듈 마다 위 아래 패딩(간격) 다르게 줄 수 있도록 고안해봐야할듯
             }
-            .padding(.horizontal, 16)
             
             switch section.type {
+            case .todayClass:
+                TodayClassModuleView(items: section.items, onItemTap: onItemTap)
             case .recommendClass:
                 RecommendClassModuleView(items: section.items, onItemTap: onItemTap)
             case .customizedClass:
