@@ -11,6 +11,7 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab: TabItem = .home
     @State private var homeNavigationPath = NavigationPath()
+    @State private var isTabBarHiddenByScroll = false
     
     var body: some View {
         ZStack {
@@ -18,19 +19,26 @@ struct MainTabView: View {
             allTabViews
             
             // Floating Tab Bar - 1뎁스에서만 표시
-            if shouldShowTabBar {
-                VStack {
-                    Spacer()
+            VStack {
+                Spacer()
+                if shouldShowTabBar {
                     FloatingTabBar(selectedTab: $selectedTab)
                         .padding(.horizontal, 15)
                         .padding(.bottom, 40)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
+            .animation(.easeInOut(duration: 0.25), value: shouldShowTabBar)
         }
     }
     
     // TabBar 표시 여부 결정 (1뎁스에서만 표시)
     private var shouldShowTabBar: Bool {
+        // 스크롤로 숨김 상태면 무조건 숨김
+        if isTabBarHiddenByScroll {
+            return false
+        }
+        
         switch selectedTab {
         case .home:
             return homeNavigationPath.count == 0
@@ -41,27 +49,22 @@ struct MainTabView: View {
     
     @ViewBuilder
     private var allTabViews: some View {
-        // Home Tab
-        HomeTabView(navigationPath: $homeNavigationPath)
+        HomeTabView(navigationPath: $homeNavigationPath, isTabBarHidden: $isTabBarHiddenByScroll)
             .opacity(selectedTab == .home ? 1 : 0)
             .allowsHitTesting(selectedTab == .home)
         
-        // Content Tab
         ContentTabView()
             .opacity(selectedTab == .content ? 1 : 0)
             .allowsHitTesting(selectedTab == .content)
         
-        // Explore Tab
         ExploreTabView()
             .opacity(selectedTab == .explore ? 1 : 0)
             .allowsHitTesting(selectedTab == .explore)
         
-        // TeaTime Tab
         TeaTimeTabView()
             .opacity(selectedTab == .teatime ? 1 : 0)
             .allowsHitTesting(selectedTab == .teatime)
         
-        // MyPage Tab
         MyPageTabView()
             .opacity(selectedTab == .mypage ? 1 : 0)
             .allowsHitTesting(selectedTab == .mypage)
