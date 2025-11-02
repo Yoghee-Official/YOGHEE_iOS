@@ -219,14 +219,15 @@ struct SectionView: View {
             case .todayClass:
                 TodayClassModuleView(items: section.items, onItemTap: onItemTap)
             case .recommendClass:
-                RecommendClassModuleView(items: section.items, onItemTap: onItemTap)
-            case .customizedClass:
-                CustomizedClassModuleView(items: section.items, onItemTap: onItemTap)
-            case .hotClass:
-                HotClassModuleView(items: section.items, onItemTap: onItemTap)
+                ImageBannerModuleView(items: section.items, onItemTap: onItemTap)
+            case .interestedClass, .interestedCenter:
+                InterestedClassModuleView(items: section.items, onItemTap: onItemTap)
+            case .top10Class, .top10Center:
+                TopTenModuleView(items: section.items, onItemTap: onItemTap)
             case .newReview:
                 NewReviewModuleView(items: section.items, onItemTap: onItemTap)
-            default:
+            case .yogaCategory:
+                // TODO: 카테고리 모듈 뷰 추가 필요
                 EmptyView()
             }
         }

@@ -87,13 +87,61 @@ class HomeTabContainer: ObservableObject {
             do {
                 let url = URL(string: "https://www.yoghee.xyz/api/main/?type=\(state.selectedTrainingMode.apiType)")!
                 let (data, _) = try await URLSession.shared.data(from: url)
+                
+                // 🔍 디버깅: Raw JSON 출력
+                if let jsonString = String(data: data, encoding: .utf8) {
+                    print("📥 API Response JSON:")
+                    print(jsonString)
+                }
+                
                 let response = try JSONDecoder().decode(MainResponse.self, from: data)
                 
                 await MainActor.run {
                     self.state.sections = self.createSections(from: response.data)
                     self.state.isLoading = false
                 }
+                
+            } catch let decodingError as DecodingError {
+                // 🔍 디코딩 에러 상세 로깅
+                await MainActor.run {
+                    switch decodingError {
+                    case .keyNotFound(let key, let context):
+                        print("❌ 디코딩 에러: 키 '\(key.stringValue)' 없음")
+                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
+                        print("   설명: \(context.debugDescription)")
+                        self.state.errorMessage = "데이터 구조 오류: \(key.stringValue) 필드 누락"
+                        
+                    case .typeMismatch(let type, let context):
+                        print("❌ 디코딩 에러: 타입 불일치 (예상: \(type))")
+                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
+                        print("   설명: \(context.debugDescription)")
+                        self.state.errorMessage = "데이터 타입 오류"
+                        
+                    case .valueNotFound(let type, let context):
+                        print("❌ 디코딩 에러: 값 없음 (예상 타입: \(type))")
+                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
+                        print("   설명: \(context.debugDescription)")
+                        self.state.errorMessage = "데이터 값 누락"
+                        
+                    case .dataCorrupted(let context):
+                        print("❌ 디코딩 에러: 데이터 손상")
+                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
+                        print("   설명: \(context.debugDescription)")
+                        self.state.errorMessage = "데이터 손상"
+                        
+                    @unknown default:
+                        print("❌ 알 수 없는 디코딩 에러: \(decodingError)")
+                        self.state.errorMessage = "알 수 없는 디코딩 에러"
+                    }
+                    
+                    self.state.isLoading = false
+                }
+                
             } catch {
+                // 🔍 기타 에러 로깅
+                print("❌ 네트워크/기타 에러: \(error)")
+                print("   상세: \(error.localizedDescription)")
+                
                 await MainActor.run {
                     self.state.errorMessage = "데이터 로딩 실패: \(error.localizedDescription)"
                     self.state.isLoading = false
@@ -105,35 +153,51 @@ class HomeTabContainer: ObservableObject {
     private func createSections(from data: MainData) -> [HomeSection] {
         var sections: [HomeSection] = []
         
-        // layoutOrder에 따라 섹션 생성 - 추천 랭킹과 맞춤 수업 모듈 활성화
+        // layoutOrder에 따라 섹션 생성
         for layoutType in data.layoutOrder {
-            guard let sectionType = LayoutSectionType(rawValue: layoutType) else { continue }
+            guard let sectionType = LayoutSectionType(rawValue: layoutType.key) else { continue }
+            
+            let customTitle = layoutType.text
             
             switch sectionType {
             case .todayClass:
                 // todayClass는 빈 배열이어도 섹션 추가 (빈 상태 메시지 표시)
-                sections.append(HomeSection(type: .todayClass, items: data.todayClass))
+                sections.append(HomeSection(type: .todayClass, title: customTitle, items: data.todayClass))
+                
             case .recommendClass:
-                if !data.recommendClass.isEmpty {
-                    sections.append(HomeSection(type: .recommendClass, items: data.recommendClass))
+                if !data.imageBanner.isEmpty {
+                    sections.append(HomeSection(type: .recommendClass, title: customTitle, items: data.imageBanner))
                 }
-            case .customizedClass:
-                if !data.customizedClass.isEmpty {
-                    sections.append(HomeSection(type: .customizedClass, items: data.customizedClass))
+                
+            case .interestedClass:
+                if let items = data.interestedClass, !items.isEmpty {
+                    sections.append(HomeSection(type: .interestedClass, title: customTitle, items: items))
                 }
-//            case .category:
-//                if !data.yogaCategory.isEmpty {
-//                    sections.append(HomeSection(type: .category, items: data.yogaCategory))
-//                }
-            case .hotClass:
-                if !data.hotClass.isEmpty {
-                    sections.append(HomeSection(type: .hotClass, items: data.hotClass))
+                
+            case .interestedCenter:
+                if let items = data.interestedCenter, !items.isEmpty {
+                    sections.append(HomeSection(type: .interestedCenter, title: customTitle, items: items))
                 }
+                
+            case .yogaCategory:
+                if !data.yogaCategory.isEmpty {
+                    sections.append(HomeSection(type: .yogaCategory, title: customTitle, items: data.yogaCategory))
+                }
+                
+            case .top10Class:
+                if let items = data.top10Class, !items.isEmpty {
+                    sections.append(HomeSection(type: .top10Class, title: customTitle, items: items))
+                }
+                
+            case .top10Center:
+                if let items = data.top10Center, !items.isEmpty {
+                    sections.append(HomeSection(type: .top10Center, title: customTitle, items: items))
+                }
+                
             case .newReview:
                 if !data.newReview.isEmpty {
-                    sections.append(HomeSection(type: .newReview, items: data.newReview))
+                    sections.append(HomeSection(type: .newReview, title: customTitle, items: data.newReview))
                 }
-            default: break
             }
         }
         

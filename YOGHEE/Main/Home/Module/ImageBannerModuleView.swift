@@ -1,5 +1,5 @@
 //
-//  RecommendClassModuleView.swift
+//  ImageBannerModuleView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 10/19/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct RecommendClassModuleView: View {
+struct ImageBannerModuleView: View {
     let items: [any HomeSectionItem]
     let onItemTap: (String) -> Void
     
