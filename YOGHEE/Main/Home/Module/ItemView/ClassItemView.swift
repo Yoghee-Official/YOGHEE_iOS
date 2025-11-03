@@ -43,9 +43,17 @@ struct ClassItemView: View {
                 
                 // 텍스트 정보 영역
                 VStack(alignment: .leading, spacing: 0) {
-                    // 강사명 (10px, Regular) - CustomizedClass에서 masterId 사용
-                    if let customizedClass = item as? CustomizedClass {
-                        Text("T. \(customizedClass.masterId)")
+                    // 강사명 (10px, Regular) - YogaClass에서 masterName 사용
+                    if let yogaClass = item as? YogaClass {
+                        Text("T. \(yogaClass.masterName ?? "명요가 원장")")
+                            .font(.system(size: 10, weight: .regular))
+                            .foregroundColor(.black)
+                            .lineLimit(1)
+                            .frame(height: 24)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } else if let center = item as? YogaCenter {
+                        // YogaCenter인 경우 주소 표시
+                        Text(center.address)
                             .font(.system(size: 10, weight: .regular))
                             .foregroundColor(.black)
                             .lineLimit(1)
@@ -60,7 +68,7 @@ struct ClassItemView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
-                    // 클래스 제목 (12px, Bold)
+                    // 클래스/센터 제목 (12px, Bold)
                     Text(item.title)
                         .font(.system(size: 12, weight: .bold))
                         .foregroundColor(.black)
@@ -68,9 +76,23 @@ struct ClassItemView: View {
                         .frame(height: 16)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // 평점 (10px, Regular)
-                    if let customizedClass = item as? CustomizedClass {
-                        Text("★ \(String(format: "%.1f", customizedClass.rating)) (\(customizedClass.review.formatted()))")
+                    // 평점 또는 관심 수 (10px, Regular)
+                    if let yogaClass = item as? YogaClass {
+                        if let rating = yogaClass.rating, let reviewCount = yogaClass.review {
+                            Text("★ \(String(format: "%.1f", rating)) (\(reviewCount.formatted()))")
+                                .font(.system(size: 10, weight: .regular))
+                                .foregroundColor(.black)
+                                .frame(height: 24)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            Text("★ -.-")
+                                .font(.system(size: 10, weight: .regular))
+                                .foregroundColor(.gray)
+                                .frame(height: 24)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    } else if let center = item as? YogaCenter {
+                        Text("❤️ \(center.favoriteCount.formatted())")
                             .font(.system(size: 10, weight: .regular))
                             .foregroundColor(.black)
                             .frame(height: 24)

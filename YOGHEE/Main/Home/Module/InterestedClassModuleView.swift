@@ -1,5 +1,5 @@
 //
-//  CustomizedClassModuleView.swift
+//  InterestedClassModuleView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 10/19/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomizedClassModuleView: View {
+struct InterestedClassModuleView: View {
     let items: [any HomeSectionItem]
     let onItemTap: (String) -> Void
     

@@ -7,6 +7,12 @@
 
 import Foundation
 
+// Temp
+typealias TodayClass = YogaClass
+typealias InterestedClass = YogaClass
+typealias CustomizedClass = YogaClass
+typealias HotClass = YogaClass
+
 // MARK: - Main Response
 struct MainResponse: Codable {
     let code: Int
@@ -16,22 +22,20 @@ struct MainResponse: Codable {
 
 // MARK: - Main Data
 struct MainData: Codable {
-    let todayClass: [TodayClass]
-    let recommendClass: [YogaClass]
-    let customizedClass: [CustomizedClass]
-    let hotClass: [HotClass]
+    let todayClass: [YogaClass]
+    let imageBanner: [YogaClass]
+    let interestedClass: [YogaClass]?
+    let interestedCenter: [YogaCenter]?
+    let top10Class: [YogaClass]?
+    let top10Center: [YogaCenter]?
     let newReview: [Review]
     let yogaCategory: [YogaCategory]
-    let layoutOrder: [String]
-}
-
-// MARK: - Yoga Class
-struct TodayClass: Codable {
-    let alertText: String? // TODO: 서버 데이터 내려오면 수정 필요. 일단 내가 임의로 작성
+    let layoutOrder: [LayoutOrder]
 }
 
 // MARK: - Yoga Class
 struct YogaClass: Codable {
+    // 필수 필드 (API에서 항상 제공)
     let classId: String
     let className: String
     let type: String
@@ -42,26 +46,25 @@ struct YogaClass: Codable {
     let capacity: Int
     let latitude: Double
     let longitude: Double
+    
+    // 옵셔널 필드 (API에 따라 제공되지 않을 수 있음)
+    let masterId: String?
+    let masterName: String?
+    let review: Int?
+    let newMember: Int?
+    let rating: Double?
+    let scheduleId: String?
+    let startTime: String?
+    let endTime: String?
 }
 
-// MARK: - Customized Class
-struct CustomizedClass: Codable {
-    let classId: String
-    let className: String
+// MARK: - Yoga Center
+struct YogaCenter: Codable {
+    let centerId: String
+    let address: String
+    let name: String
     let thumbnail: String
-    let masterId: String
-    let review: Int
-    let rating: Double
-}
-
-// MARK: - Hot Class
-struct HotClass: Codable {
-    let classId: String
-    let className: String
-    let thumbnail: String
-    let masterId: String
-    let review: Int
-    let rating: Double
+    let favoriteCount: Int
 }
 
 // MARK: - Review
@@ -79,6 +82,16 @@ struct YogaCategory: Codable {
     let categoryId: String
     let name: String
     let description: String
+    let mainDisplay: String?
+    let type: String?
+}
+
+// MARK: - Layout Order
+struct LayoutOrder: Codable {
+    let order: String
+    let type: String
+    let key: String
+    let text: String?
 }
 
 
@@ -93,23 +106,29 @@ struct YogaCategory: Codable {
 enum LayoutSectionType: String, CaseIterable {
     case todayClass = "todayClass"
     case recommendClass = "recommendClass"
-    case customizedClass = "customizedClass"
-    case category = "category"
-    case hotClass = "hotClass"
+    case interestedClass = "interstedClass"  // API 오타 반영
+    case interestedCenter = "interstedCenter" // API 오타 반영
+    case yogaCategory = "yogaCategory"
+    case top10Class = "top10Class"
+    case top10Center = "top10Center"
     case newReview = "newReview"
     
-    var title: String {
+    // Legacy aliases
+    static let customizedClass: LayoutSectionType = .interestedClass
+    static let hotClass: LayoutSectionType = .top10Class
+    
+    var defaultTitle: String {
         switch self {
         case .todayClass:
             return ""
         case .recommendClass:
             return "추천 랭킹"
-        case .customizedClass:
-            return "관심있게 보는 요가 수련"
-        case .category:
+        case .interestedClass, .interestedCenter:
+            return "관심있게 보는 수련"
+        case .yogaCategory:
             return "요가 카테고리"
-        case .hotClass:
-            return "요가 수련 TOP 10"
+        case .top10Class, .top10Center:
+            return "BEST 수련"
         case .newReview:
             return "리뷰 둘러보기"
         }
@@ -123,9 +142,9 @@ struct HomeSection: Identifiable {
     let title: String
     let items: [any HomeSectionItem]
     
-    init(type: LayoutSectionType, items: [any HomeSectionItem]) {
+    init(type: LayoutSectionType, title: String? = nil, items: [any HomeSectionItem]) {
         self.type = type
-        self.title = type.title
+        self.title = title ?? type.defaultTitle
         self.items = items
     }
 }
@@ -144,23 +163,10 @@ extension YogaClass: HomeSectionItem {
     var imageURL: String { thumbnail }
 }
 
-extension CustomizedClass: HomeSectionItem {
-    var id: String { classId }
-    var title: String { className }
+extension YogaCenter: HomeSectionItem {
+    var id: String { centerId }
+    var title: String { name }
     var imageURL: String { thumbnail }
-}
-
-extension HotClass: HomeSectionItem {
-    var id: String { classId }
-    var title: String { className }
-    var imageURL: String { thumbnail }
-}
-
-extension TodayClass: HomeSectionItem {
-    //TODO: 서버 데이터 내려올 때 까지 임의로
-    var id: String { alertText ?? "today_class" }
-    var title: String { alertText ?? "오늘 예약된 수련이 없습니다." }
-    var imageURL: String { "" } // TodayClass는 알림만 있으므로 빈 문자열
 }
 
 extension Review: HomeSectionItem {
