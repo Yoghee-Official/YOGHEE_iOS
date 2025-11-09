@@ -8,13 +8,18 @@
 import SwiftUI
 
 struct TodayClassModuleView: View {
-    let items: [any HomeSectionItem]
+    let items: [TodayClassDTO]
     let onItemTap: (String) -> Void
     
     var body: some View {
         VStack(spacing: 0) {
-            // 첫 번째 아이템의 텍스트를 표시 (추후 단일 데이터로 변경 예정)
-            let displayText = items.first?.title ?? "오늘 예약된 수련이 없습니다."
+            // 첫 번째 아이템의 텍스트를 표시
+            let displayText: String = "오늘 예약된 수련이 없습니다."
+//            if let firstItem = items.first {
+//                displayText = "\(firstItem.className) (\(firstItem.startTime) - \(firstItem.endTime))"
+//            } else {
+//                displayText = "오늘 예약된 수련이 없습니다."
+//            }
             
             HStack {
                 Text(displayText)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct InterestedClassModuleView: View {
-    let items: [any HomeSectionItem]
+    let items: [ClassDTO]
     let onItemTap: (String) -> Void
     
     private let cardWidth: CGFloat = 145
@@ -22,11 +22,10 @@ struct InterestedClassModuleView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(items.indices, id: \.self) { index in
-                        ClassItemView(
-                            type: .CustomizedClass,
-                            item: items[index],
+                        YogaClassItemView(
+                            yogaClass: items[index],
                             ranking: nil,
-                            onTap: { onItemTap(items[index].id) }
+                            onTap: { onItemTap(items[index].classId) }
                         )
                         .frame(width: cardWidth, height: cardHeight)
                     }

@@ -1,14 +1,14 @@
 //
-//  TopTenModuleView.swift
+//  TopTenCenterModuleView.swift
 //  YOGHEE
 //
-//  Created by 0ofKim on 10/19/25.
+//  Created by 0ofKim on 11/8/25.
 //
 
 import SwiftUI
 
-struct TopTenModuleView: View {
-    let items: [any HomeSectionItem]
+struct TopTenCenterModuleView: View {
+    let items: [CenterDTO]
     let onItemTap: (String) -> Void
     
     private let cardWidth: CGFloat = 145
@@ -22,11 +22,9 @@ struct TopTenModuleView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(items.indices, id: \.self) { index in
-                        ClassItemView(
-                            type: .HotClass,
-                            item: items[index],
-                            ranking: index + 1,
-                            onTap: { onItemTap(items[index].id) }
+                        YogaCenterItemView(
+                            yogaCenter: items[index],
+                            onTap: { onItemTap(items[index].centerId) }
                         )
                         .frame(width: cardWidth, height: cardHeight)
                     }

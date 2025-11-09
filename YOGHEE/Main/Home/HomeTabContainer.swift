@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Intent
 enum HomeIntent {
     case loadMainData
-    case selectItem(String, LayoutSectionType)
+    case selectItem(String, String) // itemId, sectionId
     case toggleTrainingMode(TrainingMode)
 }
 
@@ -70,8 +70,8 @@ class HomeTabContainer: ObservableObject {
         switch intent {
         case .loadMainData:
             loadMainData()
-        case .selectItem(let itemId, let sectionType):
-            print("Selected item: \(itemId) from section: \(sectionType)")
+        case .selectItem(let itemId, let sectionId):
+            print("Selected item: \(itemId) from section: \(sectionId)")
             // TODO: 실제 네비게이션 구현
         case .toggleTrainingMode(let mode):
             state.selectedTrainingMode = mode
@@ -150,54 +150,15 @@ class HomeTabContainer: ObservableObject {
         }
     }
     
-    private func createSections(from data: MainData) -> [HomeSection] {
+    private func createSections(from data: MainDataDTO) -> [HomeSection] {
         var sections: [HomeSection] = []
         
         // layoutOrder에 따라 섹션 생성
         for layoutType in data.layoutOrder {
-            guard let sectionType = LayoutSectionType(rawValue: layoutType.key) else { continue }
+            let title = layoutType.text ?? ""
             
-            let customTitle = layoutType.text
-            
-            switch sectionType {
-            case .todayClass:
-                // todayClass는 빈 배열이어도 섹션 추가 (빈 상태 메시지 표시)
-                sections.append(HomeSection(type: .todayClass, title: customTitle, items: data.todayClass))
-                
-            case .recommendClass:
-                if !data.imageBanner.isEmpty {
-                    sections.append(HomeSection(type: .recommendClass, title: customTitle, items: data.imageBanner))
-                }
-                
-            case .interestedClass:
-                if let items = data.interestedClass, !items.isEmpty {
-                    sections.append(HomeSection(type: .interestedClass, title: customTitle, items: items))
-                }
-                
-            case .interestedCenter:
-                if let items = data.interestedCenter, !items.isEmpty {
-                    sections.append(HomeSection(type: .interestedCenter, title: customTitle, items: items))
-                }
-                
-            case .yogaCategory:
-                if !data.yogaCategory.isEmpty {
-                    sections.append(HomeSection(type: .yogaCategory, title: customTitle, items: data.yogaCategory))
-                }
-                
-            case .top10Class:
-                if let items = data.top10Class, !items.isEmpty {
-                    sections.append(HomeSection(type: .top10Class, title: customTitle, items: items))
-                }
-                
-            case .top10Center:
-                if let items = data.top10Center, !items.isEmpty {
-                    sections.append(HomeSection(type: .top10Center, title: customTitle, items: items))
-                }
-                
-            case .newReview:
-                if !data.newReview.isEmpty {
-                    sections.append(HomeSection(type: .newReview, title: customTitle, items: data.newReview))
-                }
+            if let section = HomeSection.create(fromKey: layoutType.key, title: title, data: data) {
+                sections.append(section)
             }
         }
         

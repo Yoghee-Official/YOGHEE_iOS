@@ -8,7 +8,6 @@
 import SwiftUI
 import Foundation
 
-// MARK: - Home Tab View
 struct HomeTabView: View {
     @StateObject private var container = HomeTabContainer()
     @Binding var navigationPath: NavigationPath
@@ -20,7 +19,7 @@ struct HomeTabView: View {
     var body: some View {
         NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
-                HeaderView(container: container, navigationPath: $navigationPath)
+                HomeHeaderView(container: container, navigationPath: $navigationPath)
                     .frame(height: 60)
                 
                 GeometryReader { scrollGeometry in
@@ -45,7 +44,7 @@ struct HomeTabView: View {
                             } else {
                                 ForEach(container.state.sections) { section in
                                     SectionView(section: section) { itemId in
-                                        container.handleIntent(.selectItem(itemId, section.type))
+                                        container.handleIntent(.selectItem(itemId, section.id))
                                     }
                                 }
                             }
@@ -125,80 +124,6 @@ struct HomeTabView: View {
     }
 }
 
-
-
-
-// MARK: - Header View
-struct HeaderView: View {
-    @ObservedObject var container: HomeTabContainer
-    @Binding var navigationPath: NavigationPath
-    
-    var body: some View {
-        HStack(spacing: 15) {
-            Image("HeaderLogo")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 23, height: 28)
-            
-            HStack(spacing: 0) {
-                ToggleButton(
-                    title: "하루수련",
-                    isSelected: container.state.selectedTrainingMode == .oneDay,
-                    action: {
-                        container.handleIntent(.toggleTrainingMode(.oneDay))
-                    }
-                )
-                
-                ToggleButton(
-                    title: "정규수련",
-                    isSelected: container.state.selectedTrainingMode == .regular,
-                    action: {
-                        container.handleIntent(.toggleTrainingMode(.regular))
-                    }
-                )
-            }
-            .background(Color.white)
-            .cornerRadius(16)
-            
-            Spacer()
-            
-            // 알림 아이콘
-            Button(action: {
-                navigationPath.append(NavigationDestination.notifications)
-            }) {
-                Image("NotificationButton")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 34, height: 27)
-            }
-        }
-        .padding(.horizontal, 16)
-        .frame(height: 60)
-        .background(Color.SandBeige)
-    }
-}
-
-// MARK: - Toggle Button
-struct ToggleButton: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.black)
-                .frame(width: 71.5, height: 32)
-                .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(isSelected ? Color.NatureGreen : Color.clear)
-                )
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
 // MARK: - Section View
 struct SectionView: View {
     let section: HomeSection
@@ -215,18 +140,22 @@ struct SectionView: View {
                 .padding(.horizontal, 16) // TODO: 임의로 16 준 상태인데, 모듈 마다 위 아래 패딩(간격) 다르게 줄 수 있도록 고안해봐야할듯
             }
             
-            switch section.type {
-            case .todayClass:
-                TodayClassModuleView(items: section.items, onItemTap: onItemTap)
-            case .recommendClass:
-                ImageBannerModuleView(items: section.items, onItemTap: onItemTap)
-            case .interestedClass, .interestedCenter:
-                InterestedClassModuleView(items: section.items, onItemTap: onItemTap)
-            case .top10Class, .top10Center:
-                TopTenModuleView(items: section.items, onItemTap: onItemTap)
-            case .newReview:
-                NewReviewModuleView(items: section.items, onItemTap: onItemTap)
-            case .yogaCategory:
+            switch section {
+            case .todayClass(_, let items):
+                TodayClassModuleView(items: items, onItemTap: onItemTap)
+            case .imageBanner(_, let items):
+                ImageBannerModuleView(items: items, onItemTap: onItemTap)
+            case .interestedClass(_, let items):
+                InterestedClassModuleView(items: items, onItemTap: onItemTap)
+            case .interestedCenter(_, let items):
+                InterestedCenterModuleView(items: items, onItemTap: onItemTap)
+            case .top10Class(_, let items):
+                TopTenClassModuleView(items: items, onItemTap: onItemTap)
+            case .top10Center(_, let items):
+                TopTenCenterModuleView(items: items, onItemTap: onItemTap)
+            case .newReview(_, let items):
+                NewReviewModuleView(items: items, onItemTap: onItemTap)
+            case .yogaCategory(_, let items):
                 // TODO: 카테고리 모듈 뷰 추가 필요
                 EmptyView()
             }
