@@ -9,14 +9,14 @@ import SwiftUI
 
 // MARK: - New Review Card View
 struct NewReviewItemView: View {
-    let item: any HomeSectionItem
+    let review: YogaReviewDTO
     let onTap: () -> Void
     
     var body: some View {
         Button(action: onTap) {
             HStack() {
                 // 왼쪽: 썸네일 이미지
-                AsyncImage(url: URL(string: item.imageURL)) { image in
+                AsyncImage(url: URL(string: review.thumbnail)) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -30,28 +30,19 @@ struct NewReviewItemView: View {
                 // 오른쪽: 리뷰 정보 영역
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
-                        if let review = item as? Review {
-                            Text(review.userUuid)
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
-                                .lineLimit(1)
-                        } else {
-                            Text("yoghee.love")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
-                                .lineLimit(1)
-                        }
+                        Text(review.userUuid)
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                            .lineLimit(1)
                         
                         Spacer()
                         
-                        if let review = item as? Review {
-                            StarRatingView(rating: review.rating)
-                        }
+                        StarRatingView(rating: review.rating)
                     }
                     .padding(.horizontal, 10)
                     
                     // 하단: 리뷰 내용
-                    Text(item.title)
+                    Text(review.content)
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.black)
                         .padding(.horizontal, 10)
@@ -72,12 +63,12 @@ struct NewReviewItemView: View {
 
 // MARK: - Star Rating View
 struct StarRatingView: View {
-    let rating: Int
+    let rating: Double
     
     var body: some View {
         HStack(spacing: 0) {
             ForEach(0..<5) { index in
-                Image(index < rating ? "StarRatingFull" : "StarRatingEmpty")
+                Image(Double(index) < rating ? "StarRatingFull" : "StarRatingEmpty")
                     .resizable()
                     .frame(width: 14, height: 13)
             }

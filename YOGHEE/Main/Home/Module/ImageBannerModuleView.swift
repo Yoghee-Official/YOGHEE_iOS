@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ImageBannerModuleView: View {
-    let items: [any HomeSectionItem]
+    let items: [MainBannerClassDTO]
     let onItemTap: (String) -> Void
     
-    private var displayItems: [any HomeSectionItem] {
+    private var displayItems: [MainBannerClassDTO] {
         Array(items.prefix(5))
     }
     
@@ -27,7 +27,7 @@ struct ImageBannerModuleView: View {
                     ForEach(displayItems.indices, id: \.self) { index in
                         RecommendRankingCardView(
                             item: displayItems[index],
-                            onTap: { onItemTap(displayItems[index].id) }
+                            onTap: { onItemTap(displayItems[index].classId) }
                         )
                         .frame(width: cardWidth, height: cardHeight)
                     }
@@ -41,7 +41,7 @@ struct ImageBannerModuleView: View {
 
 // MARK: - Recommend Class Card View
 struct RecommendRankingCardView: View {
-    let item: any HomeSectionItem
+    let item: MainBannerClassDTO
     let onTap: () -> Void
     
     /// 배너 배경 컬러 팔레트
@@ -59,18 +59,18 @@ struct RecommendRankingCardView: View {
     
     /// 타이틀 (최대 10자)
     private var displayTitle: String {
-        item.title.count > 10 ? String(item.title.prefix(9)) + "…" : item.title
+        item.className.count > 10 ? String(item.className.prefix(9)) + "…" : item.className
     }
     
     /// 서브타이틀 (최대 20자)
     private var displaySubtitle: String {
-        let subtitle = (item as? YogaClass)?.description ?? "YOGHEE 추천 수업"
+        let subtitle = item.description
         return subtitle.count > 20 ? String(subtitle.prefix(19)) + "…" : subtitle
     }
     
     /// ID 기반 배경 컬러
     private var backgroundColor: Color {
-        Self.backgroundColors[abs(item.id.hashValue) % Self.backgroundColors.count]
+        Self.backgroundColors[abs(item.classId.hashValue) % Self.backgroundColors.count]
     }
     
     var body: some View {

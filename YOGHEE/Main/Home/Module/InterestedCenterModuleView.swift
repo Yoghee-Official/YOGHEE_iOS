@@ -1,31 +1,30 @@
 //
-//  NewReviewModuleView.swift
+//  InterestedCenterModuleView.swift
 //  YOGHEE
 //
-//  Created by 0ofKim on 10/19/25.
+//  Created by 0ofKim on 11/8/25.
 //
 
 import SwiftUI
 
-// MARK: - New Review Module View
-struct NewReviewModuleView: View {
-    let items: [YogaReviewDTO]
+struct InterestedCenterModuleView: View {
+    let items: [CenterDTO]
     let onItemTap: (String) -> Void
     
-    private let cardWidth: CGFloat = 343.ratio()
-    private let cardHeight: CGFloat = 120.ratio()
-    private let cardSpacing: CGFloat = 12.0
+    private let cardWidth: CGFloat = 145
+    private let cardHeight: CGFloat = 225
     
     var body: some View {
         if items.isEmpty {
             EmptyView()
         } else {
+            // 수평 스크롤 카드 리스트
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: cardSpacing) {
+                HStack(spacing: 12) {
                     ForEach(items.indices, id: \.self) { index in
-                        NewReviewItemView(
-                            review: items[index],
-                            onTap: { onItemTap(items[index].reviewId) }
+                        YogaCenterItemView(
+                            yogaCenter: items[index],
+                            onTap: { onItemTap(items[index].centerId) }
                         )
                         .frame(width: cardWidth, height: cardHeight)
                     }
