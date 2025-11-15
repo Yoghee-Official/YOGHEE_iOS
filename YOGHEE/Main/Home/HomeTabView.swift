@@ -156,8 +156,7 @@ struct SectionView: View {
             case .newReview(_, let items):
                 NewReviewModuleView(items: items, onItemTap: onItemTap)
             case .yogaCategory(_, let items):
-                // TODO: 카테고리 모듈 뷰 추가 필요
-                EmptyView()
+                CategoryModuleView(items: items, onItemTap: onItemTap)
             }
         }
     }
