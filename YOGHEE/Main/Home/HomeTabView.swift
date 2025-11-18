@@ -119,8 +119,17 @@ struct HomeTabView: View {
                     Text("클래스 상세: \(classId)")
                 case .reviewDetail(let reviewId):
                     Text("리뷰 상세: \(reviewId)")
-                case .categoryDetail(let categoryId):
-                    Text("카테고리 상세: \(categoryId)")
+                case .categoryDetail(let categoryId, let categoryName):
+                    CategoryMainView(categoryId: categoryId, categoryName: categoryName)
+                }
+            }
+            .onChange(of: container.state.navigationDestination) { _, newValue in
+                if let destination = newValue {
+                    navigationPath.append(destination)
+                    // Intent를 통해 네비게이션 State 초기화
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        container.handleIntent(.clearNavigation)
+                    }
                 }
             }
         }
