@@ -13,6 +13,7 @@ enum HomeIntent {
     case loadMainData
     case selectItem(String, String) // itemId, sectionId
     case toggleTrainingMode(TrainingMode)
+    case clearNavigation
 }
 
 // MARK: - Training Mode
@@ -41,12 +42,14 @@ struct HomeState: Equatable {
     var selectedTrainingMode: TrainingMode = .regular
     var isLoading: Bool = false
     var errorMessage: String?
+    var navigationDestination: NavigationDestination?
     
     static func == (lhs: HomeState, rhs: HomeState) -> Bool {
         return lhs.selectedTrainingMode == rhs.selectedTrainingMode &&
                lhs.isLoading == rhs.isLoading &&
                lhs.errorMessage == rhs.errorMessage &&
-               lhs.sections.count == rhs.sections.count
+               lhs.sections.count == rhs.sections.count &&
+               lhs.navigationDestination == rhs.navigationDestination
     }
 }
 
@@ -55,7 +58,7 @@ enum NavigationDestination: Hashable {
     case notifications
     case classDetail(String)
     case reviewDetail(String)
-    case categoryDetail(String)
+    case categoryDetail(categoryId: String, categoryName: String)
 }
 
 @MainActor
@@ -72,10 +75,31 @@ class HomeTabContainer: ObservableObject {
             loadMainData()
         case .selectItem(let itemId, let sectionId):
             print("Selected item: \(itemId) from section: \(sectionId)")
-            // TODO: 실제 네비게이션 구현
+            handleItemSelection(itemId: itemId, sectionId: sectionId)
         case .toggleTrainingMode(let mode):
             state.selectedTrainingMode = mode
             loadMainData()
+        case .clearNavigation:
+            state.navigationDestination = nil
+        }
+    }
+    
+    private func handleItemSelection(itemId: String, sectionId: String) {
+        // sectionId에 따라 적절한 네비게이션 처리
+        switch sectionId {
+        case "yogaCategory":
+            // yogaCategory 섹션에서 카테고리 이름 찾기
+            if let section = state.sections.first(where: { $0.id == "yogaCategory" }),
+               case .yogaCategory(_, let items) = section,
+               let category = items.first(where: { $0.categoryId == itemId }) {
+                state.navigationDestination = .categoryDetail(categoryId: itemId, categoryName: category.name)
+            }
+        case "todayClass", "imageBanner", "interestedClass", "top10Class":
+            state.navigationDestination = .classDetail(itemId)
+        case "newReview":
+            state.navigationDestination = .reviewDetail(itemId)
+        default:
+            print("Unknown section: \(sectionId)")
         }
     }
     
