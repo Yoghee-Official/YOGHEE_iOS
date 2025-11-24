@@ -119,8 +119,12 @@ struct HomeTabView: View {
                     Text("클래스 상세: \(classId)")
                 case .reviewDetail(let reviewId):
                     Text("리뷰 상세: \(reviewId)")
-                case .categoryDetail(let categoryId, let categoryName):
-                    CategoryMainView(categoryId: categoryId, categoryName: categoryName)
+                case .categoryDetail(let categoryId, let categoryName, let categoryType):
+                    CategoryMainView(
+                        categoryId: categoryId,
+                        categoryName: categoryName,
+                        categoryType: categoryType
+                    )
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in

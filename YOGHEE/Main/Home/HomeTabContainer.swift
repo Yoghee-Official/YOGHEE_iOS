@@ -58,7 +58,7 @@ enum NavigationDestination: Hashable {
     case notifications
     case classDetail(String)
     case reviewDetail(String)
-    case categoryDetail(categoryId: String, categoryName: String)
+    case categoryDetail(categoryId: String, categoryName: String, categoryType: String)
 }
 
 @MainActor
@@ -88,11 +88,15 @@ class HomeTabContainer: ObservableObject {
         // sectionId에 따라 적절한 네비게이션 처리
         switch sectionId {
         case "yogaCategory":
-            // yogaCategory 섹션에서 카테고리 이름 찾기
+            // yogaCategory 섹션에서 카테고리 정보 찾기
             if let section = state.sections.first(where: { $0.id == "yogaCategory" }),
                case .yogaCategory(_, let items) = section,
                let category = items.first(where: { $0.categoryId == itemId }) {
-                state.navigationDestination = .categoryDetail(categoryId: itemId, categoryName: category.name)
+                state.navigationDestination = .categoryDetail(
+                    categoryId: itemId,
+                    categoryName: category.name,
+                    categoryType: category.type
+                )
             }
         case "todayClass", "imageBanner", "interestedClass", "top10Class":
             state.navigationDestination = .classDetail(itemId)
