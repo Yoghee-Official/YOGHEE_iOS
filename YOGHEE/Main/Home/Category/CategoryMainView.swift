@@ -10,6 +10,7 @@ import SwiftUI
 struct CategoryMainView: View {
     let categoryId: String
     let categoryName: String
+    let categoryType: String
     
     var body: some View {
         VStack {
@@ -25,14 +26,29 @@ struct CategoryMainView: View {
                 .font(.caption)
                 .foregroundColor(.gray)
         }
-        .navigationTitle(categoryName)
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    private var navigationTitle: String {
+        switch categoryType {
+        case "R": return "위치탐색"
+        case "O": return "취향탐색"
+        default: return categoryName
+        }
     }
 }
 
-#Preview {
+#Preview("정규수련 - 서울") {
     NavigationStack {
-        CategoryMainView(categoryId: "1", categoryName: "릴렉스")
+        CategoryMainView(categoryId: "1", categoryName: "서울", categoryType: "R")
     }
 }
+
+#Preview("하루수련 - 릴렉스") {
+    NavigationStack {
+        CategoryMainView(categoryId: "1", categoryName: "릴렉스", categoryType: "O")
+    }
+}
+
 
