@@ -71,7 +71,7 @@ struct YogaReviewDTO: Codable {
     let createdAt: String
 }
 
-struct CategoryDTO: Codable {
+struct CategoryDTO: Codable, Hashable {
     let categoryId: String
     let name: String
     let description: String

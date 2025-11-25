@@ -119,11 +119,12 @@ struct HomeTabView: View {
                     Text("클래스 상세: \(classId)")
                 case .reviewDetail(let reviewId):
                     Text("리뷰 상세: \(reviewId)")
-                case .categoryDetail(let categoryId, let categoryName, let categoryType):
+                case .categoryDetail(let categoryId, let categoryName, let categoryType, let categories):
                     CategoryMainView(
                         categoryId: categoryId,
                         categoryName: categoryName,
-                        categoryType: categoryType
+                        categoryType: categoryType,
+                        categories: categories
                     )
                 }
             }
