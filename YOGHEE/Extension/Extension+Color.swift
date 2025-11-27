@@ -18,6 +18,7 @@ extension Color {
     static let CleanWhite: Color = .white
     static let DarkBlack: Color = .black
     static let SandBeige: Color = Color(red: 0.99, green: 0.98, blue: 0.96)
+    static let Background: Color = Color(red: 0.94, green: 0.93, blue: 0.92)
     
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)

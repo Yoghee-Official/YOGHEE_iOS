@@ -58,7 +58,7 @@ enum NavigationDestination: Hashable {
     case notifications
     case classDetail(String)
     case reviewDetail(String)
-    case categoryDetail(categoryId: String, categoryName: String, categoryType: String)
+    case categoryDetail(categoryId: String, categoryName: String, categoryType: String, categories: [CategoryDTO])
 }
 
 @MainActor
@@ -95,7 +95,8 @@ class HomeTabContainer: ObservableObject {
                 state.navigationDestination = .categoryDetail(
                     categoryId: itemId,
                     categoryName: category.name,
-                    categoryType: category.type
+                    categoryType: category.type,
+                    categories: items
                 )
             }
         case "todayClass", "imageBanner", "interestedClass", "top10Class":
