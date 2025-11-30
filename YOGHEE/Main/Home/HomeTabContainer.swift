@@ -114,16 +114,10 @@ class HomeTabContainer: ObservableObject {
         
         Task { @MainActor in
             do {
-                let url = URL(string: "https://www.yoghee.xyz/api/main/?type=\(state.selectedTrainingMode.apiType)")!
-                let (data, _) = try await URLSession.shared.data(from: url)
-                
-                // 🔍 디버깅: Raw JSON 출력
-                if let jsonString = String(data: data, encoding: .utf8) {
-                    print("📥 API Response JSON:")
-                    print(jsonString)
-                }
-                
-                let response = try JSONDecoder().decode(MainResponse.self, from: data)
+                // APIService를 사용하여 메인 데이터 조회
+                let response = try await APIService.shared.getMainData(
+                    type: state.selectedTrainingMode.apiType
+                )
                 
                 await MainActor.run {
                     self.state.sections = self.createSections(from: response.data)
