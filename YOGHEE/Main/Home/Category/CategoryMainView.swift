@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+// MARK: - Filter Option
+enum FilterOption: String, CaseIterable {
+    case recommended = "추천순"
+    case favorites = "찜순"
+    case reviews = "리뷰순"
+    case priceHigh = "높은 금액 순"
+    case priceLow = "낮은 금액 순"
+    case yogheeClubOnly = "요기클럽 전용"
+}
+
 struct CategoryMainView: View {
     let categoryId: String
     let categoryName: String
@@ -14,6 +24,8 @@ struct CategoryMainView: View {
     let categories: [CategoryDTO]
     
     @State private var selectedCategoryId: String
+    @State private var selectedFilter: FilterOption = .recommended
+    @State private var showFilterSheet: Bool = false
     @Environment(\.dismiss) private var dismiss
     
     init(categoryId: String, categoryName: String, categoryType: String, categories: [CategoryDTO]) {
@@ -25,24 +37,40 @@ struct CategoryMainView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            // 카테고리 탭
-            categoryTabsView
-                .padding(.top, 16)
-                .padding(.bottom, 16)
-            
-            // 요기클럽 할인 배너
-            YogheeClubDiscountBanner()
-                .padding(.horizontal, 16)
-                .padding(.bottom, 16)
-            
-            Spacer()
-            
-            Text("추후 피그마 디자인에 맞춰 개발 예정")
-                .font(.caption)
-                .foregroundColor(.gray)
+        ZStack {
+            VStack(spacing: 0) {
+                // 카테고리 탭
+                categoryTabsView
+                    .padding(.top, 16)
+                    .padding(.bottom, 16)
+                
+                // 요기클럽 할인 배너
+                YogheeClubDiscountBanner()
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 16)
+                
+                // 필터 버튼 + 팝업
+                ZStack(alignment: .topLeading) {
+                    filterButton
+                        .padding(.horizontal, 28)
+                        .padding(.bottom, 16)
+                        .opacity(showFilterSheet ? 0 : 1)
+                    
+                    if showFilterSheet {
+                        FilterPopup(selectedFilter: $selectedFilter, isShowing: $showFilterSheet)
+                            .padding(.leading, 16)
+                            .offset(y: -12)
+                    }
+                }
+                
+                Spacer()
+                
+                Text("추후 피그마 디자인에 맞춰 개발 예정")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+            .background(Color.SandBeige)
         }
-        .background(Color.SandBeige)
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
@@ -74,6 +102,24 @@ struct CategoryMainView: View {
         navigationController.interactivePopGestureRecognizer?.delegate = nil
     }
     
+    // MARK: - Filter Button
+    private var filterButton: some View {
+        Button(action: {
+            showFilterSheet = true
+        }) {
+            HStack(spacing: 4) {
+                Text(selectedFilter.rawValue)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(.black)
+                
+                Image("DownArrow")
+                    .resizable()
+                    .frame(width: 8, height: 4)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+    
     // MARK: - Category Tabs
     private var categoryTabsView: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -84,7 +130,6 @@ struct CategoryMainView: View {
                         isSelected: selectedCategoryId == category.categoryId
                     ) {
                         selectedCategoryId = category.categoryId
-                        print("\(category.name) 클릭")
                     }
                 }
             }
@@ -120,6 +165,68 @@ struct CategoryTabButton: View {
                 .clipShape(RoundedRectangle(cornerRadius: 32))
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Filter Popup
+struct FilterPopup: View {
+    @Binding var selectedFilter: FilterOption
+    @Binding var isShowing: Bool
+    
+    private enum Constants {
+        static let width: CGFloat = 104.ratio()
+    }
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            Button(action: {
+                isShowing = false
+            }) {
+                HStack(spacing: 4) {
+                    Text(selectedFilter.rawValue)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.black)
+                    
+                    Image("DownArrow")
+                        .resizable()
+                        .frame(width: 8, height: 4)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 12)
+                .padding(.top, 12)
+                .padding(.bottom, 12)
+            }
+            .buttonStyle(.plain)
+            
+            Divider()
+                .frame(height: 1)
+                .background(Color.black)
+            
+            // 필터 옵션 리스트
+            VStack(spacing: 8) {
+                ForEach(FilterOption.allCases, id: \.self) { option in
+                    Button(action: {
+                        selectedFilter = option
+                        isShowing = false
+                    }) {
+                        Text(option.rawValue)
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.black)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 8)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.bottom, 12)
+        }
+        .frame(width: Constants.width)
+        .background(Color.SandBeige)
+        .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.Background, lineWidth: 1)
+        )
     }
 }
 
