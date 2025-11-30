@@ -26,8 +26,14 @@ struct CategoryMainView: View {
     
     var body: some View {
         VStack(spacing: 0) {
+            // 카테고리 탭
             categoryTabsView
                 .padding(.top, 16)
+                .padding(.bottom, 16)
+            
+            // 요기클럽 할인 배너
+            YogheeClubDiscountBanner()
+                .padding(.horizontal, 16)
                 .padding(.bottom, 16)
             
             Spacer()
