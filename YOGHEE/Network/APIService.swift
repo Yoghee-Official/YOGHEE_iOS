@@ -11,6 +11,7 @@ class APIService {
     // MARK: - Endpoints
     private enum Endpoint {
         case main(type: String)
+        case categoryClasses(categoryId: String, type: String)
         case categoryDetail(categoryId: String)
         case notifications
         
@@ -18,6 +19,8 @@ class APIService {
             switch self {
             case .main:
                 return "/api/main/"
+            case .categoryClasses(let categoryId, _):
+                return "/api/class/category/\(categoryId)"
             case .categoryDetail(let id):
                 return "/api/category/\(id)/"
             case .notifications:
@@ -28,6 +31,8 @@ class APIService {
         var parameters: Parameters? {
             switch self {
             case .main(let type):
+                return ["type": type]
+            case .categoryClasses(_, let type):
                 return ["type": type]
             case .categoryDetail, .notifications:
                 return nil
@@ -40,6 +45,12 @@ class APIService {
     /// 메인 데이터 조회
     func getMainData(type: String) async throws -> MainResponse {
         let endpoint = Endpoint.main(type: type)
+        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+    }
+    
+    /// 카테고리별 클래스 조회
+    func getCategoryClasses(categoryId: String, type: String) async throws -> CategoryClassResponse {
+        let endpoint = Endpoint.categoryClasses(categoryId: categoryId, type: type)
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     

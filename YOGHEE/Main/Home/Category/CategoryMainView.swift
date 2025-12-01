@@ -7,24 +7,13 @@
 
 import SwiftUI
 
-// MARK: - Filter Option
-enum FilterOption: String, CaseIterable {
-    case recommended = "추천순"
-    case favorites = "찜순"
-    case reviews = "리뷰순"
-    case priceHigh = "높은 금액 순"
-    case priceLow = "낮은 금액 순"
-    case yogheeClubOnly = "요기클럽 전용"
-}
-
 struct CategoryMainView: View {
     let categoryId: String
     let categoryName: String
     let categoryType: String
     let categories: [CategoryDTO]
     
-    @State private var selectedCategoryId: String
-    @State private var selectedFilter: FilterOption = .recommended
+    @StateObject private var container = CategoryMainContainer()
     @State private var showFilterSheet: Bool = false
     @Environment(\.dismiss) private var dismiss
     
@@ -33,7 +22,6 @@ struct CategoryMainView: View {
         self.categoryName = categoryName
         self.categoryType = categoryType
         self.categories = categories
-        self._selectedCategoryId = State(initialValue: categoryId)
     }
     
     var body: some View {
@@ -57,9 +45,15 @@ struct CategoryMainView: View {
                         .opacity(showFilterSheet ? 0 : 1)
                     
                     if showFilterSheet {
-                        FilterPopup(selectedFilter: $selectedFilter, isShowing: $showFilterSheet)
-                            .padding(.leading, 16)
-                            .offset(y: -12)
+                        FilterPopup(
+                            selectedFilter: .constant(container.state.selectedFilter),
+                            isShowing: $showFilterSheet,
+                            onFilterChange: { filter in
+                                container.handleIntent(.applyFilter(filter))
+                            }
+                        )
+                        .padding(.leading, 16)
+                        .offset(y: -12)
                     }
                 }
                 
@@ -88,6 +82,8 @@ struct CategoryMainView: View {
         }
         .onAppear {
             enableSwipeBack()
+            // API 호출: 초기 카테고리 데이터 로드
+            container.handleIntent(.initialize(categoryId: categoryId, type: categoryType))
         }
     }
     
@@ -108,7 +104,7 @@ struct CategoryMainView: View {
             showFilterSheet = true
         }) {
             HStack(spacing: 4) {
-                Text(selectedFilter.rawValue)
+                Text(container.state.selectedFilter.rawValue)
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(.black)
                 
@@ -127,9 +123,9 @@ struct CategoryMainView: View {
                 ForEach(categories, id: \.categoryId) { category in
                     CategoryTabButton(
                         category: category,
-                        isSelected: selectedCategoryId == category.categoryId
+                        isSelected: container.state.selectedCategoryId == category.categoryId
                     ) {
-                        selectedCategoryId = category.categoryId
+                        container.handleIntent(.selectCategory(categoryId: category.categoryId, type: categoryType))
                     }
                 }
             }
@@ -172,6 +168,7 @@ struct CategoryTabButton: View {
 struct FilterPopup: View {
     @Binding var selectedFilter: FilterOption
     @Binding var isShowing: Bool
+    let onFilterChange: (FilterOption) -> Void
     
     private enum Constants {
         static let width: CGFloat = 104.ratio()
@@ -207,6 +204,7 @@ struct FilterPopup: View {
                 ForEach(FilterOption.allCases, id: \.self) { option in
                     Button(action: {
                         selectedFilter = option
+                        onFilterChange(option)
                         isShowing = false
                     }) {
                         Text(option.rawValue)

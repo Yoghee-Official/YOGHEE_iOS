@@ -86,8 +86,24 @@ struct LayoutDTO: Codable {
     let text: String?
 }
 
+// MARK: - Category Class Response
+// TODO: 추후 여러 Response가 추가되면 제네릭 APIResponse<T>로 리팩토링 고려
+struct CategoryClassResponse: Codable {
+    let code: Int
+    let status: String
+    let data: [CategoryClassDTO]
+}
 
-
+struct CategoryClassDTO: Codable, Equatable {
+    let classId: String
+    let className: String
+    let thumbnail: String
+    let masterId: String
+    let masterName: String
+    let review: Int
+    let price: Int
+    let rating: Double
+}
 
 // MARK: - Home Section
 enum HomeSection: Identifiable {
