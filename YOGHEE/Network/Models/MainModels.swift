@@ -94,17 +94,6 @@ struct CategoryClassResponse: Codable {
     let data: [CategoryClassDTO]
 }
 
-struct CategoryClassDTO: Codable, Equatable {
-    let classId: String
-    let className: String
-    let thumbnail: String
-    let masterId: String
-    let masterName: String
-    let review: Int
-    let price: Int
-    let rating: Double
-}
-
 // MARK: - Home Section
 enum HomeSection: Identifiable {
     case todayClass(title: String, items: [TodayClassDTO])

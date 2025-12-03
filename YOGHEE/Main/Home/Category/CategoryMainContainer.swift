@@ -14,6 +14,8 @@ enum CategoryMainIntent {
     case selectCategory(categoryId: String, type: String)
     case applyFilter(FilterOption)
     case selectClass(String)
+    case toggleFavorite(classId: String)
+    case toggleFilterSheet
 }
 
 // MARK: - State
@@ -23,6 +25,7 @@ struct CategoryMainState: Equatable {
     var selectedCategoryId: String = ""
     var isLoading: Bool = false
     var errorMessage: String?
+    var showFilterSheet: Bool = false
 }
 
 // MARK: - Filter Option
@@ -57,8 +60,23 @@ class CategoryMainContainer: ObservableObject {
             // TODO: 추후 필터링 로직 구현 or API 재호출
             
         case .selectClass(let classId):
-            print("클래스 상세 이동: \(classId)")
+            print("클래스로 이동")
             // TODO: 추후 클래스 상세 화면으로 네비게이션
+            
+        case .toggleFavorite(let classId):
+            // 불변 업데이트: map으로 새 배열 생성
+            state.classes = state.classes.map { item in
+                var updated = item
+                if updated.classId == classId {
+                    updated.isFavorite.toggle()
+                    print("찜하기 토글: \(classId), 현재 상태: \(updated.isFavorite)")
+                }
+                return updated
+            }
+            // TODO: 추후 API 호출로 찜하기 상태 동기화
+            
+        case .toggleFilterSheet:
+            state.showFilterSheet.toggle()
         }
     }
     
@@ -73,18 +91,14 @@ class CategoryMainContainer: ObservableObject {
                     type: type
                 )
                 
-                await MainActor.run {
-                    self.state.classes = response.data
-                    self.state.isLoading = false
-                    print("✅ 카테고리 클래스 로드 완료: \(response.data.count)개")
-                }
+                self.state.classes = response.data
+                self.state.isLoading = false
+                print("✅ 카테고리 클래스 로드 완료: \(response.data.count)개")
                 
             } catch {
-                await MainActor.run {
-                    self.state.errorMessage = error.localizedDescription
-                    self.state.isLoading = false
-                    print("❌ 카테고리 클래스 로드 실패: \(error)")
-                }
+                self.state.errorMessage = error.localizedDescription
+                self.state.isLoading = false
+                print("❌ 카테고리 클래스 로드 실패: \(error)")
             }
         }
     }
