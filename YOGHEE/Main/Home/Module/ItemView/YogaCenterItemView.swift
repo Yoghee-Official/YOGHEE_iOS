@@ -31,7 +31,7 @@ struct YogaCenterItemView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // 주소 (10px, Regular)
                     Text(yogaCenter.address)
-                        .font(.system(size: 10, weight: .regular))
+                        .pretendardFont(.regular, size: 10)
                         .foregroundColor(.black)
                         .lineLimit(1)
                         .frame(height: 24)
@@ -39,7 +39,7 @@ struct YogaCenterItemView: View {
                     
                     // 센터 제목 (12px, Bold)
                     Text(yogaCenter.name)
-                        .font(.system(size: 12, weight: .bold))
+                        .pretendardFont(.bold, size: 12)
                         .foregroundColor(.black)
                         .lineLimit(1)
                         .frame(height: 16)
@@ -53,7 +53,7 @@ struct YogaCenterItemView: View {
                             .frame(width: 10, height: 9)
                         
                         Text("\(yogaCenter.favoriteCount.formatted())")
-                            .font(.system(size: 10, weight: .regular))
+                            .pretendardFont(.regular, size: 10)
                             .foregroundColor(.black)
                             .frame(height: 24)
                     }

@@ -13,11 +13,11 @@ struct ExploreTabView: View {
     var body: some View {
         VStack {
             Text("Explore Tab")
-                .font(.largeTitle)
+                .pretendardFont(.bold, size: 34)
                 .foregroundColor(.primary)
             
             Text("탐색 탭입니다")
-                .font(.body)
+                .pretendardFont(.regular, size: 17)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

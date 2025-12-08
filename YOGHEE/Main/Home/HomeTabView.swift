@@ -31,9 +31,9 @@ struct HomeTabView: View {
                             } else if let errorMessage = container.state.errorMessage {
                                 VStack(spacing: 16) {
                                     Text("오류가 발생했습니다")
-                                        .font(.headline)
+                                        .pretendardFont(.semiBold, size: 17)
                                     Text(errorMessage)
-                                        .font(.caption)
+                                        .pretendardFont(.regular, size: 12)
                                         .foregroundColor(.gray)
                                     Button("다시 시도") {
                                         container.handleIntent(.loadMainData)
@@ -152,7 +152,7 @@ struct SectionView: View {
             if !section.title.isEmpty {
                 HStack {
                     Text(section.title)
-                        .font(.system(size: 20, weight: .bold))
+                        .pretendardFont(.bold, size: 20)
                         .foregroundColor(.black)
                 }
                 .padding(.horizontal, 16) // TODO: 임의로 16 준 상태인데, 모듈 마다 위 아래 패딩(간격) 다르게 줄 수 있도록 고안해봐야할듯
@@ -162,7 +162,7 @@ struct SectionView: View {
             case .todayClass(_, let items):
                 TodayClassModuleView(items: items, onItemTap: onItemTap)
             case .imageBanner(_, let items):
-                ImageBannerModuleView(items: items, onItemTap: onItemTap)
+                MainBannerModuleView(items: items, onItemTap: onItemTap)
             case .interestedClass(_, let items):
                 InterestedClassModuleView(items: items, onItemTap: onItemTap)
             case .interestedCenter(_, let items):

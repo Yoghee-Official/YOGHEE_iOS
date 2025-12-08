@@ -14,7 +14,7 @@ struct RegularCategoryModuleView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("다양한 지역에서 잊을 수 없는 요가 수련을 경험해보세요!")
-                .font(.system(size: 12, weight: .medium))
+                .pretendardFont(.medium, size: 12)
                 .foregroundColor(.black)
                 .padding(.horizontal, 16)
             
@@ -65,4 +65,3 @@ struct RegularCategoryModuleView: View {
     }
     .background(Color.gray.opacity(0.1))
 }
-

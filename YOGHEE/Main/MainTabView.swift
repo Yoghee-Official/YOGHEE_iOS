@@ -136,11 +136,11 @@ struct TabBarItem: View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Image(systemName: tab.icon)
-                    .font(.system(size: 20, weight: .medium))
+                    .pretendardFont(.medium, size: 20)
                     .foregroundColor(isSelected ? .black : .gray.opacity(0.6))
                 
                 Text(tab.title)
-                    .font(.system(size: 11, weight: .medium))
+                    .pretendardFont(.medium, size: 11)
                     .foregroundColor(.black)
             }
             .frame(maxWidth: .infinity)
