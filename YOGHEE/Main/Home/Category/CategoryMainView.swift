@@ -67,13 +67,13 @@ struct CategoryMainView: View {
                 } else if let errorMessage = container.state.errorMessage {
                     Spacer()
                     Text("오류 발생: \(errorMessage)")
-                        .font(.caption)
+                        .pretendardFont(.regular, size: 12)
                         .foregroundColor(.red)
                     Spacer()
                 } else if container.state.classes.isEmpty {
                     Spacer()
                     Text("예약 가능한 수업이 없습니다.")
-                        .font(.caption)
+                        .pretendardFont(.regular, size: 12)
                         .foregroundColor(.gray)
                     Spacer()
                 } else {
@@ -138,7 +138,7 @@ struct CategoryMainView: View {
         }) {
             HStack(spacing: 4) {
                 Text(container.state.selectedFilter.rawValue)
-                    .font(.system(size: 12, weight: .medium))
+                    .pretendardFont(.medium, size: 12)
                     .foregroundColor(.black)
                 
                 Image("DownArrow")
@@ -180,7 +180,7 @@ struct CategoryTabButton: View {
     var body: some View {
         Button(action: onTap) {
             Text(category.name)
-                .font(.system(size: 12, weight: .medium))
+                .pretendardFont(.medium, size: 12)
                 .foregroundColor(.black)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
@@ -208,7 +208,7 @@ struct FilterPopup: View {
             Button(action: onClose) {
                 HStack(spacing: 4) {
                     Text(selectedFilter.rawValue)
-                        .font(.system(size: 12, weight: .medium))
+                        .pretendardFont(.medium, size: 12)
                         .foregroundColor(.black)
                     
                     Image("DownArrow")
@@ -233,7 +233,7 @@ struct FilterPopup: View {
                         onFilterChange(option)
                     }) {
                         Text(option.rawValue)
-                            .font(.system(size: 12, weight: .medium))
+                            .pretendardFont(.medium, size: 12)
                             .foregroundColor(.black)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 8)

@@ -32,12 +32,12 @@ struct CategoryItemView: View {
                         .frame(width: itemWidth, height: 70)
                         .overlay(
                             RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color(red: 239/255, green: 237/255, blue: 235/255).opacity(0.8), lineWidth: 1)
+                                .stroke(Color.Background.opacity(0.8), lineWidth: 1)
                         )
                 }
                 
                 Text(category.name)
-                    .font(.system(size: 14, weight: .bold))
+                    .pretendardFont(.bold, size: 14)
                     .foregroundColor(.black)
                     .padding(.leading, 8)
                     .padding(.top, 6)

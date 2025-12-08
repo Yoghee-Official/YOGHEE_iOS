@@ -23,7 +23,7 @@ struct TodayClassModuleView: View {
             
             HStack {
                 Text(displayText)
-                    .font(.system(size: 14, weight: .regular))
+                    .pretendardFont(.regular, size: 14)
                     .foregroundColor(.black)
             }
             .frame(maxWidth: .infinity)

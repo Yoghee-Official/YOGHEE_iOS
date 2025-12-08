@@ -40,7 +40,7 @@ struct YogaClassItemView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     // 강사명 (10px, Regular)
                     Text("T. \(yogaClass.masterName)")
-                        .font(.system(size: 10, weight: .regular))
+                        .pretendardFont(.regular, size: 10)
                         .foregroundColor(.black)
                         .lineLimit(1)
                         .frame(height: 24)
@@ -48,7 +48,7 @@ struct YogaClassItemView: View {
                     
                     // 클래스 제목 (12px, Bold)
                     Text(yogaClass.className)
-                        .font(.system(size: 12, weight: .bold))
+                        .pretendardFont(.bold, size: 12)
                         .foregroundColor(.black)
                         .lineLimit(1)
                         .frame(height: 16)
@@ -56,7 +56,7 @@ struct YogaClassItemView: View {
                     
                     // 평점 (10px, Regular)
                     Text("★ \(String(format: "%.1f", yogaClass.rating)) (\(yogaClass.review.formatted()))")
-                        .font(.system(size: 10, weight: .regular))
+                        .pretendardFont(.regular, size: 10)
                         .foregroundColor(.black)
                         .frame(height: 24)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -81,7 +81,7 @@ struct RankingBadgeView: View {
                 .frame(width: 20, height: 20)
             
             Text("\(rank)")
-                .font(.system(size: 12))
+                .pretendardFont(size: 12)
                 .foregroundColor(Color.DarkBlack)
         }
         .shadow(color: .black.opacity(0.2), radius: 2, x: 0, y: 1)

@@ -59,7 +59,7 @@ struct ToggleButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: 14, weight: .semibold))
+                .pretendardFont(.semiBold, size: 14)
                 .foregroundColor(.black)
                 .frame(width: 71.5, height: 32)
                 .background(

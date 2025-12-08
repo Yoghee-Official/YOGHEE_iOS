@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ImageBannerModuleView: View {
+struct MainBannerModuleView: View {
     let items: [MainBannerClassDTO]
     let onItemTap: (String) -> Void
     
@@ -46,15 +46,16 @@ struct RecommendRankingCardView: View {
     
     /// 배너 배경 컬러 팔레트
     private static let backgroundColors: [Color] = [
-        Color(red: 0.85, green: 0.96, blue: 0.58), // NatureGreen
-        Color(red: 1, green: 0.93, blue: 0.45),    // GheeYellow
-        Color(red: 1, green: 0.33, blue: 0.13),    // MindOrange
-        Color(red: 0.79, green: 0.88, blue: 0.99), // FlowBlue
-        Color(red: 0.37, green: 0.28, blue: 0.21), // LandBrown
-        Color(red: 0.94, green: 0.93, blue: 0.92), // Notice
-        Color(red: 0.9, green: 0.7, blue: 0.8),    // 추가 컬러 1
-        Color(red: 0.7, green: 0.9, blue: 0.8),    // 추가 컬러 2
-        Color(red: 0.8, green: 0.8, blue: 0.9)     // 추가 컬러 3
+        Color.GheeYellow,
+        Color.NatureGreen,
+        Color.MindOrange,
+        Color.LandBrown,
+        Color.FlowBlue,
+        Color.Notice,
+        Color.Info,
+        Color.CleanWhite,
+        Color.DarkBlack,
+        Color.SandBeige
     ]
     
     /// 타이틀 (최대 10자)
@@ -81,12 +82,12 @@ struct RecommendRankingCardView: View {
                 
                 VStack(spacing: 8) {
                     Text(displayTitle)
-                        .font(.system(size: 20, weight: .bold))
-                        .foregroundColor(Color(red: 0.988, green: 0.980, blue: 0.957))
+                        .pretendardFont(.bold, size: 20)
+                        .foregroundStyle(Color.SandBeige)
                     
                     Text(displaySubtitle)
-                        .font(.system(size: 10))
-                        .foregroundColor(Color(red: 0.988, green: 0.980, blue: 0.957))
+                        .pretendardFont(.regular, size: 10)
+                        .foregroundStyle(Color.SandBeige)
                 }
                 .multilineTextAlignment(.center)
                 .lineLimit(1)

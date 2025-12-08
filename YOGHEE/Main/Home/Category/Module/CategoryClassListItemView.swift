@@ -67,7 +67,7 @@ struct CategoryClassListItemView: View {
     
     private var clubBadge: some View {
         Text("CLUB")
-            .font(.system(size: 12, weight: .bold))
+            .pretendardFont(.bold, size: 12)
             .foregroundColor(.white)
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
@@ -105,7 +105,7 @@ struct CategoryClassListItemView: View {
     private var infoSection: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(categoryClass.className)
-                .font(.system(size: 16, weight: .bold))
+                .pretendardFont(.bold, size: 16)
                 .foregroundColor(.black)
                 .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -165,7 +165,7 @@ struct CategoryClassListItemView: View {
             }
             
             Text("\(categoryClass.price.formatted())원")
-                .font(.system(size: 16, weight: .bold))
+                .pretendardFont(.bold, size: 16)
                 .foregroundColor(.black)
                 .padding(.horizontal, 4)
         }
@@ -192,13 +192,13 @@ struct CategoryClassListItemView: View {
 private extension View {
     func infoTextStyle() -> some View {
         self
-            .font(.system(size: 12, weight: .medium))
+            .pretendardFont(.medium, size: 12)
             .foregroundColor(.black)
     }
     
     func discountTextStyle() -> some View {
         self
-            .font(.system(size: 16, weight: .bold))
+            .pretendardFont(.bold, size: 16)
             .foregroundColor(.MindOrange)
     }
 }
