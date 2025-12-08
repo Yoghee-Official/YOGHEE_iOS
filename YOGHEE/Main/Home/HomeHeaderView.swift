@@ -19,21 +19,15 @@ struct HomeHeaderView: View {
                 .frame(width: 23, height: 28)
             
             HStack(spacing: 0) {
-                ToggleButton(
-                    title: "하루수련",
-                    isSelected: container.state.selectedTrainingMode == .oneDay,
-                    action: {
-                        container.handleIntent(.toggleTrainingMode(.oneDay))
-                    }
-                )
-                
-                ToggleButton(
-                    title: "정규수련",
-                    isSelected: container.state.selectedTrainingMode == .regular,
-                    action: {
-                        container.handleIntent(.toggleTrainingMode(.regular))
-                    }
-                )
+                ForEach(ClassType.allCases, id: \.self) { type in
+                    ToggleButton(
+                        title: type.toggleTitle,
+                        isSelected: container.state.selectedClassType == type,
+                        action: {
+                            container.handleIntent(.toggleClassType(type))
+                        }
+                    )
+                }
             }
             .background(Color.white)
             .cornerRadius(16)

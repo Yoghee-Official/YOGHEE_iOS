@@ -7,6 +7,26 @@
 
 import Foundation
 
+// MARK: - Class Type
+enum ClassType: String, Codable, CaseIterable, Equatable {
+    case oneDay = "O"
+    case regular = "R"
+    
+    var toggleTitle: String {
+        switch self {
+        case .oneDay: return "하루수련"
+        case .regular: return "정규수련"
+        }
+    }
+    
+    var moduleTitle: String {
+        switch self {
+        case .oneDay: return "취향탐색"
+        case .regular: return "위치탐색"
+        }
+    }
+}
+
 // MARK: - Main Response
 struct MainResponse: Codable {
     let code: Int
@@ -30,7 +50,7 @@ struct MainDataDTO: Codable {
 struct TodayClassDTO: Codable {
     let classId: String
     let className: String
-    let type: String
+    let type: ClassType
     let address: String
     let scheduleId: String
     let startTime: String
@@ -76,7 +96,7 @@ struct CategoryDTO: Codable, Hashable {
     let name: String
     let description: String
     let mainDisplay: String
-    let type: String
+    let type: ClassType
 }
 
 struct LayoutDTO: Codable {

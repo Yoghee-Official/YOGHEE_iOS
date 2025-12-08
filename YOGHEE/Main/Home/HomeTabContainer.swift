@@ -12,40 +12,20 @@ import Foundation
 enum HomeIntent {
     case loadMainData
     case selectItem(String, String) // itemId, sectionId
-    case toggleTrainingMode(TrainingMode)
+    case toggleClassType(ClassType)
     case clearNavigation
-}
-
-// MARK: - Training Mode
-enum TrainingMode: CaseIterable, Equatable {
-    case oneDay
-    case regular
-    
-    var title: String {
-        switch self {
-        case .oneDay: return "하루수련"
-        case .regular: return "정규수련"
-        }
-    }
-    
-    var apiType: String {
-        switch self {
-        case .oneDay: return "O"
-        case .regular: return "R"
-        }
-    }
 }
 
 // MARK: - State
 struct HomeState: Equatable {
     var sections: [HomeSection] = []
-    var selectedTrainingMode: TrainingMode = .regular
+    var selectedClassType: ClassType = .regular
     var isLoading: Bool = false
     var errorMessage: String?
     var navigationDestination: NavigationDestination?
     
     static func == (lhs: HomeState, rhs: HomeState) -> Bool {
-        return lhs.selectedTrainingMode == rhs.selectedTrainingMode &&
+        return lhs.selectedClassType == rhs.selectedClassType &&
                lhs.isLoading == rhs.isLoading &&
                lhs.errorMessage == rhs.errorMessage &&
                lhs.sections.count == rhs.sections.count &&
@@ -58,7 +38,7 @@ enum NavigationDestination: Hashable {
     case notifications
     case classDetail(String)
     case reviewDetail(String)
-    case categoryDetail(categoryId: String, categoryName: String, categoryType: String, categories: [CategoryDTO])
+    case categoryDetail(categoryId: String, categoryName: String, categoryType: ClassType, categories: [CategoryDTO])
 }
 
 @MainActor
@@ -76,8 +56,8 @@ class HomeTabContainer: ObservableObject {
         case .selectItem(let itemId, let sectionId):
             print("Selected item: \(itemId) from section: \(sectionId)")
             handleItemSelection(itemId: itemId, sectionId: sectionId)
-        case .toggleTrainingMode(let mode):
-            state.selectedTrainingMode = mode
+        case .toggleClassType(let type):
+            state.selectedClassType = type
             loadMainData()
         case .clearNavigation:
             state.navigationDestination = nil
@@ -116,7 +96,7 @@ class HomeTabContainer: ObservableObject {
             do {
                 // APIService를 사용하여 메인 데이터 조회
                 let response = try await APIService.shared.getMainData(
-                    type: state.selectedTrainingMode.apiType
+                    type: state.selectedClassType.rawValue
                 )
                 
                 await MainActor.run {

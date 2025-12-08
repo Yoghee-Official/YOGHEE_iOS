@@ -10,16 +10,16 @@ import SwiftUI
 struct CategoryMainView: View {
     let categoryId: String
     let categoryName: String
-    let categoryType: String
+    let classType: ClassType
     let categories: [CategoryDTO]
     
     @StateObject private var container = CategoryMainContainer()
     @Environment(\.dismiss) private var dismiss
     
-    init(categoryId: String, categoryName: String, categoryType: String, categories: [CategoryDTO]) {
+    init(categoryId: String, categoryName: String, categoryType: ClassType, categories: [CategoryDTO]) {
         self.categoryId = categoryId
         self.categoryName = categoryName
-        self.categoryType = categoryType
+        self.classType = categoryType
         self.categories = categories
     }
     
@@ -82,6 +82,7 @@ struct CategoryMainView: View {
                             ForEach(container.state.classes, id: \.classId) { categoryClass in
                                 CategoryClassListItemView(
                                     categoryClass: categoryClass,
+                                    categoryType: classType,
                                     onTap: {
                                         container.handleIntent(.selectClass(categoryClass.classId))
                                     },
@@ -116,12 +117,10 @@ struct CategoryMainView: View {
         }
         .onAppear {
             enableSwipeBack()
-            // API 호출: 초기 카테고리 데이터 로드
-            container.handleIntent(.initialize(categoryId: categoryId, type: categoryType))
+            container.handleIntent(.initialize(categoryId: categoryId, type: classType.rawValue))
         }
     }
     
-    // TODO: SwiftUI-Introspect 사용하면 간단히 됨
     private func enableSwipeBack() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first,
@@ -159,7 +158,7 @@ struct CategoryMainView: View {
                         category: category,
                         isSelected: container.state.selectedCategoryId == category.categoryId
                     ) {
-                        container.handleIntent(.selectCategory(categoryId: category.categoryId, type: categoryType))
+                        container.handleIntent(.selectCategory(categoryId: category.categoryId, type: classType.rawValue))
                     }
                 }
             }
@@ -168,11 +167,7 @@ struct CategoryMainView: View {
     }
     
     private var navigationTitle: String {
-        switch categoryType {
-        case "R": return "위치탐색"
-        case "O": return "취향탐색"
-        default: return categoryName
-        }
+        classType.moduleTitle
     }
 }
 
@@ -263,13 +258,13 @@ struct FilterPopup: View {
         CategoryMainView(
             categoryId: "1",
             categoryName: "서울",
-            categoryType: "R",
+            categoryType: .regular,
             categories: [
-                CategoryDTO(categoryId: "1", name: "서울", description: "서울", mainDisplay: "Y", type: "R"),
-                CategoryDTO(categoryId: "2", name: "경기도", description: "경기도", mainDisplay: "Y", type: "R"),
-                CategoryDTO(categoryId: "3", name: "경상도", description: "경상도", mainDisplay: "Y", type: "R"),
-                CategoryDTO(categoryId: "4", name: "강원도", description: "강원도", mainDisplay: "Y", type: "R"),
-                CategoryDTO(categoryId: "5", name: "전라도", description: "전라도", mainDisplay: "Y", type: "R")
+                CategoryDTO(categoryId: "1", name: "서울", description: "서울", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "2", name: "경기도", description: "경기도", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "3", name: "경상도", description: "경상도", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "4", name: "강원도", description: "강원도", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "5", name: "전라도", description: "전라도", mainDisplay: "Y", type: .regular)
             ]
         )
     }
@@ -280,13 +275,13 @@ struct FilterPopup: View {
         CategoryMainView(
             categoryId: "1",
             categoryName: "릴렉스",
-            categoryType: "O",
+            categoryType: .oneDay,
             categories: [
-                CategoryDTO(categoryId: "1", name: "릴렉스", description: "릴렉스", mainDisplay: "Y", type: "O"),
-                CategoryDTO(categoryId: "2", name: "파워", description: "파워", mainDisplay: "Y", type: "O"),
-                CategoryDTO(categoryId: "3", name: "초심자", description: "초심자", mainDisplay: "Y", type: "O"),
-                CategoryDTO(categoryId: "4", name: "이색요가", description: "이색요가", mainDisplay: "Y", type: "O"),
-                CategoryDTO(categoryId: "5", name: "전통요가", description: "전통요가", mainDisplay: "Y", type: "O")
+                CategoryDTO(categoryId: "1", name: "릴렉스", description: "릴렉스", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "2", name: "파워", description: "파워", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "3", name: "초심자", description: "초심자", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "4", name: "이색요가", description: "이색요가", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "5", name: "전통요가", description: "전통요가", mainDisplay: "Y", type: .oneDay)
             ]
         )
     }
