@@ -14,6 +14,7 @@ class APIService {
         case categoryClasses(categoryId: String, type: String)
         case categoryDetail(categoryId: String)
         case notifications
+        // TODO: [API 연동] MyPage 관련 엔드포인트 추가 (myPage, myClasses, myReviews 등)
         
         var path: String {
             switch self {
@@ -25,6 +26,7 @@ class APIService {
                 return "/api/category/\(id)/"
             case .notifications:
                 return "/api/notifications/"
+            // TODO: [API 연동] MyPage path 추가
             }
         }
         
@@ -36,6 +38,7 @@ class APIService {
                 return ["type": type]
             case .categoryDetail, .notifications:
                 return nil
+            // TODO: [API 연동] MyPage parameters 추가 (필요시)
             }
         }
     }
@@ -65,6 +68,8 @@ class APIService {
         let endpoint = Endpoint.notifications
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
+    
+    // TODO: [API 연동] MyPage API 메서드 추가 (getMyPageData, getMyClasses, getMyReviews 등)
     
     // MARK: - Internal Methods
     
