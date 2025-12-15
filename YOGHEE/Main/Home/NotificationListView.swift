@@ -11,11 +11,11 @@ struct NotificationListView: View {
     var body: some View {
         VStack {
             Text("Notification List")
-                .font(.largeTitle)
+                .pretendardFont(.bold, size: 34)
                 .foregroundColor(.primary)
             
             Text("알림 목록입니다")
-                .font(.body)
+                .pretendardFont(.regular, size: 17)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

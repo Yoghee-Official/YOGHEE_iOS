@@ -13,11 +13,11 @@ struct ContentTabView: View {
     var body: some View {
         VStack {
             Text("Content Tab")
-                .font(.largeTitle)
+                .pretendardFont(.bold, size: 34)
                 .foregroundColor(.primary)
             
             Text("콘텐츠 탭입니다")
-                .font(.body)
+                .pretendardFont(.regular, size: 17)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

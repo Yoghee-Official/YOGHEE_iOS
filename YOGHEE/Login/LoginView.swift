@@ -19,7 +19,7 @@ struct LoginView: View {
                     .frame(height: 16)
                 
                 Text("로그인")
-                    .font(.system(size: 20, weight: .bold))
+                    .pretendardFont(.bold, size: 20)
                     .foregroundColor(.black)
             }
             .frame(height: 24)
@@ -42,7 +42,7 @@ struct LoginView: View {
             .padding(.horizontal, 39)
             
             Text("OR")
-                .font(.system(size: 12, weight: .semibold))
+                .pretendardFont(.semiBold, size: 12)
                 .foregroundColor(Color.init(red: 0.7, green: 0.7, blue: 0.7))
                 .padding(.top, 54)
                 .frame(maxWidth: .infinity)
@@ -52,7 +52,7 @@ struct LoginView: View {
                     // TODO: Apple 로그인
                 }) {
                     Image(systemName: "applelogo")
-                        .font(.system(size: 20))
+                        .pretendardFont(size: 20)
                         .foregroundColor(.black)
                         .frame(width: 48, height: 48)
                         .background(Color.white)
@@ -67,7 +67,7 @@ struct LoginView: View {
                     container.handleIntent(LoginIntent.kakaoLogin)
                 }) {
                     Image(systemName: "message.fill")
-                        .font(.system(size: 20))
+                        .pretendardFont(size: 20)
                         .foregroundColor(.black)
                         .frame(width: 48, height: 48)
                         .background(Color.white)
@@ -82,7 +82,7 @@ struct LoginView: View {
                     // TODO: Google 로그인
                 }) {
                     Text("G")
-                        .font(.system(size: 20, weight: .bold))
+                        .pretendardFont(.bold, size: 20)
                         .foregroundColor(.black)
                         .frame(width: 48, height: 48)
                         .background(Color.white)
@@ -100,7 +100,7 @@ struct LoginView: View {
                 // TODO: 아이디/비밀번호 찾기
             }) {
                 Text("아이디 / 비밀번호 찾기")
-                    .font(.system(size: 12, weight: .semibold))
+                    .pretendardFont(.semiBold, size: 12)
                     .foregroundColor(Color.init(red: 0.7, green: 0.7, blue: 0.7))
             }
             .padding(.top, 34)
@@ -112,11 +112,11 @@ struct LoginView: View {
                 }
             }) {
                 Text("로그인")
-                    .font(.system(size: 15, weight: .semibold))
+                    .pretendardFont(.semiBold, size: 15)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 48)
-                    .background(Color(red: 0.36, green: 0.27, blue: 0.2).opacity(container.state.isLoginButtonEnabled ? 1.0 : 0.5))
+                    .background(Color.LandBrown.opacity(container.state.isLoginButtonEnabled ? 1.0 : 0.5))
                     .cornerRadius(30)
             }
             .disabled(!container.state.isLoginButtonEnabled)
@@ -125,13 +125,13 @@ struct LoginView: View {
             
             HStack(spacing: 4) {
                 Text("계정이 없으신가요?")
-                    .font(.system(size: 12))
+                    .pretendardFont(size: 12)
                 
                 Button(action: {
                     // TODO: 회원가입
                 }) {
                     Text("회원가입")
-                        .font(.system(size: 12, weight: .bold))
+                        .pretendardFont(.bold, size: 12)
                         .foregroundColor(.black)
                 }
             }
@@ -191,13 +191,13 @@ struct CustomTextFieldStyle: TextFieldStyle {
                 .overlay(
                     RoundedRectangle(cornerRadius: 92)
                         .inset(by: 0.5)
-                        .stroke(shouldShowBorder() ? Color(red: 1, green: 0.33, blue: 0.13) : Color.clear, lineWidth: 1)
+                        .stroke(shouldShowBorder() ? Color.MindOrange : Color.clear, lineWidth: 1)
                 )
             
             HStack {
                 Text(getErrorText())
-                    .font(.system(size: 11))
-                    .foregroundColor(Color(red: 1, green: 0.33, blue: 0.13))
+                    .pretendardFont(size: 11)
+                    .foregroundColor(.MindOrange)
                     .padding(.leading, 27)
                     .opacity(shouldShowError() ? 1.0 : 0.0)
                 Spacer()

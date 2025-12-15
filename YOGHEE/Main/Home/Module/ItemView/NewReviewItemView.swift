@@ -31,8 +31,8 @@ struct NewReviewItemView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
                         Text(review.userUuid)
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(Color(red: 0.7, green: 0.7, blue: 0.7))
+                            .pretendardFont(.medium, size: 12)
+                            .foregroundColor(.Info)
                             .lineLimit(1)
                         
                         Spacer()
@@ -43,7 +43,7 @@ struct NewReviewItemView: View {
                     
                     // 하단: 리뷰 내용
                     Text(review.content)
-                        .font(.system(size: 12, weight: .medium))
+                        .pretendardFont(.medium, size: 12)
                         .foregroundColor(.black)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 10)
