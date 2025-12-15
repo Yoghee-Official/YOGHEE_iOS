@@ -92,7 +92,7 @@ struct CategoryClassListItemView: View {
         HStack {
             Spacer()
             Button(action: onFavoriteToggle) {
-                Image(categoryClass.isFavorite ? "FavoriteClassIcon" : "FavoriteClassIconEmpty")
+                Image(categoryClass.isFavorite ? "SaveIconBig" : "SaveIconEmptyBig")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 25, height: 30)

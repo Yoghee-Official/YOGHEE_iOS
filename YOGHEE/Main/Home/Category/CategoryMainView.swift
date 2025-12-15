@@ -141,7 +141,7 @@ struct CategoryMainView: View {
                     .pretendardFont(.medium, size: 12)
                     .foregroundColor(.black)
                 
-                Image("DownArrow")
+                Image("DownArrowIcon")
                     .resizable()
                     .frame(width: 8, height: 4)
             }
@@ -211,7 +211,7 @@ struct FilterPopup: View {
                         .pretendardFont(.medium, size: 12)
                         .foregroundColor(.black)
                     
-                    Image("DownArrow")
+                    Image("DownArrowIcon")
                         .resizable()
                         .frame(width: 8, height: 4)
                 }
