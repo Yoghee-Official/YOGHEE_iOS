@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
+		52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 52A174602EF7F11D00208298 /* SwiftUIIntrospect */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
 		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
 /* End PBXBuildFile section */
@@ -43,6 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */,
 				52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */,
 				52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */,
 			);
@@ -90,6 +92,7 @@
 			packageProductDependencies = (
 				52D6B92B2E50DEBF00F60E39 /* KakaoSDK */,
 				52D6B92E2E50E27B00F60E39 /* Alamofire */,
+				52A174602EF7F11D00208298 /* SwiftUIIntrospect */,
 			);
 			productName = YOGHEE;
 			productReference = 52F308812E3F4CD10066ED1B /* YOGHEE.app */;
@@ -122,6 +125,7 @@
 			packageReferences = (
 				52D6B92A2E50DEBF00F60E39 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				52D6B92D2E50E27B00F60E39 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				52A1745F2EF7F11D00208298 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 52F308822E3F4CD10066ED1B /* Products */;
@@ -291,6 +295,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -321,6 +326,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -358,6 +364,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		52A1745F2EF7F11D00208298 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 26.0.0;
+			};
+		};
 		52D6B92A2E50DEBF00F60E39 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
@@ -377,6 +391,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		52A174602EF7F11D00208298 /* SwiftUIIntrospect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52A1745F2EF7F11D00208298 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = SwiftUIIntrospect;
+		};
 		52D6B92B2E50DEBF00F60E39 /* KakaoSDK */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 52D6B92A2E50DEBF00F60E39 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
