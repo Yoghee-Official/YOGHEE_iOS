@@ -1,6 +1,30 @@
 import Foundation
 import Alamofire
 
+// MARK: - API Error
+enum APIError: Error {
+    case unauthorized
+    case tokenExpired
+    case networkError(Error)
+    case decodingError(Error)
+    case invalidResponse
+    
+    var localizedDescription: String {
+        switch self {
+        case .unauthorized:
+            return "로그인이 필요합니다"
+        case .tokenExpired:
+            return "토큰이 만료되었습니다"
+        case .networkError(let error):
+            return "네트워크 오류: \(error.localizedDescription)"
+        case .decodingError(let error):
+            return "데이터 오류: \(error.localizedDescription)"
+        case .invalidResponse:
+            return "잘못된 응답입니다"
+        }
+    }
+}
+
 class APIService {
     static let shared = APIService()
     
@@ -8,16 +32,40 @@ class APIService {
     
     private init() {}
     
+    // MARK: - Debug Logging
+    private func log(_ message: String) {
+        #if DEBUG
+        print(message)
+        #endif
+    }
+    
+    // MARK: - Token Storage
+    private let accessTokenKey = "accessToken"
+    private let refreshTokenKey = "refreshToken"
+    
+    var accessToken: String? {
+        get { UserDefaults.standard.string(forKey: accessTokenKey) }
+        set { UserDefaults.standard.set(newValue, forKey: accessTokenKey) }
+    }
+    
+    var refreshToken: String? {
+        get { UserDefaults.standard.string(forKey: refreshTokenKey) }
+        set { UserDefaults.standard.set(newValue, forKey: refreshTokenKey) }
+    }
+    
     // MARK: - Endpoints
     private enum Endpoint {
+        case login
         case main(type: String)
         case categoryClasses(categoryId: String, type: String)
         case categoryDetail(categoryId: String)
         case notifications
-        // TODO: [API 연동] MyPage 관련 엔드포인트 추가 (myPage, myClasses, myReviews 등)
+        case myPage
         
         var path: String {
             switch self {
+            case .login:
+                return "/auth/login"
             case .main:
                 return "/api/main/"
             case .categoryClasses(let categoryId, _):
@@ -26,7 +74,8 @@ class APIService {
                 return "/api/category/\(id)/"
             case .notifications:
                 return "/api/notifications/"
-            // TODO: [API 연동] MyPage path 추가
+            case .myPage:
+                return "/api/my/"
             }
         }
         
@@ -36,14 +85,30 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
-            case .categoryDetail, .notifications:
+            case .login, .categoryDetail, .notifications, .myPage:
                 return nil
-            // TODO: [API 연동] MyPage parameters 추가 (필요시)
             }
         }
     }
     
     // MARK: - API Methods
+    
+    /// 로그인
+    func login(userId: String, password: String) async throws -> LoginResponse {
+        let endpoint = Endpoint.login
+        let parameters: Parameters = [
+            "userId": userId,
+            "password": password
+        ]
+        
+        let response: LoginResponse = try await post(endPoint: endpoint.path, parameters: parameters)
+        
+        // 토큰 저장
+        self.accessToken = response.data.accessToken
+        self.refreshToken = response.data.refreshToken
+        
+        return response
+    }
     
     /// 메인 데이터 조회
     func getMainData(type: String) async throws -> MainResponse {
@@ -69,42 +134,71 @@ class APIService {
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     
-    // TODO: [API 연동] MyPage API 메서드 추가 (getMyPageData, getMyClasses, getMyReviews 등)
+    /// 마이페이지 데이터 조회
+    func getMyPageData() async throws -> MyPageResponse {
+        let endpoint = Endpoint.myPage
+        
+        guard let token = accessToken else {
+            throw APIError.unauthorized
+        }
+        
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
+    }
     
     // MARK: - Internal Methods
     
-    /// GET 요청을 위한 기본 메서드 (Extension에서도 사용 가능)
-    func get<T: Codable>(endPoint: String, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) async throws -> T {
+    // MARK: - Internal Methods
+    
+    /// 공통 요청 처리 메서드
+    private func request<T: Codable>(
+        method: HTTPMethod,
+        endPoint: String,
+        parameters: Parameters? = nil,
+        encoding: ParameterEncoding = URLEncoding.default,
+        headers: HTTPHeaders? = nil
+    ) async throws -> T {
         let url = baseURL + endPoint
         
-        print("🌐 API 호출 시작")
-        print("URL: \(url)")
-        print("Parameters: \(parameters ?? [:])")
-        print("Headers: \(headers ?? [:])")
+        log("🌐 API 호출 시작 (\(method.rawValue))")
+        log("URL: \(url)")
+        log("Parameters: \(parameters ?? [:])")
+        log("Headers: \(headers ?? [:])")
         
         return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, method: .get, parameters: parameters, headers: headers)
+            AF.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
                 .validate()
-                .responseData { response in
-                    print("📡 API 응답 받음")
-                    print("Status Code: \(response.response?.statusCode ?? 0)")
-                    print("Response Data: \(String(data: response.data ?? Data(), encoding: .utf8) ?? "No data")")
+                .responseData { [weak self] response in
+                    self?.log("📡 API 응답 받음")
+                    self?.log("Status Code: \(response.response?.statusCode ?? 0)")
+                    self?.log("Response Data: \(String(data: response.data ?? Data(), encoding: .utf8) ?? "No data")")
                     
                     switch response.result {
                     case .success(let data):
                         do {
                             let decodedValue = try JSONDecoder().decode(T.self, from: data)
-                            print("✅ 디코딩 성공: \(decodedValue)")
+                            self?.log("✅ 디코딩 성공")
                             continuation.resume(returning: decodedValue)
                         } catch {
-                            print("❌ 디코딩 실패: \(error)")
-                            continuation.resume(throwing: error)
+                            self?.log("❌ 디코딩 실패: \(error)")
+                            continuation.resume(throwing: APIError.decodingError(error))
                         }
                     case .failure(let error):
-                        print("❌ 네트워크 에러: \(error)")
-                        continuation.resume(throwing: error)
+                        self?.log("❌ 네트워크 에러: \(error)")
+                        continuation.resume(throwing: APIError.networkError(error))
                     }
                 }
         }
     }
+    
+    /// GET 요청을 위한 기본 메서드 (Extension에서도 사용 가능)
+    func get<T: Codable>(endPoint: String, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) async throws -> T {
+        return try await request(method: .get, endPoint: endPoint, parameters: parameters, headers: headers)
+    }
+    
+    /// POST 요청을 위한 기본 메서드
+    func post<T: Codable>(endPoint: String, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) async throws -> T {
+        return try await request(method: .post, endPoint: endPoint, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+    }
 }
+

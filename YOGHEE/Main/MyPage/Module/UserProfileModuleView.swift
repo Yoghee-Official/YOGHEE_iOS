@@ -7,20 +7,8 @@
 
 import SwiftUI
 
-// TODO: [API 연동] 실제 데이터 모델로 교체
-struct UserProfileData {
-    let userName: String
-    let profileImageUrl: String?
-    let totalHours: Int
-    let upcomingClasses: Int
-    let currentLevel: Int
-    let timeToNextLevel: String
-    let topCategory: String
-    let categoryCount: Int
-}
-
 struct UserProfileModuleView: View {
-    let profileData: UserProfileData
+    let profileData: MyPageDataDTO
     let onProfileEditTap: () -> Void
     let onSettingTap: () -> Void
     let onNotificationTap: () -> Void
@@ -73,7 +61,7 @@ struct UserProfileModuleView: View {
     private var profileImageSection: some View {
         ZStack(alignment: .bottomTrailing) {
             // 프로필 이미지
-            AsyncImage(url: URL(string: profileData.profileImageUrl ?? "")) { image in
+            AsyncImage(url: URL(string: profileData.profileImage ?? "")) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -130,20 +118,15 @@ struct UserProfileModuleView: View {
     // MARK: - Greeting Section
     private var greetingSection: some View {
         VStack(spacing: 24) {
-            // 인사말
-            VStack(spacing: 0) {
-                Text("반가워요 !")
-                    .pretendardFont(.bold, size: 20)
-                    .foregroundColor(.DarkBlack)
-                Text("요기니 \(profileData.userName)님")
-                    .pretendardFont(.bold, size: 20)
-                    .foregroundColor(.DarkBlack)
-            }
+            Text("반가워요 !\n요기니 \(profileData.nickname)님")
+                .pretendardFont(.bold, size: 20)
+                .foregroundColor(.DarkBlack)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
             
-            // 통계
             HStack(spacing: 10) {
-                statisticBox(label: "누적 수련", value: "\(profileData.totalHours)")
-                statisticBox(label: "예정된 수련", value: "\(profileData.upcomingClasses)")
+                statisticBox(label: "누적 수련", value: "\(profileData.accumulatedClass)")
+                statisticBox(label: "예정된 수련", value: "\(profileData.plannedClass)")
             }
         }
     }
@@ -162,16 +145,15 @@ struct UserProfileModuleView: View {
     
     // MARK: - Promotion Section
     private var promotionSection: some View {
-        VStack(spacing: 8) {
-            Text("총 \(profileData.totalHours)시간, 첫 시작은 언제나 설레죠!")
-                .pretendardFont(.bold, size: 12)
-                .foregroundColor(.DarkBlack)
-                .multilineTextAlignment(.center)
-            
-            Text("지금 바로 첫 수련을 떠나볼까요?")
-                .pretendardFont(.bold, size: 12)
-                .foregroundColor(.black)
-                .multilineTextAlignment(.center)
+        let lines = profileData.accumulatedHours.components(separatedBy: "\n")
+        
+        return VStack(spacing: 8) {
+            ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
+                Text(line)
+                    .pretendardFont(.bold, size: 12)
+                    .foregroundColor(index == 0 ? .DarkBlack : .black)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -236,7 +218,7 @@ struct UserProfileModuleView: View {
                             .pretendardFont(.regular, size: 10)
                             .foregroundColor(.DarkBlack)
                         
-                        Text("Lv.\(profileData.currentLevel)")
+                        Text("Lv.\(profileData.level)")
                             .pretendardFont(.bold, size: 20)
                             .foregroundColor(.MindOrange)
                             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -266,7 +248,7 @@ struct UserProfileModuleView: View {
                 VStack(alignment: .trailing, spacing: 8) {
                     // 메인 텍스트
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("\(profileData.topCategory)에 빠지셨군요")
+                        Text("\(profileData.monthlyCategory)에 빠지셨군요")
                             .pretendardFont(.bold, size: 14)
                             .foregroundColor(.DarkBlack)
                         Text("대단해예")
@@ -277,11 +259,11 @@ struct UserProfileModuleView: View {
                     
                     // 하단 정보
                     VStack(alignment: .trailing, spacing: 8) {
-                        Text("\(profileData.topCategory) 수련 횟수")
+                        Text("\(profileData.monthlyCategory) 수련 횟수")
                             .pretendardFont(.regular, size: 10)
                             .foregroundColor(.DarkBlack)
                         
-                        Text("\(profileData.categoryCount) times")
+                        Text("\(profileData.monthlyCategoryCount) times")
                             .pretendardFont(.bold, size: 20)
                             .foregroundColor(.MindOrange)
                             .frame(width: 136, alignment: .trailing)
@@ -301,15 +283,21 @@ struct UserProfileModuleView: View {
 
 #Preview {
     UserProfileModuleView(
-        profileData: UserProfileData(
-            userName: "앨리스",
-            profileImageUrl: nil,
-            totalHours: 203,
-            upcomingClasses: 6,
-            currentLevel: 5,
-            timeToNextLevel: "55분",
-            topCategory: "하타",
-            categoryCount: 25
+        profileData: MyPageDataDTO(
+            nickname: "앨리스",
+            profileImage: nil,
+            accumulatedClass: 10,
+            plannedClass: 7,
+            accumulatedHours: "총 11시간, 기운이 아주 단단해졌어요!\n요가가 일상 속 리듬이 되어가고 있어요.",
+            grade: "시작",
+            level: 4,
+            monthlyCategoryCount: 4,
+            monthlyCategory: "릴렉스",
+            reservedClasses: [],
+            weekDayClasses: [],
+            weekEndClasses: [],
+            favoriteRegularClasses: [],
+            favoriteOneDayClasses: []
         ),
         onProfileEditTap: { print("프로필 편집 클릭") },
         onSettingTap: { print("설정 클릭") },
