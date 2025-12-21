@@ -13,6 +13,15 @@ enum MyPageTabIntent {
     case login(userId: String, password: String)
     case logout
     case loadMyPageData
+    
+    // UserProfileModule 액션
+    case editProfile
+    case openSettings
+    case openNotifications
+    case viewLevelInfo
+    case viewCategoryAnalysis
+    
+    // DetailContents 액션
     case selectDetailItem(String)
 }
 
@@ -45,10 +54,39 @@ class MyPageTabContainer: ObservableObject {
             logout()
         case .loadMyPageData:
             loadMyPageData()
+            
+        // UserProfileModule 액션
+        case .editProfile:
+            log("프로필 편집 클릭")
+            // TODO: 프로필 편집 화면 이동
+            
+        case .openSettings:
+            log("앱 설정 클릭")
+            // TODO: 설정 화면 이동 또는 로그아웃
+            // logout()
+            
+        case .openNotifications:
+            log("알림 클릭")
+            // TODO: 알림 화면 이동
+            
+        case .viewLevelInfo:
+            log("레벨 정보 클릭")
+            // TODO: 레벨 상세 화면 이동
+            
+        case .viewCategoryAnalysis:
+            log("카테고리 분석 클릭")
+            // TODO: 카테고리 분석 화면 이동
+            
+        // DetailContents 액션
         case .selectDetailItem(let itemName):
             state.selectedDetailItem = itemName
-            print("\(itemName) 클릭")
+            log("세부항목 '\(itemName)' 클릭")
             // TODO: 각 항목별 네비게이션 처리
+            // - "설정" → 세부 설정 페이지
+            // - "계정관리" → 계정관리 페이지
+            // - "이용약관" → 이용약관 페이지
+            // - "고객센터" → 고객센터 페이지
+            // - "환불정책" → 환불정책 페이지
         }
     }
     
