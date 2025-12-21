@@ -29,23 +29,26 @@ struct UserProfileModuleView: View {
     
     var body: some View {
         ZStack(alignment: .top) {
-            // 배경
             Color.GheeYellow
-                .frame(width: 375, height: 426)
             
             VStack(spacing: 0) {
                 // 상단 영역 (프로필 + 설정/알림)
-                ZStack(alignment: .topTrailing) {
-                    // 프로필 이미지
-                    profileImageSection
-                        .padding(.top, 0)
+                ZStack(alignment: .top) {
+                    // 프로필 이미지 - 중앙
+                    HStack {
+                        Spacer()
+                        profileImageSection
+                        Spacer()
+                    }
                     
-                    // 우측 상단 버튼들
-                    topRightButtons
-                        .padding(.top, 0)
-                        .padding(.trailing, 26)
+                    // 우측 상단 버튼들 - 우측 정렬
+                    HStack {
+                        Spacer()
+                        topRightButtons
+                    }
+                    .padding(.trailing, 26)
                 }
-                .frame(height: 86)
+                .padding(.top, 18)
                 
                 // 메인 컨텐츠
                 VStack(spacing: 28) {
@@ -57,11 +60,13 @@ struct UserProfileModuleView: View {
                     
                     // 카드 영역
                     cardsSection
+                    
+                    Spacer()
                 }
                 .padding(.top, 16)
             }
-            .frame(width: 375)
         }
+        .frame(width: UIScreen.main.bounds.width, height: 472.ratio())
     }
     
     // MARK: - Profile Image Section
@@ -77,8 +82,13 @@ struct UserProfileModuleView: View {
                     .resizable()
                     .scaledToFit()
             }
-            .frame(width: 86, height: 86)
+            .frame(width: 86.ratio(), height: 86.ratio())
             .clipShape(Circle())
+            .overlay {
+                RoundedRectangle(cornerRadius: 86)
+                    .inset(by: 0.5)
+                    .stroke(Color.SandBeige, lineWidth: 1)
+            }
             
             // + 버튼
             Button(action: onProfileEditTap) {
@@ -89,8 +99,8 @@ struct UserProfileModuleView: View {
                     
                     Text("+")
                         .pretendardFont(.bold, size: 14)
+                        .multilineTextAlignment(.center)
                         .foregroundColor(.CleanWhite)
-                        .tracking(-0.408)
                 }
             }
         }
@@ -143,7 +153,6 @@ struct UserProfileModuleView: View {
             Text("\(label) : \(value)")
                 .pretendardFont(.medium, size: 12)
                 .foregroundColor(.DarkBlack)
-                .tracking(-0.408)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)
@@ -157,13 +166,11 @@ struct UserProfileModuleView: View {
             Text("총 \(profileData.totalHours)시간, 첫 시작은 언제나 설레죠!")
                 .pretendardFont(.bold, size: 12)
                 .foregroundColor(.DarkBlack)
-                .tracking(-0.408)
                 .multilineTextAlignment(.center)
             
             Text("지금 바로 첫 수련을 떠나볼까요?")
                 .pretendardFont(.bold, size: 12)
                 .foregroundColor(.black)
-                .tracking(-0.408)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -171,14 +178,24 @@ struct UserProfileModuleView: View {
     
     // MARK: - Cards Section
     private var cardsSection: some View {
-        HStack(spacing: 12) {
-            // 왼쪽 카드 - 레벨
-            levelCard
+        GeometryReader { geometry in
+            let horizontalPadding: CGFloat = 26
+            let cardSpacing: CGFloat = 12
+            let availableWidth = geometry.size.width - (horizontalPadding * 2) - cardSpacing
+            let cardWidth = availableWidth / 2
             
-            // 오른쪽 카드 - 카테고리
-            categoryCard
+            HStack(spacing: cardSpacing) {
+                // 왼쪽 카드 - 레벨
+                levelCard
+                    .frame(width: cardWidth)
+                
+                // 오른쪽 카드 - 카테고리
+                categoryCard
+                    .frame(width: cardWidth)
+            }
+            .padding(.horizontal, horizontalPadding)
         }
-        .padding(.horizontal, 26)
+        .frame(height: 130.ratio())
     }
     
     private var levelCard: some View {
@@ -189,7 +206,6 @@ struct UserProfileModuleView: View {
                     Text("요기 레벨 현황")
                         .pretendardFont(.regular, size: 10)
                         .foregroundColor(.DarkBlack)
-                        .tracking(-0.408)
                     
                     ZStack {
                         Circle()
@@ -199,7 +215,6 @@ struct UserProfileModuleView: View {
                         Text("?")
                             .pretendardFont(.regular, size: 10)
                             .foregroundColor(.Info)
-                            .tracking(-0.408)
                     }
                 }
                 
@@ -209,11 +224,9 @@ struct UserProfileModuleView: View {
                         Text("몸과 마음을 채우는")
                             .pretendardFont(.bold, size: 14)
                             .foregroundColor(.DarkBlack)
-                            .tracking(-0.408)
                         Text("수련, 어떠셨나요?")
                             .pretendardFont(.bold, size: 14)
                             .foregroundColor(.DarkBlack)
-                            .tracking(-0.408)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
@@ -222,7 +235,6 @@ struct UserProfileModuleView: View {
                         Text("시작 레벨")
                             .pretendardFont(.regular, size: 10)
                             .foregroundColor(.DarkBlack)
-                            .tracking(-0.408)
                         
                         Text("Lv.\(profileData.currentLevel)")
                             .pretendardFont(.bold, size: 20)
@@ -231,7 +243,6 @@ struct UserProfileModuleView: View {
                     }
                 }
             }
-            .frame(width: 156, height: 130)
             .padding(12)
             .background(Color.CleanWhite.opacity(0.4))
             .overlay(
@@ -258,11 +269,9 @@ struct UserProfileModuleView: View {
                         Text("\(profileData.topCategory)에 빠지셨군요")
                             .pretendardFont(.bold, size: 14)
                             .foregroundColor(.DarkBlack)
-                            .tracking(-0.408)
                         Text("대단해예")
                             .pretendardFont(.bold, size: 14)
                             .foregroundColor(.DarkBlack)
-                            .tracking(-0.408)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
@@ -271,7 +280,6 @@ struct UserProfileModuleView: View {
                         Text("\(profileData.topCategory) 수련 횟수")
                             .pretendardFont(.regular, size: 10)
                             .foregroundColor(.DarkBlack)
-                            .tracking(-0.408)
                         
                         Text("\(profileData.categoryCount) times")
                             .pretendardFont(.bold, size: 20)
@@ -280,7 +288,6 @@ struct UserProfileModuleView: View {
                     }
                 }
             }
-            .frame(width: 156, height: 130)
             .padding(12)
             .background(Color.CleanWhite.opacity(0.4))
             .overlay(

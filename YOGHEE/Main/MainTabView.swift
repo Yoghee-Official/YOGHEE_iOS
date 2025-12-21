@@ -47,6 +47,7 @@ struct MainTabView: View {
         }
     }
     
+    //TODO: 너비를 탭 마다 독립적으로 가져갈지 고민해보기
     @ViewBuilder
     private var allTabViews: some View {
         HomeTabView(navigationPath: $homeNavigationPath, isTabBarHidden: $isTabBarHiddenByScroll)
