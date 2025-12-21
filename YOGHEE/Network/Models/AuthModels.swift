@@ -29,3 +29,22 @@ struct AuthErrorResponse: Codable {
     let error: String?
     let message: String?
 }
+
+// MARK: - 일반 로그인
+struct LoginRequest: Codable {
+    let userId: String
+    let password: String
+}
+
+struct LoginResponse: Codable {
+    let code: Int
+    let status: String
+    let data: LoginDataDTO
+}
+
+struct LoginDataDTO: Codable {
+    let accessToken: String
+    let refreshToken: String
+    let accessTokenExpiresIn: Int
+    let refreshTokenExpiresIn: Int
+}

@@ -9,36 +9,167 @@ import SwiftUI
 
 // MARK: - Intent
 enum MyPageTabIntent {
+    case checkLoginStatus
+    case login(userId: String, password: String)
+    case logout
+    case loadMyPageData
     case selectDetailItem(String)
-    // TODO: [API 연동] loadMyPageData, 프로필 수정, 로그아웃 등 Intent 추가
 }
 
 // MARK: - State
 struct MyPageTabState: Equatable {
+    var myPageData: MyPageDataDTO?
+    var isLoading: Bool = false
+    var errorMessage: String?
     var selectedDetailItem: String?
-    // TODO: [API 연동] sections, isLoading, errorMessage 등 추가
+    var isLoggedIn: Bool = false
+    var showLoginSheet: Bool = false
 }
-
-// TODO: [API 연동] MyPageSection enum 정의 (HomeSection 참고)
 
 @MainActor
 class MyPageTabContainer: ObservableObject {
     @Published private(set) var state = MyPageTabState()
     
     init() {
-        // TODO: [API 연동] loadMyPageData() 호출
+        // TODO: 현재는 자동 로그인, 나중에는 checkLoginStatus()로 변경
+        autoLoginAndLoadData()
     }
     
     func handleIntent(_ intent: MyPageTabIntent) {
         switch intent {
+        case .checkLoginStatus:
+            checkLoginStatus()
+        case .login(let userId, let password):
+            login(userId: userId, password: password)
+        case .logout:
+            logout()
+        case .loadMyPageData:
+            loadMyPageData()
         case .selectDetailItem(let itemName):
             state.selectedDetailItem = itemName
             print("\(itemName) 클릭")
             // TODO: 각 항목별 네비게이션 처리
-        // TODO: [API 연동] case .loadMyPageData 처리 추가
         }
     }
     
-    // TODO: [API 연동] loadMyPageData() 메서드 구현 (HomeTabContainer 참고)
-    // TODO: [API 연동] createSections() 메서드 구현
+    // MARK: - Login Management
+    
+    /// 로그인 상태 확인
+    private func checkLoginStatus() {
+        let hasToken = APIService.shared.accessToken != nil
+        state.isLoggedIn = hasToken
+        
+        if hasToken {
+            // 토큰 있으면 데이터 로딩
+            loadMyPageData()
+        } else {
+            // 토큰 없으면 로그인 화면 표시
+            state.showLoginSheet = true
+        }
+    }
+    
+    /// 로그인 처리
+    private func login(userId: String, password: String) {
+        state.isLoading = true
+        state.errorMessage = nil
+        
+        Task { @MainActor in
+            do {
+                _ = try await APIService.shared.login(userId: userId, password: password)
+                log("✅ 로그인 성공")
+                
+                await MainActor.run {
+                    self.state.isLoggedIn = true
+                    self.state.showLoginSheet = false
+                    self.loadMyPageData()
+                }
+            } catch {
+                await MainActor.run {
+                    self.handleError(error, context: "로그인")
+                }
+            }
+        }
+    }
+    
+    /// 로그아웃
+    private func logout() {
+        APIService.shared.accessToken = nil
+        APIService.shared.refreshToken = nil
+        state.isLoggedIn = false
+        state.myPageData = nil
+        state.showLoginSheet = true
+    }
+    
+    /// TODO: 임시 - 자동 로그인 (나중에 제거)
+    private func autoLoginAndLoadData() {
+        state.isLoading = true
+        state.errorMessage = nil
+        
+        Task { @MainActor in
+            do {
+                // 저장된 토큰이 없으면 자동 로그인
+                if APIService.shared.accessToken == nil {
+                    // TODO: userId와 password를 하드코딩으로 입력
+                    let userId = ""  // ← 여기에 userId 입력
+                    let password = ""  // ← 여기에 password 입력
+                    
+                    _ = try await APIService.shared.login(userId: userId, password: password)
+                    log("✅ 자동 로그인 성공")
+                    self.state.isLoggedIn = true
+                }
+                
+                // 마이페이지 데이터 로딩
+                let response = try await APIService.shared.getMyPageData()
+                await MainActor.run {
+                    self.state.myPageData = response.data
+                    self.state.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.handleError(error, context: "자동 로그인")
+                }
+            }
+        }
+    }
+    
+    private func loadMyPageData() {
+        state.isLoading = true
+        state.errorMessage = nil
+        
+        Task { @MainActor in
+            do {
+                let response = try await APIService.shared.getMyPageData()
+                await MainActor.run {
+                    self.state.myPageData = response.data
+                    self.state.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.handleError(error, context: "MyPage 데이터 로딩")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func log(_ message: String) {
+        #if DEBUG
+        print(message)
+        #endif
+    }
+    
+    private func errorMessage(from error: Error, context: String) -> String {
+        if let apiError = error as? APIError {
+            return "\(context) 실패: \(apiError.localizedDescription)"
+        } else {
+            return "\(context) 실패: \(error.localizedDescription)"
+        }
+    }
+    
+    private func handleError(_ error: Error, context: String) {
+        log("❌ \(context) 에러: \(error)")
+        state.errorMessage = errorMessage(from: error, context: context)
+        state.isLoading = false
+    }
 }
