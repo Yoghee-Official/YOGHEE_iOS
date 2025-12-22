@@ -54,21 +54,19 @@ struct MyPageTabView: View {
                             UserProfileModuleView(
                                 profileData: myPageData,
                                 onProfileEditTap: {
-                                    print("프로필 편집 클릭")
+                                    container.handleIntent(.editProfile)
                                 },
                                 onSettingTap: {
-                                    // TODO: [로그아웃] 나중에 로그아웃 기능 추가
-                                    // container.handleIntent(.logout)
-                                    print("설정 클릭")
+                                    container.handleIntent(.openSettings)
                                 },
                                 onNotificationTap: {
-                                    print("알림 클릭")
+                                    container.handleIntent(.openNotifications)
                                 },
                                 onLevelInfoTap: {
-                                    print("레벨 정보 클릭")
+                                    container.handleIntent(.viewLevelInfo)
                                 },
                                 onCategoryTap: {
-                                    print("카테고리 분석 클릭")
+                                    container.handleIntent(.viewCategoryAnalysis)
                                 }
                             )
                             
