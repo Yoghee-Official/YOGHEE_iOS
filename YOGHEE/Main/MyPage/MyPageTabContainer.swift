@@ -33,11 +33,13 @@ struct MyPageTabState: Equatable {
     var selectedDetailItem: String?
     var isLoggedIn: Bool = false
     var showLoginSheet: Bool = false
+    var showProfileEditSheet: Bool = false
 }
 
 @MainActor
 class MyPageTabContainer: ObservableObject {
     @Published private(set) var state = MyPageTabState()
+    @Published var showProfileEditSheet: Bool = false  // Sheet 표시용 (public)
     
     init() {
         // TODO: 현재는 자동 로그인, 나중에는 checkLoginStatus()로 변경
@@ -58,7 +60,7 @@ class MyPageTabContainer: ObservableObject {
         // UserProfileModule 액션
         case .editProfile:
             log("프로필 편집 클릭")
-            // TODO: 프로필 편집 화면 이동
+            showProfileEditSheet = true
             
         case .openSettings:
             log("앱 설정 클릭")

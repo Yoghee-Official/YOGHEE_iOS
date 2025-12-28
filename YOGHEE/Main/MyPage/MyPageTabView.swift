@@ -86,6 +86,18 @@ struct MyPageTabView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $container.showProfileEditSheet) {
+            ProfileEditView(
+                currentProfileImage: container.state.myPageData?.profileImage,
+                onApply: { selectedImage in
+                    if let image = selectedImage {
+                        print("✅ 선택된 이미지: \(image.size)")
+                        // TODO: 서버에 이미지 업로드 API 호출
+                        // TODO: 업로드 성공 후 프로필 데이터 새로고침
+                    }
+                }
+            )
+        }
     }
 }
 
