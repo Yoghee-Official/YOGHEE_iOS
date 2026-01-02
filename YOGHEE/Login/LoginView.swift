@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LoginView: View {
+    @StateObject private var container = LoginContainer()
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 7.ratio()) {
@@ -42,7 +44,7 @@ struct LoginView: View {
                 }
                 
                 Button(action: {
-                    // TODO: Kakao 로그인
+                    container.handleIntent(.kakaoLogin)
                 }) {
                     Image(systemName: "message.fill")
                         .pretendardFont(size: 20)
@@ -55,6 +57,7 @@ struct LoginView: View {
                                 .stroke(Color.black.opacity(0.2), lineWidth: 1)
                         )
                 }
+                .disabled(container.state.isLoading)
                 
                 Button(action: {
                     // TODO: Google 로그인
@@ -72,6 +75,13 @@ struct LoginView: View {
                 }
             }
             .frame(maxWidth: .infinity)
+            
+            if let errorMessage = container.state.errorMessage {
+                Text(errorMessage)
+                    .pretendardFont(size: 14)
+                    .foregroundColor(.red)
+                    .padding(.top, 16.ratio())
+            }
         }
         .background(Color.SandBeige)
         .navigationBarHidden(true)

@@ -14,17 +14,29 @@ class AuthManager: ObservableObject {
     
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var authToken: String?
+    @Published var isAuthenticated: Bool = false
     private var isProcessingLogin = false // 중복 호출 방지
+    
+    // MARK: - Token Storage (단일 소스)
+    private let accessTokenKey = "accessToken"
+    private let refreshTokenKey = "refreshToken"
+    
+    var accessToken: String? {
+        get { UserDefaults.standard.string(forKey: accessTokenKey) }
+        set {
+            UserDefaults.standard.set(newValue, forKey: accessTokenKey)
+            isAuthenticated = newValue != nil
+        }
+    }
+    
+    var refreshToken: String? {
+        get { UserDefaults.standard.string(forKey: refreshTokenKey) }
+        set { UserDefaults.standard.set(newValue, forKey: refreshTokenKey) }
+    }
     
     private init() {
         // 앱 시작 시 저장된 토큰 확인
         checkSavedToken()
-    }
-    
-    /// 인증 상태 확인 (토큰 존재 여부로 판단)
-    var isAuthenticated: Bool {
-        return authToken != nil
     }
     
     /// SSO 로그인 처리
@@ -54,12 +66,14 @@ class AuthManager: ObservableObject {
                 print("📥 API 응답 받음")
                 print("SSOLoginResponse: \(response)")
                 
-                if let jwtToken = response.data {
+                if let loginData = response.data {
                     print("✅ 토큰 저장 중...")
-                    authToken = jwtToken
-                    // 토큰을 UserDefaults에 저장
-                    UserDefaults.standard.set(jwtToken, forKey: "authToken")
+                    // accessToken과 refreshToken 저장
+                    self.accessToken = loginData.accessToken
+                    self.refreshToken = loginData.refreshToken
                     print("✅ 로그인 성공!")
+                    print("Access Token: \(loginData.accessToken)")
+                    print("Refresh Token: \(loginData.refreshToken)")
                 } else {
                     print("❌ 토큰이 nil입니다")
                     errorMessage = "로그인에 실패했습니다."
@@ -76,15 +90,13 @@ class AuthManager: ObservableObject {
     
     /// 로그아웃
     func logout() {
-        authToken = nil
+        accessToken = nil
+        refreshToken = nil
         isProcessingLogin = false
-        UserDefaults.standard.removeObject(forKey: "authToken")
     }
     
     /// 저장된 토큰 확인
     func checkSavedToken() {
-        if let token = UserDefaults.standard.string(forKey: "authToken") {
-            authToken = token
-        }
+        isAuthenticated = accessToken != nil
     }
 }

@@ -43,7 +43,8 @@ class MyPageTabContainer: ObservableObject {
     
     init() {
         // TODO: 현재는 자동 로그인, 나중에는 checkLoginStatus()로 변경
-        autoLoginAndLoadData()
+        // MARK: 계정 로그인 없애고 ssoLogin만 사용하는걸로 수정됨
+//        autoLoginAndLoadData()
     }
     
     func handleIntent(_ intent: MyPageTabIntent) {
@@ -51,7 +52,9 @@ class MyPageTabContainer: ObservableObject {
         case .checkLoginStatus:
             checkLoginStatus()
         case .login(let userId, let password):
-            login(userId: userId, password: password)
+            // MARK: 계정 로그인 없애고 ssoLogin만 사용하는걸로 수정됨
+//            login(userId: userId, password: password)
+            break
         case .logout:
             logout()
         case .loadMyPageData:
@@ -96,7 +99,7 @@ class MyPageTabContainer: ObservableObject {
     
     /// 로그인 상태 확인
     private func checkLoginStatus() {
-        let hasToken = APIService.shared.accessToken != nil
+        let hasToken = AuthManager.shared.isAuthenticated
         state.isLoggedIn = hasToken
         
         if hasToken {
@@ -109,68 +112,69 @@ class MyPageTabContainer: ObservableObject {
     }
     
     /// 로그인 처리
-    private func login(userId: String, password: String) {
-        state.isLoading = true
-        state.errorMessage = nil
-        
-        Task { @MainActor in
-            do {
-                _ = try await APIService.shared.login(userId: userId, password: password)
-                log("✅ 로그인 성공")
-                
-                await MainActor.run {
-                    self.state.isLoggedIn = true
-                    self.state.showLoginSheet = false
-                    self.loadMyPageData()
-                }
-            } catch {
-                await MainActor.run {
-                    self.handleError(error, context: "로그인")
-                }
-            }
-        }
-    }
+    // MARK: 계정 로그인 없애고 ssoLogin만 사용하는걸로 수정됨
+//    private func login(userId: String, password: String) {
+//        state.isLoading = true
+//        state.errorMessage = nil
+//        
+//        Task { @MainActor in
+//            do {
+//                _ = try await APIService.shared.login(userId: userId, password: password)
+//                log("✅ 로그인 성공")
+//                
+//                await MainActor.run {
+//                    self.state.isLoggedIn = true
+//                    self.state.showLoginSheet = false
+//                    self.loadMyPageData()
+//                }
+//            } catch {
+//                await MainActor.run {
+//                    self.handleError(error, context: "로그인")
+//                }
+//            }
+//        }
+//    }
     
     /// 로그아웃
     private func logout() {
-        APIService.shared.accessToken = nil
-        APIService.shared.refreshToken = nil
+        AuthManager.shared.logout()
         state.isLoggedIn = false
         state.myPageData = nil
         state.showLoginSheet = true
     }
     
     /// TODO: 임시 - 자동 로그인 (나중에 제거)
-    private func autoLoginAndLoadData() {
-        state.isLoading = true
-        state.errorMessage = nil
-        
-        Task { @MainActor in
-            do {
-                // 저장된 토큰이 없으면 자동 로그인
-                if APIService.shared.accessToken == nil {
-                    // TODO: userId와 password를 하드코딩으로 입력
-                    let userId = ""  // ← 여기에 userId 입력
-                    let password = ""  // ← 여기에 password 입력
-                    
-                    _ = try await APIService.shared.login(userId: userId, password: password)
-                    log("✅ 자동 로그인 성공")
-                    self.state.isLoggedIn = true
-                }
-                
-                // 마이페이지 데이터 로딩
-                let response = try await APIService.shared.getMyPageData()
-                await MainActor.run {
-                    self.state.myPageData = response.data
-                    self.state.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.handleError(error, context: "자동 로그인")
-                }
-            }
-        }
-    }
+    // MARK: 계정 로그인 없애고 ssoLogin만 사용하는걸로 수정됨
+//    private func autoLoginAndLoadData() {
+//        state.isLoading = true
+//        state.errorMessage = nil
+//        
+//        Task { @MainActor in
+//            do {
+//                // 저장된 토큰이 없으면 자동 로그인
+//                if !AuthManager.shared.isAuthenticated {
+//                    // TODO: userId와 password를 하드코딩으로 입력
+//                    let userId = ""  // ← 여기에 userId 입력
+//                    let password = ""  // ← 여기에 password 입력
+//                    
+//                    _ = try await APIService.shared.login(userId: userId, password: password)
+//                    log("✅ 자동 로그인 성공")
+//                    self.state.isLoggedIn = true
+//                }
+//                
+//                // 마이페이지 데이터 로딩
+//                let response = try await APIService.shared.getMyPageData()
+//                await MainActor.run {
+//                    self.state.myPageData = response.data
+//                    self.state.isLoading = false
+//                }
+//            } catch {
+//                await MainActor.run {
+//                    self.handleError(error, context: "자동 로그인")
+//                }
+//            }
+//        }
+//    }
     
     private func loadMyPageData() {
         state.isLoading = true
