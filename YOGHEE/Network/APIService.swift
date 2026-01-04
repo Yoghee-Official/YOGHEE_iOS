@@ -39,18 +39,10 @@ class APIService {
         #endif
     }
     
-    // MARK: - Token Storage
-    private let accessTokenKey = "accessToken"
-    private let refreshTokenKey = "refreshToken"
-    
-    var accessToken: String? {
-        get { UserDefaults.standard.string(forKey: accessTokenKey) }
-        set { UserDefaults.standard.set(newValue, forKey: accessTokenKey) }
-    }
-    
-    var refreshToken: String? {
-        get { UserDefaults.standard.string(forKey: refreshTokenKey) }
-        set { UserDefaults.standard.set(newValue, forKey: refreshTokenKey) }
+    // MARK: - Token Access (AuthManager에서 관리)
+    // 토큰은 AuthManager에서 관리하므로, 여기서는 읽기만 가능
+    func getAccessToken() async -> String? {
+        return await AuthManager.shared.accessToken
     }
     
     // MARK: - Endpoints
@@ -94,21 +86,23 @@ class APIService {
     // MARK: - API Methods
     
     /// 로그인
-    func login(userId: String, password: String) async throws -> LoginResponse {
-        let endpoint = Endpoint.login
-        let parameters: Parameters = [
-            "userId": userId,
-            "password": password
-        ]
-        
-        let response: LoginResponse = try await post(endPoint: endpoint.path, parameters: parameters)
-        
-        // 토큰 저장
-        self.accessToken = response.data.accessToken
-        self.refreshToken = response.data.refreshToken
-        
-        return response
-    }
+//    func login(userId: String, password: String) async throws -> LoginResponse {
+//        let endpoint = Endpoint.login
+//        let parameters: Parameters = [
+//            "userId": userId,
+//            "password": password
+//        ]
+//        
+//        let response: LoginResponse = try await post(endPoint: endpoint.path, parameters: parameters)
+//        
+//        // AuthManager에 토큰 저장
+//        await MainActor.run {
+//            AuthManager.shared.accessToken = response.data.accessToken
+//            AuthManager.shared.refreshToken = response.data.refreshToken
+//        }
+//        
+//        return response
+//    }
     
     /// 메인 데이터 조회
     func getMainData(type: String) async throws -> MainResponse {
@@ -138,7 +132,8 @@ class APIService {
     func getMyPageData() async throws -> MyPageResponse {
         let endpoint = Endpoint.myPage
         
-        guard let token = accessToken else {
+        // AuthManager에서 토큰 가져오기
+        guard let token = await getAccessToken() else {
             throw APIError.unauthorized
         }
         
