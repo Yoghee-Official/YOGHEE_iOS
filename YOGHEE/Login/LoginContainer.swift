@@ -96,7 +96,7 @@ class LoginContainer: ObservableObject {
             }
         } else {
             // 카카오톡 앱이 없으면 웹으로 인가코드 받기
-            UserApi.shared.loginWithKakaoTalk { [weak self] oauthToken, error in
+            UserApi.shared.loginWithKakaoAccount { [weak self] oauthToken, error in
                 DispatchQueue.main.async {
                     self?.handleKakaoLoginResult(oauthToken: oauthToken, error: error)
                 }
