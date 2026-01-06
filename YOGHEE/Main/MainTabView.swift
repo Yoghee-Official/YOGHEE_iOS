@@ -66,9 +66,14 @@ struct MainTabView: View {
             .opacity(selectedTab == .teatime ? 1 : 0)
             .allowsHitTesting(selectedTab == .teatime)
         
-        MyPageTabView()
-            .opacity(selectedTab == .mypage ? 1 : 0)
-            .allowsHitTesting(selectedTab == .mypage)
+        MyPageTabView(
+            isSelected: selectedTab == .mypage,
+            onNavigateToHome: {
+                selectedTab = .home
+            }
+        )
+        .opacity(selectedTab == .mypage ? 1 : 0)
+        .allowsHitTesting(selectedTab == .mypage)
     }
 }
 

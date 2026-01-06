@@ -2,7 +2,7 @@ import Foundation
 import Alamofire
 
 // MARK: - API Error
-enum APIError: Error {
+enum APIError: Error, Equatable {
     case unauthorized
     case tokenExpired
     case networkError(Error)
@@ -21,6 +21,21 @@ enum APIError: Error {
             return "데이터 오류: \(error.localizedDescription)"
         case .invalidResponse:
             return "잘못된 응답입니다"
+        }
+    }
+    
+    static func == (lhs: APIError, rhs: APIError) -> Bool {
+        switch (lhs, rhs) {
+        case (.unauthorized, .unauthorized),
+            (.tokenExpired, .tokenExpired),
+            (.invalidResponse, .invalidResponse):
+            return true
+        case (.networkError, .networkError),
+            (.decodingError, .decodingError):
+            // Error 타입은 Equatable이 아니므로 케이스만 비교
+            return true
+        default:
+            return false
         }
     }
 }
@@ -180,7 +195,14 @@ class APIService {
                         }
                     case .failure(let error):
                         self?.log("❌ 네트워크 에러: \(error)")
-                        continuation.resume(throwing: APIError.networkError(error))
+                        
+                        // 401 에러인 경우 tokenExpired로 변환
+                        if let statusCode = response.response?.statusCode, statusCode == 401 {
+                            self?.log("⚠️ 401 Unauthorized - 토큰 만료")
+                            continuation.resume(throwing: APIError.tokenExpired)
+                        } else {
+                            continuation.resume(throwing: APIError.networkError(error))
+                        }
                     }
                 }
         }

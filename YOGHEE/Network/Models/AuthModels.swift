@@ -23,8 +23,6 @@ struct SSOLoginResponse: Codable {
 struct SSOLoginData: Codable {
     let accessToken: String
     let refreshToken: String
-    let accessTokenExpiresIn: Int
-    let refreshTokenExpiresIn: Int
 }
 
 // 에러 응답 모델

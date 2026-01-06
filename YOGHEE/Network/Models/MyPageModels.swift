@@ -24,12 +24,12 @@ struct MyPageDataDTO: Codable, Equatable {
     let grade: String
     let level: Int
     let monthlyCategoryCount: Int
-    let monthlyCategory: String
-    let reservedClasses: [YogaClassScheduleDTO]
-    let weekDayClasses: [YogaClassScheduleDTO]
-    let weekEndClasses: [YogaClassScheduleDTO]
-    let favoriteRegularClasses: [FavoriteRegularClassDTO]
-    let favoriteOneDayClasses: [FavoriteOneDayClassDTO]
+    let monthlyCategory: String?
+    let reservedClasses: [YogaClassScheduleDTO]?
+    let weekDayClasses: [YogaClassScheduleDTO]?
+    let weekEndClasses: [YogaClassScheduleDTO]?
+    let favoriteRegularClasses: [FavoriteRegularClassDTO]?
+    let favoriteOneDayClasses: [FavoriteOneDayClassDTO]?
 }
 
 struct YogaClassScheduleDTO: Codable, Equatable {
