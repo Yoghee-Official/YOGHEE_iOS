@@ -10,6 +10,9 @@ import SwiftUIIntrospect
 
 struct MyPageTabView: View {
     @StateObject private var container = MyPageTabContainer()
+    @ObservedObject private var authManager = AuthManager.shared
+    let isSelected: Bool  // 탭이 선택되었는지 여부
+    var onNavigateToHome: (() -> Void)? = nil  // 홈으로 이동하는 클로저
     
     var body: some View {
         GeometryReader { geometry in
@@ -25,13 +28,6 @@ struct MyPageTabView: View {
                 
                 // 메인 컨텐츠
                 ScrollView {
-                    // TODO: [로그인 화면] 나중에 활성화
-                    // if container.state.showLoginSheet {
-                    //     LoginView { userId, password in
-                    //         container.handleIntent(.login(userId: userId, password: password))
-                    //     }
-                    // } else
-                    
                     if container.state.isLoading {
                         ProgressView("데이터 로딩 중...")
                             .frame(maxWidth: .infinity, minHeight: 200)
@@ -86,6 +82,28 @@ struct MyPageTabView: View {
                 }
             }
         }
+        .onChange(of: isSelected) { newValue in
+            // 탭이 선택될 때만 로그인 체크
+            if newValue {
+                container.handleIntent(.checkLoginStatus)
+            }
+        }
+        .sheet(isPresented: $container.showLoginSheet) {
+            LoginView()
+        }
+        .onChange(of: container.showLoginSheet) { isPresented in
+            // 로그인 창이 닫혔을 때 (로그인 안 했으면 홈으로 이동)
+            // 로그인 성공 후 sheet가 닫힐 때도 실행 될 수 있기 때문에 안전하게 !container.state.isLoggedIn 추가 -> TODO: 굳이 필요 없는건지는 추후 확인 필요
+            if !isPresented && !authManager.isAuthenticated && !container.state.isLoggedIn {
+                onNavigateToHome?()
+            }
+        }
+        .onChange(of: authManager.isAuthenticated) { newValue in
+            // 로그인 완료 시 sheet 닫고 데이터 로딩
+            if newValue && container.showLoginSheet {
+                container.onLoginSuccess()
+            }
+        }
         .fullScreenCover(isPresented: $container.showProfileEditSheet) {
             ProfileEditView(
                 currentProfileImage: container.state.myPageData?.profileImage,
@@ -104,5 +122,5 @@ struct MyPageTabView: View {
 // TODO: [API 연동] MyPageSectionView 구현 (HomeTabView의 SectionView 참고)
 
 #Preview {
-    MyPageTabView()
+    MyPageTabView(isSelected: false, onNavigateToHome: nil)
 }
