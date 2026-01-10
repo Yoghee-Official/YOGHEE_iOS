@@ -47,24 +47,26 @@ struct MyPageTabView: View {
                     } else if let myPageData = container.state.myPageData {
                         VStack(spacing: 0) {
                             // 사용자 프로필 모듈
-                            UserProfileModuleView(
-                                profileData: myPageData,
-                                onProfileEditTap: {
-                                    container.handleIntent(.editProfile)
-                                },
-                                onSettingTap: {
-                                    container.handleIntent(.openSettings)
-                                },
-                                onNotificationTap: {
-                                    container.handleIntent(.openNotifications)
-                                },
-                                onLevelInfoTap: {
-                                    container.handleIntent(.viewLevelInfo)
-                                },
-                                onCategoryTap: {
-                                    container.handleIntent(.viewCategoryAnalysis)
-                                }
-                            )
+                            if let userProfile = myPageData.userProfile {
+                                UserProfileModuleView(
+                                    profileData: userProfile,
+                                    onProfileEditTap: {
+                                        container.handleIntent(.editProfile)
+                                    },
+                                    onSettingTap: {
+                                        container.handleIntent(.openSettings)
+                                    },
+                                    onNotificationTap: {
+                                        container.handleIntent(.openNotifications)
+                                    },
+                                    onLevelInfoTap: {
+                                        container.handleIntent(.viewLevelInfo)
+                                    },
+                                    onCategoryTap: {
+                                        container.handleIntent(.viewCategoryAnalysis)
+                                    }
+                                )
+                            }
                             
                             // 세부 항목 모듈
                             DetailContentsView { itemName in
@@ -106,7 +108,7 @@ struct MyPageTabView: View {
         }
         .fullScreenCover(isPresented: $container.showProfileEditSheet) {
             ProfileEditView(
-                currentProfileImage: container.state.myPageData?.profileImage,
+                currentProfileImage: container.state.myPageData?.userProfile?.profileImage,
                 onApply: { selectedImage in
                     if let image = selectedImage {
                         print("✅ 선택된 이미지: \(image.size)")
