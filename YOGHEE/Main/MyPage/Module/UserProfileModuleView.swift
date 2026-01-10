@@ -145,7 +145,7 @@ struct UserProfileModuleView: View {
     
     // MARK: - Promotion Section
     private var promotionSection: some View {
-        let lines = profileData.accumulatedHours.components(separatedBy: "\n")
+        let lines = (profileData.accumulatedHours ?? "").components(separatedBy: "\n")
         
         return VStack(spacing: 8) {
             ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
