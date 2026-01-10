@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UserProfileModuleView: View {
-    let profileData: MyPageDataDTO
+    let profileData: UserProfileDTO?
     let onProfileEditTap: () -> Void
     let onSettingTap: () -> Void
     let onNotificationTap: () -> Void
@@ -61,7 +61,7 @@ struct UserProfileModuleView: View {
     private var profileImageSection: some View {
         ZStack(alignment: .bottomTrailing) {
             // 프로필 이미지
-            AsyncImage(url: URL(string: profileData.profileImage ?? "")) { image in
+            AsyncImage(url: URL(string: profileData?.profileImage ?? "")) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -118,15 +118,15 @@ struct UserProfileModuleView: View {
     // MARK: - Greeting Section
     private var greetingSection: some View {
         VStack(spacing: 24) {
-            Text("반가워요 !\n요기니 \(profileData.nickname)님")
+            Text("반가워요 !\n요기니 \(profileData?.nickname ?? "")님")
                 .pretendardFont(.bold, size: 20)
                 .foregroundColor(.DarkBlack)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             
             HStack(spacing: 10) {
-                statisticBox(label: "누적 수련", value: "\(profileData.accumulatedClass)")
-                statisticBox(label: "예정된 수련", value: "\(profileData.plannedClass)")
+                statisticBox(label: "누적 수련", value: "\(profileData?.totalClass ?? 0)")
+                statisticBox(label: "예정된 수련", value: "\(profileData?.plannedClass ?? 0)")
             }
         }
     }
@@ -145,7 +145,7 @@ struct UserProfileModuleView: View {
     
     // MARK: - Promotion Section
     private var promotionSection: some View {
-        let lines = (profileData.accumulatedHours ?? "").components(separatedBy: "\n")
+        let lines = (profileData?.totalHours ?? "").components(separatedBy: "\n")
         
         return VStack(spacing: 8) {
             ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
@@ -218,7 +218,7 @@ struct UserProfileModuleView: View {
                             .pretendardFont(.regular, size: 10)
                             .foregroundColor(.DarkBlack)
                         
-                        Text("Lv.\(profileData.level)")
+                        Text("Lv.\(profileData?.level ?? 0)")
                             .pretendardFont(.bold, size: 20)
                             .foregroundColor(.MindOrange)
                             .frame(maxWidth: .infinity, alignment: .trailing)
@@ -248,9 +248,11 @@ struct UserProfileModuleView: View {
                 VStack(alignment: .trailing, spacing: 8) {
                     // 메인 텍스트
                     VStack(alignment: .leading, spacing: 0) {
-                        Text("\(profileData.monthlyCategory)에 빠지셨군요")
-                            .pretendardFont(.bold, size: 14)
-                            .foregroundColor(.DarkBlack)
+                        if let monthlyCategory = profileData?.monthlyCategory {
+                            Text("\(monthlyCategory)에 빠지셨군요")
+                                .pretendardFont(.bold, size: 14)
+                                .foregroundColor(.DarkBlack)
+                        }
                         Text("대단해예")
                             .pretendardFont(.bold, size: 14)
                             .foregroundColor(.DarkBlack)
@@ -259,11 +261,13 @@ struct UserProfileModuleView: View {
                     
                     // 하단 정보
                     VStack(alignment: .trailing, spacing: 8) {
-                        Text("\(profileData.monthlyCategory) 수련 횟수")
-                            .pretendardFont(.regular, size: 10)
-                            .foregroundColor(.DarkBlack)
+                        if let monthlyCategory = profileData?.monthlyCategory {
+                            Text("\(monthlyCategory) 수련 횟수")
+                                .pretendardFont(.regular, size: 10)
+                                .foregroundColor(.DarkBlack)
+                        }
                         
-                        Text("\(profileData.monthlyCategoryCount) times")
+                        Text("\(profileData?.monthlyCategoryCount ?? 0) times")
                             .pretendardFont(.bold, size: 20)
                             .foregroundColor(.MindOrange)
                             .frame(width: 136, alignment: .trailing)
@@ -283,21 +287,16 @@ struct UserProfileModuleView: View {
 
 #Preview {
     UserProfileModuleView(
-        profileData: MyPageDataDTO(
+        profileData: UserProfileDTO(
             nickname: "앨리스",
             profileImage: nil,
-            accumulatedClass: 10,
+            totalClass: 10,
             plannedClass: 7,
-            accumulatedHours: "총 11시간, 기운이 아주 단단해졌어요!\n요가가 일상 속 리듬이 되어가고 있어요.",
+            totalHours: "총 11시간, 기운이 아주 단단해졌어요!\n요가가 일상 속 리듬이 되어가고 있어요.",
             grade: "시작",
             level: 4,
             monthlyCategoryCount: 4,
-            monthlyCategory: "릴렉스",
-            reservedClasses: [],
-            weekDayClasses: [],
-            weekEndClasses: [],
-            favoriteRegularClasses: [],
-            favoriteOneDayClasses: []
+            monthlyCategory: "릴렉스"
         ),
         onProfileEditTap: { print("프로필 편집 클릭") },
         onSettingTap: { print("설정 클릭") },
