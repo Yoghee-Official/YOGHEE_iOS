@@ -16,20 +16,28 @@ struct MyPageResponse: Codable {
 
 // MARK: - MyPage Data
 struct MyPageDataDTO: Codable, Equatable {
-    let nickname: String
-    let profileImage: String?
-    let accumulatedClass: Int
-    let plannedClass: Int
-    let accumulatedHours: String
-    let grade: String
-    let level: Int
-    let monthlyCategoryCount: Int
-    let monthlyCategory: String?
+    let userProfile: UserProfileDTO?
     let reservedClasses: [YogaClassScheduleDTO]?
-    let weekDayClasses: [YogaClassScheduleDTO]?
-    let weekEndClasses: [YogaClassScheduleDTO]?
+    let weekClasses: WeekClassDTO?
     let favoriteRegularClasses: [FavoriteRegularClassDTO]?
     let favoriteOneDayClasses: [FavoriteOneDayClassDTO]?
+}
+
+struct UserProfileDTO: Codable, Equatable {
+    let nickname: String?
+    let profileImage: String?
+    let totalClass: Int?
+    let plannedClass: Int?
+    let totalHours: String?
+    let grade: String?
+    let level: Int?
+    let monthlyCategoryCount: Int?
+    let monthlyCategory: String?
+}
+
+struct WeekClassDTO: Codable, Equatable {
+    let weekDay: [YogaClassScheduleDTO]?
+    let weekEnd: [YogaClassScheduleDTO]?
 }
 
 struct YogaClassScheduleDTO: Codable, Equatable {
@@ -58,4 +66,23 @@ struct FavoriteRegularClassDTO: Codable, Equatable {
     let image: String
     let address: String?
     let favoriteCount: Int?
+}
+
+// MARK: - MyPage Section
+enum MyPageSection: Identifiable {
+    case profile
+    case thisWeekClassList
+    case reservedClasses
+    case favoriteOneDayClasses
+    case favoriteRegularClasses
+    
+    var id: String {
+        switch self {
+        case .profile: return "profile"
+        case .thisWeekClassList: return "thisWeekClassList"
+        case .reservedClasses: return "reservedClasses"
+        case .favoriteOneDayClasses: return "favoriteOneDayClasses"
+        case .favoriteRegularClasses: return "favoriteRegularClasses"
+        }
+    }
 }
