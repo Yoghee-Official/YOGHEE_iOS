@@ -65,7 +65,7 @@ struct RecommendRankingCardView: View {
     
     /// 서브타이틀 (최대 20자)
     private var displaySubtitle: String {
-        let subtitle = item.description
+        guard let subtitle = item.description else { return "" }
         return subtitle.count > 20 ? String(subtitle.prefix(19)) + "…" : subtitle
     }
     

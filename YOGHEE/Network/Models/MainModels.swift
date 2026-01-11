@@ -60,7 +60,7 @@ struct TodayClassDTO: Codable {
 struct MainBannerClassDTO: Codable {
     let classId: String
     let className: String
-    let description: String
+    let description: String?
     let thumbnail: String
 }
 

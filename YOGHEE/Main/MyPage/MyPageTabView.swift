@@ -44,38 +44,18 @@ struct MyPageTabView: View {
                             .buttonStyle(.bordered)
                         }
                         .frame(maxWidth: .infinity, minHeight: 200)
-                    } else if let myPageData = container.state.myPageData {
-                        VStack(spacing: 0) {
-                            // 사용자 프로필 모듈
-                            if let userProfile = myPageData.userProfile {
-                                UserProfileModuleView(
-                                    profileData: userProfile,
-                                    onProfileEditTap: {
-                                        container.handleIntent(.editProfile)
-                                    },
-                                    onSettingTap: {
-                                        container.handleIntent(.openSettings)
-                                    },
-                                    onNotificationTap: {
-                                        container.handleIntent(.openNotifications)
-                                    },
-                                    onLevelInfoTap: {
-                                        container.handleIntent(.viewLevelInfo)
-                                    },
-                                    onCategoryTap: {
-                                        container.handleIntent(.viewCategoryAnalysis)
+                    } else {
+                        LazyVStack(spacing: 20) {
+                            ForEach(container.state.sections) { section in
+                                MyPageSectionView(
+                                    section: section,
+                                    container: container,
+                                    onItemTap: { itemId, sectionId in
+                                        container.handleIntent(.selectItem(itemId, sectionId))
                                     }
                                 )
                             }
-                            
-                            // 세부 항목 모듈
-                            DetailContentsView { itemName in
-                                container.handleIntent(.selectDetailItem(itemName))
-                            }
-                            
-                            // TODO: [API 연동] 추가 모듈들 (내 수업, 내 리뷰 등)
                         }
-                        .padding(.top, 0)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -121,7 +101,80 @@ struct MyPageTabView: View {
     }
 }
 
-// TODO: [API 연동] MyPageSectionView 구현 (HomeTabView의 SectionView 참고)
+// MARK: - Section View
+struct MyPageSectionView: View {
+    let section: MyPageSection
+    let container: MyPageTabContainer
+    let onItemTap: (String, String) -> Void  // itemId, sectionId
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if !section.title.isEmpty {
+                HStack {
+                    Text(section.title)
+                        .pretendardFont(.bold, size: 16)
+                        .foregroundColor(.DarkBlack)
+                }
+                .frame(height: 32)
+                .padding(.horizontal, 24)
+            }
+            
+            switch section {
+            case .profile:
+                if let userProfile = container.state.myPageData?.userProfile {
+                    UserProfileModuleView(
+                        profileData: userProfile,
+                        onProfileEditTap: {
+                            container.handleIntent(.editProfile)
+                        },
+                        onSettingTap: {
+                            container.handleIntent(.openSettings)
+                        },
+                        onNotificationTap: {
+                            container.handleIntent(.openNotifications)
+                        },
+                        onLevelInfoTap: {
+                            container.handleIntent(.viewLevelInfo)
+                        },
+                        onCategoryTap: {
+                            container.handleIntent(.viewCategoryAnalysis)
+                        }
+                    )
+                }
+                
+            case .weekClasses(let weekDay, let weekEnd):
+                WeekClassesModuleView(
+                    weekDay: weekDay,
+                    weekEnd: weekEnd,
+                    onItemTap: { itemId in onItemTap(itemId, section.id) }
+                )
+                
+            case .reservedClasses(let classes):
+                ReservedClassesModuleView(
+                    classes: classes,
+                    onItemTap: { itemId in onItemTap(itemId, section.id) }
+                )
+                
+            case .favoriteOneDayClasses(let classes):
+                FavoriteOneDayClassesModuleView(
+                    classes: classes,
+                    onItemTap: { itemId in onItemTap(itemId, section.id) }
+                )
+                
+            case .favoriteRegularClasses(let classes):
+                FavoriteRegularClassesModuleView(
+                    classes: classes,
+                    onItemTap: { itemId in onItemTap(itemId, section.id) }
+                )
+                
+            case .detailContents:
+                DetailContentsModuleView { itemName in
+                    container.handleIntent(.selectDetailItem(itemName))
+                }
+            }
+        }
+    }
+}
 
 #Preview {
     MyPageTabView(isSelected: false, onNavigateToHome: nil)
