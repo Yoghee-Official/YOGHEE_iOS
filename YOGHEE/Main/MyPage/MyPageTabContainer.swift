@@ -23,10 +23,14 @@ enum MyPageTabIntent {
     
     // DetailContents 액션
     case selectDetailItem(String)
+    
+    // 아이템 선택 액션
+    case selectItem(String, String) // itemId, sectionId
 }
 
 // MARK: - State
 struct MyPageTabState: Equatable {
+    var sections: [MyPageSection] = []
     var myPageData: MyPageDataDTO?
     var isLoading: Bool = false
     var errorMessage: String?
@@ -34,6 +38,13 @@ struct MyPageTabState: Equatable {
     var isLoggedIn: Bool = false
     var showLoginSheet: Bool = false
     var showProfileEditSheet: Bool = false
+    
+    static func == (lhs: MyPageTabState, rhs: MyPageTabState) -> Bool {
+        return lhs.sections.count == rhs.sections.count &&
+               lhs.isLoading == rhs.isLoading &&
+               lhs.errorMessage == rhs.errorMessage &&
+               lhs.isLoggedIn == rhs.isLoggedIn
+    }
 }
 
 @MainActor
@@ -92,6 +103,27 @@ class MyPageTabContainer: ObservableObject {
             // - "이용약관" → 이용약관 페이지
             // - "고객센터" → 고객센터 페이지
             // - "환불정책" → 환불정책 페이지
+            
+        // 아이템 선택 액션
+        case .selectItem(let itemId, let sectionId):
+            log("Selected item: \(itemId) from section: \(sectionId)")
+            handleItemSelection(itemId: itemId, sectionId: sectionId)
+        }
+    }
+    
+    private func handleItemSelection(itemId: String, sectionId: String) {
+        // sectionId에 따라 적절한 네비게이션 처리
+        switch sectionId {
+        case "weekClasses", "reservedClasses":
+            // 클래스 상세 화면으로 이동
+            log("클래스 상세 화면 이동: \(itemId)")
+            // TODO: 네비게이션 처리
+        case "favoriteOneDayClasses", "favoriteRegularClasses":
+            // 찜한 클래스 상세 화면으로 이동
+            log("찜한 클래스 상세 화면 이동: \(itemId)")
+            // TODO: 네비게이션 처리
+        default:
+            log("Unknown section: \(sectionId)")
         }
     }
     
@@ -193,6 +225,7 @@ class MyPageTabContainer: ObservableObject {
                 let response = try await APIService.shared.getMyPageData()
                 await MainActor.run {
                     self.state.myPageData = response.data
+                    self.state.sections = self.createSections(from: response.data)
                     self.state.isLoading = false
                 }
             } catch {
@@ -211,6 +244,7 @@ class MyPageTabContainer: ObservableObject {
                             let response = try await APIService.shared.getMyPageData()
                             await MainActor.run {
                                 self.state.myPageData = response.data
+                                self.state.sections = self.createSections(from: response.data)
                                 self.state.isLoading = false
                             }
                         } catch {
@@ -237,6 +271,47 @@ class MyPageTabContainer: ObservableObject {
     }
     
     // MARK: - Helper Methods
+    
+    private func createSections(from data: MyPageDataDTO) -> [MyPageSection] {
+        var sections: [MyPageSection] = []
+        
+        // 1. 프로필 섹션 (항상 최상단)
+        if data.userProfile != nil {
+            sections.append(.profile)
+        }
+        
+        // 2. 이번 주 수업 섹션 (데이터가 있을 때만)
+        if let weekClasses = data.weekClasses,
+           (weekClasses.weekDay?.isEmpty == false || weekClasses.weekEnd?.isEmpty == false) {
+            sections.append(.weekClasses(
+                weekDay: weekClasses.weekDay,
+                weekEnd: weekClasses.weekEnd
+            ))
+        }
+        
+        // 3. 예약된 수업 섹션 (데이터가 있을 때만)
+        if let reservedClasses = data.reservedClasses,
+           !reservedClasses.isEmpty {
+            sections.append(.reservedClasses(items: reservedClasses))
+        }
+        
+        // 4. 찜한 하루 수업 섹션 (데이터가 있을 때만)
+        if let favoriteOneDayClasses = data.favoriteOneDayClasses,
+           !favoriteOneDayClasses.isEmpty {
+            sections.append(.favoriteOneDayClasses(items: favoriteOneDayClasses))
+        }
+        
+        // 5. 찜한 정규 수업 섹션 (데이터가 있을 때만)
+        if let favoriteRegularClasses = data.favoriteRegularClasses,
+           !favoriteRegularClasses.isEmpty {
+            sections.append(.favoriteRegularClasses(items: favoriteRegularClasses))
+        }
+        
+        // 6. 세부 항목 섹션 (항상 최하단)
+        sections.append(.detailContents)
+        
+        return sections
+    }
     
     private func log(_ message: String) {
         #if DEBUG

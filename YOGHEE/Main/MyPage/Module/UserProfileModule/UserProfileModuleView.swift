@@ -145,7 +145,7 @@ struct UserProfileModuleView: View {
     
     // MARK: - Promotion Section
     private var promotionSection: some View {
-        let lines = (profileData?.totalHours ?? "").components(separatedBy: "\n")
+        let lines = (profileData?.totalHour ?? "").components(separatedBy: "\n")
         
         return VStack(spacing: 8) {
             ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
@@ -292,7 +292,7 @@ struct UserProfileModuleView: View {
             profileImage: nil,
             totalClass: 10,
             plannedClass: 7,
-            totalHours: "총 11시간, 기운이 아주 단단해졌어요!\n요가가 일상 속 리듬이 되어가고 있어요.",
+            totalHour: "총 11시간, 기운이 아주 단단해졌어요!\n요가가 일상 속 리듬이 되어가고 있어요.",
             grade: "시작",
             level: 4,
             monthlyCategoryCount: 4,

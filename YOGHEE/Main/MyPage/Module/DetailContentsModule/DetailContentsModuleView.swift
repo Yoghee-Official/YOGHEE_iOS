@@ -1,5 +1,5 @@
 //
-//  DetailContentsView.swift
+//  DetailContentsModuleView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 12/15/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DetailContentsView: View {
+struct DetailContentsModuleView: View {
     let onItemTap: (String) -> Void
     
     private let menuItems = ["설정", "계정관리", "이용약관", "고객센터", "환불정책"]
@@ -19,6 +19,7 @@ struct DetailContentsView: View {
                 .pretendardFont(.bold, size: 20)
                 .foregroundColor(.DarkBlack)
                 .padding(.horizontal, 8)
+                .padding(.bottom, 9)
             
             VStack(spacing: 15) {
                 // 상단 구분선
@@ -57,7 +58,6 @@ struct DetailContentsView: View {
                     }
                 }
             }
-            .padding(.top, 33)
             
             Spacer()
         }
@@ -67,7 +67,7 @@ struct DetailContentsView: View {
 }
 
 #Preview {
-    DetailContentsView { item in
+    DetailContentsModuleView { item in
         print("\(item) 클릭")
     }
 }

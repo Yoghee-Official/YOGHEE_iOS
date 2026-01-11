@@ -28,7 +28,7 @@ struct UserProfileDTO: Codable, Equatable {
     let profileImage: String?
     let totalClass: Int?
     let plannedClass: Int?
-    let totalHours: String?
+    let totalHour: String?
     let grade: String?
     let level: Int?
     let monthlyCategoryCount: Int?
@@ -71,18 +71,31 @@ struct FavoriteRegularClassDTO: Codable, Equatable {
 // MARK: - MyPage Section
 enum MyPageSection: Identifiable {
     case profile
-    case thisWeekClassList
-    case reservedClasses
-    case favoriteOneDayClasses
-    case favoriteRegularClasses
+    case weekClasses(weekDay: [YogaClassScheduleDTO]?, weekEnd: [YogaClassScheduleDTO]?)
+    case reservedClasses(items: [YogaClassScheduleDTO])
+    case favoriteOneDayClasses(items: [FavoriteOneDayClassDTO])
+    case favoriteRegularClasses(items: [FavoriteRegularClassDTO])
+    case detailContents
     
     var id: String {
         switch self {
         case .profile: return "profile"
-        case .thisWeekClassList: return "thisWeekClassList"
+        case .weekClasses: return "weekClasses"
         case .reservedClasses: return "reservedClasses"
         case .favoriteOneDayClasses: return "favoriteOneDayClasses"
         case .favoriteRegularClasses: return "favoriteRegularClasses"
+        case .detailContents: return "detailContents"
+        }
+    }
+    
+    var title: String {
+        switch self {
+        case .profile: return ""
+        case .weekClasses: return "이번 주 수업"
+        case .reservedClasses: return "예약된 수업"
+        case .favoriteOneDayClasses: return "찜한 하루 수업"
+        case .favoriteRegularClasses: return "찜한 정규 수업"
+        case .detailContents: return ""
         }
     }
 }
