@@ -14,13 +14,6 @@ struct DetailContentsModuleView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // 제목
-            Text("세부 항목")
-                .pretendardFont(.bold, size: 20)
-                .foregroundColor(.DarkBlack)
-                .padding(.horizontal, 8)
-                .padding(.bottom, 9)
-            
             VStack(spacing: 15) {
                 // 상단 구분선
                 Rectangle()

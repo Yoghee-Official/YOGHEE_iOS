@@ -109,14 +109,22 @@ struct MyPageSectionView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // 헤더 (title이 있을 때만 표시)
             if !section.title.isEmpty {
-                HStack {
-                    Text(section.title)
-                        .pretendardFont(.bold, size: 16)
-                        .foregroundColor(.DarkBlack)
-                }
-                .frame(height: 32)
-                .padding(.horizontal, 24)
+                MyPageSectionHeaderView(
+                    title: section.title,
+                    titleType: section.titleType,
+                    isYogini: Binding(
+                        get: { container.state.yoginiToggle },
+                        set: { newValue in
+                            container.handleIntent(.toggleYogini(newValue))
+                        }
+                    ),
+                    onMoreButtonTap: {
+                        // TODO: 목록 더보기 액션 처리
+                        print("목록 더보기 클릭: \(section.id)")
+                    }
+                )
             }
             
             switch section {

@@ -48,6 +48,7 @@ struct YogaClassScheduleDTO: Codable, Equatable {
     let thumbnailUrl: String
     let address: String
     let attendance: Int
+    let isPast: Bool
 }
 
 struct FavoriteOneDayClassDTO: Codable, Equatable {
@@ -77,6 +78,13 @@ enum MyPageSection: Identifiable {
     case favoriteRegularClasses(items: [FavoriteRegularClassDTO])
     case detailContents
     
+    // Title 타입 정의
+    enum TitleType {
+        case toggle  // 지도자/요기니 토글
+        case moreButton  // 목록 더보기 버튼
+        case none  // 헤더 없음
+    }
+    
     var id: String {
         switch self {
         case .profile: return "profile"
@@ -91,11 +99,22 @@ enum MyPageSection: Identifiable {
     var title: String {
         switch self {
         case .profile: return ""
-        case .weekClasses: return "이번 주 수업"
-        case .reservedClasses: return "예약된 수업"
-        case .favoriteOneDayClasses: return "찜한 하루 수업"
-        case .favoriteRegularClasses: return "찜한 정규 수업"
-        case .detailContents: return ""
+        case .weekClasses: return "이번주 수련 목록"
+        case .reservedClasses: return "예약한 수련 미리보기"
+        case .favoriteOneDayClasses: return "찜한 하루수련 목록"
+        case .favoriteRegularClasses: return "찜한 정규수련 목록"
+        case .detailContents: return "세부 항목"
+        }
+    }
+    
+    var titleType: TitleType {
+        switch self {
+        case .weekClasses:
+            return .toggle
+        case .reservedClasses, .favoriteOneDayClasses, .favoriteRegularClasses:
+            return .moreButton
+        case .profile, .detailContents:
+            return .none
         }
     }
 }
