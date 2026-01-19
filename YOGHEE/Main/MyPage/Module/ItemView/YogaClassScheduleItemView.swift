@@ -19,7 +19,7 @@ struct YogaClassScheduleItemView: View {
     
     /// 요일 문자열 변환 (1=월요일, 2=화요일, ..., 7=일요일)
     private var dayOfWeekString: String {
-        let weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+        let weekdays = ["", "mon", "tue", "wed", "thu", "fri", "sat", "sun"]
         guard item.dayOfWeek >= 1 && item.dayOfWeek <= 7 else { return "" }
         return weekdays[item.dayOfWeek]
     }
