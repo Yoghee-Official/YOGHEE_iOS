@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - Intent
 enum MyPageTabIntent {
     case checkLoginStatus
-    case login(userId: String, password: String)
+//    case login(userId: String, password: String)
     case logout
     case loadMyPageData
     
@@ -26,6 +26,9 @@ enum MyPageTabIntent {
     
     // 아이템 선택 액션
     case selectItem(String, String) // itemId, sectionId
+    
+    // 토글 액션
+    case toggleYogini(Bool)  // true = 요기니, false = 지도자
 }
 
 // MARK: - State
@@ -38,12 +41,14 @@ struct MyPageTabState: Equatable {
     var isLoggedIn: Bool = false
     var showLoginSheet: Bool = false
     var showProfileEditSheet: Bool = false
+    var yoginiToggle: Bool = false  // true = 요기니, false = 지도자
     
     static func == (lhs: MyPageTabState, rhs: MyPageTabState) -> Bool {
         return lhs.sections.count == rhs.sections.count &&
                lhs.isLoading == rhs.isLoading &&
                lhs.errorMessage == rhs.errorMessage &&
-               lhs.isLoggedIn == rhs.isLoggedIn
+               lhs.isLoggedIn == rhs.isLoggedIn &&
+               lhs.yoginiToggle == rhs.yoginiToggle
     }
 }
 
@@ -62,7 +67,7 @@ class MyPageTabContainer: ObservableObject {
         switch intent {
         case .checkLoginStatus:
             checkLoginStatus()
-        case .login(let userId, let password):
+//        case .login(let userId, let password):
             // MARK: 계정 로그인 없애고 ssoLogin만 사용하는걸로 수정됨
 //            login(userId: userId, password: password)
             break
@@ -108,6 +113,12 @@ class MyPageTabContainer: ObservableObject {
         case .selectItem(let itemId, let sectionId):
             log("Selected item: \(itemId) from section: \(sectionId)")
             handleItemSelection(itemId: itemId, sectionId: sectionId)
+            
+        // 토글 액션
+        case .toggleYogini(let isYogini):
+            state.yoginiToggle = isYogini
+            log("토글 변경: \(isYogini ? "요기니" : "지도자")")
+            // TODO: 토글 변경 시 데이터 필터링 또는 재요청
         }
     }
     

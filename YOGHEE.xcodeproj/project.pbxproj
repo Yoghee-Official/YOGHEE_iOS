@@ -72,6 +72,7 @@
 		522CE6162F12A6BF0063FDF5 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 522CE58C2F12A6BF0063FDF5 /* Pretendard-Regular.otf */; };
 		522CE6172F12A6BF0063FDF5 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 522CE58D2F12A6BF0063FDF5 /* Pretendard-SemiBold.otf */; };
 		522CE6182F12A6BF0063FDF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 522CE5D32F12A6BF0063FDF5 /* Assets.xcassets */; };
+		522CE6C52F152F980063FDF5 /* MyPageSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */; };
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
 		52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 52A174602EF7F11D00208298 /* SwiftUIIntrospect */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
@@ -145,6 +146,7 @@
 		522CE5D42F12A6BF0063FDF5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		522CE5D52F12A6BF0063FDF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		522CE5D62F12A6BF0063FDF5 /* YOGHEEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YOGHEEApp.swift; sourceTree = "<group>"; };
+		522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSectionHeaderView.swift; sourceTree = "<group>"; };
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -303,6 +305,7 @@
 		522CE5BD2F12A6BF0063FDF5 /* Module */ = {
 			isa = PBXGroup;
 			children = (
+				522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */,
 				522CE61A2F12A7470063FDF5 /* UserProfileModule */,
 				522CE61C2F12A7810063FDF5 /* WeekClassesModule */,
 				522CE61D2F12A8650063FDF5 /* ReservedClasses */,
@@ -576,6 +579,7 @@
 				522CE5F32F12A6BF0063FDF5 /* TopTenCenterModuleView.swift in Sources */,
 				522CE5F42F12A6BF0063FDF5 /* TopTenClassModuleView.swift in Sources */,
 				522CE5F52F12A6BF0063FDF5 /* HomeHeaderView.swift in Sources */,
+				522CE6C52F152F980063FDF5 /* MyPageSectionHeaderView.swift in Sources */,
 				522CE5F62F12A6BF0063FDF5 /* HomeTabContainer.swift in Sources */,
 				522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */,
 				522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */,
