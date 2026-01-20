@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "RightArrowIcon.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
