@@ -55,7 +55,7 @@ struct YogaClassItemView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     // 평점 (10px, Regular)
-                    Text("★ \(String(format: "%.1f", yogaClass.rating)) (\(yogaClass.review.formatted()))")
+                    Text("★ \(String(format: "%.1f", yogaClass.rating ?? 0.0)) (\((yogaClass.review ?? 0).formatted()))")
                         .pretendardFont(.regular, size: 10)
                         .foregroundColor(.black)
                         .frame(height: 24)

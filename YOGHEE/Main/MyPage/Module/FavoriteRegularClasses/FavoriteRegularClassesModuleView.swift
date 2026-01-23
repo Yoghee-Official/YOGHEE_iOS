@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FavoriteRegularClassesModuleView: View {
-    let classes: [FavoriteRegularClassDTO]
+    let classes: [ClassDTO]
     let onItemTap: (String) -> Void
     
     var body: some View {

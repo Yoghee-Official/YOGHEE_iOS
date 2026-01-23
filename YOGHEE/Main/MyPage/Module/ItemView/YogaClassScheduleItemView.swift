@@ -111,7 +111,8 @@ struct YogaClassScheduleItemView: View {
                 thumbnailUrl: "https://via.placeholder.com/48",
                 address: "서울 관악구",
                 attendance: 23,
-                isPast: false
+                isPast: false,
+                categories: []
             ),
             onTap: {}
         )
@@ -126,7 +127,8 @@ struct YogaClassScheduleItemView: View {
                 thumbnailUrl: "https://via.placeholder.com/48",
                 address: "서울 관악구",
                 attendance: 23,
-                isPast: true
+                isPast: true,
+                categories: []
             ),
             onTap: {}
         )

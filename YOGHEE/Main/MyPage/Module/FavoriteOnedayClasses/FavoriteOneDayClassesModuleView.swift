@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FavoriteOneDayClassesModuleView: View {
-    let classes: [FavoriteOneDayClassDTO]
+    let classes: [ClassDTO]
     let onItemTap: (String) -> Void
     
     var body: some View {

@@ -322,7 +322,8 @@ struct CalendarDay {
                 thumbnailUrl: "https://via.placeholder.com/48",
                 address: "서울 관악구",
                 attendance: 23,
-                isPast: false
+                isPast: false,
+                categories: []
             ),
             YogaClassScheduleDTO(
                 classId: "2",
@@ -339,7 +340,8 @@ struct CalendarDay {
                 thumbnailUrl: "https://via.placeholder.com/48",
                 address: "서울 강남구",
                 attendance: 15,
-                isPast: false
+                isPast: false,
+                categories: []
             )
         ],
         onItemTap: { _ in }

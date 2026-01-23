@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FavoriteRegularClassItemView: View {
-    let item: FavoriteRegularClassDTO
+    let item: ClassDTO
     let onTap: () -> Void
     
     private let cardWidth: CGFloat = 160.ratio()
@@ -18,7 +18,7 @@ struct FavoriteRegularClassItemView: View {
         Button(action: onTap) {
             VStack(alignment: .leading, spacing: 8.ratio()) {
                 // 썸네일 이미지
-                AsyncImage(url: URL(string: item.image)) { image in
+                AsyncImage(url: URL(string: item.thumbnail)) { image in
                     image
                         .resizable()
                         .scaledToFill()
@@ -35,22 +35,21 @@ struct FavoriteRegularClassItemView: View {
                         .foregroundColor(.DarkBlack)
                         .lineLimit(2)
                     
-                    if let address = item.address {
-                        Text(address)
+                    Text(item.masterName ?? "")
+                        .pretendardFont(.regular, size: 12)
+                        .foregroundColor(.gray)
+                        .lineLimit(1)
+                    
+                    HStack(spacing: 4.ratio()) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 12))
+                        Text(String(format: "%.1f", item.rating ?? 0.0))
+                            .pretendardFont(.medium, size: 12)
+                            .foregroundColor(.DarkBlack)
+                        Text("(\(item.review))")
                             .pretendardFont(.regular, size: 12)
                             .foregroundColor(.gray)
-                            .lineLimit(1)
-                    }
-                    
-                    if let favoriteCount = item.favoriteCount {
-                        HStack(spacing: 4.ratio()) {
-                            Image(systemName: "heart.fill")
-                                .foregroundColor(.red)
-                                .font(.system(size: 12))
-                            Text("\(favoriteCount)")
-                                .pretendardFont(.medium, size: 12)
-                                .foregroundColor(.DarkBlack)
-                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -63,12 +62,15 @@ struct FavoriteRegularClassItemView: View {
 
 #Preview {
     FavoriteRegularClassItemView(
-        item: FavoriteRegularClassDTO(
+        item: ClassDTO(
             classId: "1",
             className: "요가 클래스",
-            image: "",
-            address: "서울시 강남구",
-            favoriteCount: 100
+            thumbnail: "",
+            masterId: "1",
+            masterName: "마스터 이름",
+            rating: 4.5,
+            review: 100,
+            categories: []
         ),
         onTap: {}
     )
