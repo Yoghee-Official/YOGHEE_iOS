@@ -76,10 +76,6 @@ struct CalendarView: View {
             )
             .padding(.bottom, 12.ratio())
             
-            // 구분선
-            Rectangle()
-                .fill(Color.white)
-                .frame(height: 1)
             
             VStack(spacing: 16.ratio()) {
                 // 요일 헤더
@@ -97,7 +93,7 @@ struct CalendarView: View {
         .padding(.horizontal, 16.ratio())
         .padding(.vertical, 16.ratio())
         .frame(width: 343.ratio())
-        .background(Color.FlowBlue)
+        .background(Color.Background)
         .cornerRadius(8.ratio())
     }
     

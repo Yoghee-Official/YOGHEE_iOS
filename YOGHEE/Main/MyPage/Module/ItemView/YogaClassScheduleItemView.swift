@@ -14,7 +14,7 @@ struct YogaClassScheduleItemView: View {
     private let cardHeight: CGFloat = 74.ratio()
     
     private var backgroundColor: Color {
-        item.isPast ? .Background : .GheeYellow
+        item.isPast ? .Background : .NatureGreen
     }
     
     /// 요일 문자열 변환 (1=월요일, 2=화요일, ..., 7=일요일)
@@ -38,18 +38,16 @@ struct YogaClassScheduleItemView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8.ratio()))
                 
                 HStack(spacing: 13.ratio()) {
-                    // 왼쪽: 날짜/요일 배지
-                    VStack(spacing: 0) {
-                        Text(dayNumber)
-                            .pretendardFont(.bold, size: 20)
-                            .foregroundColor(.DarkBlack)
-                        Text(dayOfWeekString)
-                            .pretendardFont(.medium, size: 12)
-                            .foregroundColor(.DarkBlack)
+                    // 오른쪽: 썸네일 이미지
+                    AsyncImage(url: URL(string: item.thumbnailUrl)) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        Color.gray.opacity(0.3)
                     }
-                    .frame(width: 36.ratio(), height: 53.ratio())
-                    .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 19.5))
+                    .frame(width: 48.ratio(), height: 48.ratio())
+                    .clipShape(Circle())
                     
                     // 중앙: 클래스 정보
                     VStack(alignment: .leading, spacing: 4.5) {
@@ -75,16 +73,18 @@ struct YogaClassScheduleItemView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // 오른쪽: 썸네일 이미지
-                    AsyncImage(url: URL(string: item.thumbnailUrl)) { image in
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } placeholder: {
-                        Color.gray.opacity(0.3)
+                    // 왼쪽: 날짜/요일 배지
+                    VStack(spacing: 0) {
+                        Text(dayNumber)
+                            .pretendardFont(.bold, size: 20)
+                            .foregroundColor(.DarkBlack)
+                        Text(dayOfWeekString)
+                            .pretendardFont(.medium, size: 12)
+                            .foregroundColor(.DarkBlack)
                     }
-                    .frame(width: 48.ratio(), height: 48.ratio())
-                    .clipShape(Circle())
+                    .frame(width: 36.ratio(), height: 53.ratio())
+                    .background(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 19.5))
                 }
                 .padding(.horizontal, 16.ratio())
                 .padding(.vertical, 10.ratio())

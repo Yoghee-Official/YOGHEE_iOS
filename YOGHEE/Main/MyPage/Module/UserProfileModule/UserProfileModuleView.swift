@@ -147,7 +147,7 @@ struct UserProfileModuleView: View {
     private var promotionSection: some View {
         let lines = (profileData?.totalHour ?? "").components(separatedBy: "\n")
         
-        return VStack(spacing: 8) {
+        return VStack(spacing: 4) {
             ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
                 Text(line)
                     .pretendardFont(.bold, size: 12)
@@ -219,7 +219,7 @@ struct UserProfileModuleView: View {
                             .foregroundColor(.DarkBlack)
                         
                         Text("Lv.\(profileData?.level ?? 0)")
-                            .pretendardFont(.bold, size: 20)
+                            .pretendardFont(.bold, size: 16)
                             .foregroundColor(.MindOrange)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
@@ -267,8 +267,8 @@ struct UserProfileModuleView: View {
                                 .foregroundColor(.DarkBlack)
                         }
                         
-                        Text("\(profileData?.monthlyCategoryCount ?? 0) times")
-                            .pretendardFont(.bold, size: 20)
+                        Text("\(profileData?.monthlyCategoryCount ?? 0)")
+                            .pretendardFont(.bold, size: 16)
                             .foregroundColor(.MindOrange)
                             .frame(width: 136, alignment: .trailing)
                     }
@@ -305,4 +305,3 @@ struct UserProfileModuleView: View {
         onCategoryTap: { print("카테고리 카드 클릭") }
     )
 }
-
