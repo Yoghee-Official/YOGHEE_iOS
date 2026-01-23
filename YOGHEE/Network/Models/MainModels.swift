@@ -64,14 +64,15 @@ struct MainBannerClassDTO: Codable {
     let thumbnail: String
 }
 
-struct ClassDTO: Codable {
+struct ClassDTO: Codable, Equatable {
     let classId: String
     let className: String
     let thumbnail: String
-    let masterId: String
-    let masterName: String
-    let rating: Double
-    let review: Int
+    let masterId: String?
+    let masterName: String?
+    let rating: Double?
+    let review: Int?
+    let categories: [String]?
 }
 
 struct CenterDTO: Codable {

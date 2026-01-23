@@ -19,8 +19,10 @@ struct MyPageDataDTO: Codable, Equatable {
     let userProfile: UserProfileDTO?
     let reservedClasses: [YogaClassScheduleDTO]?
     let weekClasses: WeekClassDTO?
-    let favoriteRegularClasses: [FavoriteRegularClassDTO]?
-    let favoriteOneDayClasses: [FavoriteOneDayClassDTO]?
+//    let favoriteRegularClasses: [FavoriteRegularClassDTO]?
+//    let favoriteOneDayClasses: [FavoriteOneDayClassDTO]?
+    let favoriteRegularClasses: [ClassDTO]?
+    let favoriteOneDayClasses: [ClassDTO]?
 }
 
 struct UserProfileDTO: Codable, Equatable {
@@ -49,33 +51,34 @@ struct YogaClassScheduleDTO: Codable, Equatable {
     let address: String
     let attendance: Int
     let isPast: Bool
+    let categories: [String]?
 }
 
-struct FavoriteOneDayClassDTO: Codable, Equatable {
-    let classId: String
-    let className: String
-    let image: String
-    let masterId: String?
-    let masterName: String?
-    let review: Int?
-    let rating: Double?
-}
-
-struct FavoriteRegularClassDTO: Codable, Equatable {
-    let classId: String
-    let className: String
-    let image: String
-    let address: String?
-    let favoriteCount: Int?
-}
+//struct FavoriteOneDayClassDTO: Codable, Equatable {
+//    let classId: String
+//    let className: String
+//    let image: String
+//    let masterId: String?
+//    let masterName: String?
+//    let review: Int?
+//    let rating: Double?
+//}
+//
+//struct FavoriteRegularClassDTO: Codable, Equatable {
+//    let classId: String
+//    let className: String
+//    let image: String
+//    let address: String?
+//    let favoriteCount: Int?
+//}
 
 // MARK: - MyPage Section
 enum MyPageSection: Identifiable {
     case profile
     case weekClasses(weekDay: [YogaClassScheduleDTO]?, weekEnd: [YogaClassScheduleDTO]?)
     case reservedClasses(items: [YogaClassScheduleDTO])
-    case favoriteOneDayClasses(items: [FavoriteOneDayClassDTO])
-    case favoriteRegularClasses(items: [FavoriteRegularClassDTO])
+    case favoriteOneDayClasses(items: [ClassDTO])
+    case favoriteRegularClasses(items: [ClassDTO])
     case detailContents
     
     // Title 타입 정의
