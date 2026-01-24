@@ -26,7 +26,7 @@ struct YogaClassItemView: View {
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
                     }
-                    .frame(width: 145, height: 145)
+                    .frame(width: 145.ratio(), height: 145.ratio())
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                     
                     // 랭킹이 있는 경우 랭킹 배지 표시
@@ -61,7 +61,7 @@ struct YogaClassItemView: View {
                         .frame(height: 24)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(width: 145, alignment: .leading)
+                .frame(width: 145.ratio(), alignment: .leading)
                 
                 Spacer(minLength: 0)
             }
@@ -78,7 +78,7 @@ struct RankingBadgeView: View {
         ZStack {
             Image("RankingIcon")
                 .resizable()
-                .frame(width: 20, height: 20)
+                .frame(width: 20.ratio(), height: 20.ratio())
             
             Text("\(rank)")
                 .pretendardFont(size: 12)

@@ -15,7 +15,7 @@ struct FavoriteOneDayClassesModuleView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12.ratio()) {
                 ForEach(classes, id: \.classId) { item in
-                    FavoriteOneDayClassItemView(item: item, onTap: { onItemTap(item.classId) })
+                    YogaClassItemView(yogaClass: item, ranking: nil, onTap: { onItemTap(item.classId) })
                 }
             }
             .padding(.horizontal, 16.ratio())

@@ -41,7 +41,6 @@
 		522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */; };
 		522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */; };
 		522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */; };
-		522CE5FA2F12A6BF0063FDF5 /* FavoriteOneDayClassItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B32F12A6BF0063FDF5 /* FavoriteOneDayClassItemView.swift */; };
 		522CE5FB2F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */; };
 		522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */; };
 		522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */; };
@@ -118,7 +117,6 @@
 		522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
 		522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListContainer.swift; sourceTree = "<group>"; };
 		522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListView.swift; sourceTree = "<group>"; };
-		522CE5B32F12A6BF0063FDF5 /* FavoriteOneDayClassItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteOneDayClassItemView.swift; sourceTree = "<group>"; };
 		522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteRegularClassItemView.swift; sourceTree = "<group>"; };
 		522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogaClassScheduleItemView.swift; sourceTree = "<group>"; };
 		522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailContentsModuleView.swift; sourceTree = "<group>"; };
@@ -296,7 +294,6 @@
 			isa = PBXGroup;
 			children = (
 				522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */,
-				522CE5B32F12A6BF0063FDF5 /* FavoriteOneDayClassItemView.swift */,
 				522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */,
 			);
 			path = ItemView;
@@ -584,7 +581,6 @@
 				522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */,
 				522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */,
 				522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */,
-				522CE5FA2F12A6BF0063FDF5 /* FavoriteOneDayClassItemView.swift in Sources */,
 				522CE5FB2F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift in Sources */,
 				522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */,
 				522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */,
