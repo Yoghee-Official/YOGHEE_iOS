@@ -124,23 +124,11 @@ struct UserProfileModuleView: View {
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             
-            HStack(spacing: 10) {
-                statisticBox(label: "누적 수련", value: "\(profileData?.totalClass ?? 0)")
-                statisticBox(label: "예정된 수련", value: "\(profileData?.plannedClass ?? 0)")
+            HStack(spacing: 15) {
+                GlassUI(text: "누적 수련 : \(profileData?.totalClass ?? 0)", width: 92, height: 32, opacity: 0.15)
+                GlassUI(text: "예정된 수련 : \(profileData?.plannedClass ?? 0)", width: 92, height: 32, opacity: 0.15)
             }
         }
-    }
-    
-    private func statisticBox(label: String, value: String) -> some View {
-        HStack(spacing: 0) {
-            Text("\(label) : \(value)")
-                .pretendardFont(.medium, size: 12)
-                .foregroundColor(.DarkBlack)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Color.NatureGreen)
-        .cornerRadius(5)
     }
     
     // MARK: - Promotion Section
