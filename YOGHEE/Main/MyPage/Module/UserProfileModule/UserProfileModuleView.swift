@@ -124,30 +124,18 @@ struct UserProfileModuleView: View {
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             
-            HStack(spacing: 10) {
-                statisticBox(label: "누적 수련", value: "\(profileData?.totalClass ?? 0)")
-                statisticBox(label: "예정된 수련", value: "\(profileData?.plannedClass ?? 0)")
+            HStack(spacing: 15) {
+                GlassUI(text: "누적 수련 : \(profileData?.totalClass ?? 0)", width: 92, height: 32, opacity: 0.15)
+                GlassUI(text: "예정된 수련 : \(profileData?.plannedClass ?? 0)", width: 92, height: 32, opacity: 0.15)
             }
         }
-    }
-    
-    private func statisticBox(label: String, value: String) -> some View {
-        HStack(spacing: 0) {
-            Text("\(label) : \(value)")
-                .pretendardFont(.medium, size: 12)
-                .foregroundColor(.DarkBlack)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(Color.NatureGreen)
-        .cornerRadius(5)
     }
     
     // MARK: - Promotion Section
     private var promotionSection: some View {
         let lines = (profileData?.totalHour ?? "").components(separatedBy: "\n")
         
-        return VStack(spacing: 8) {
+        return VStack(spacing: 4) {
             ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
                 Text(line)
                     .pretendardFont(.bold, size: 12)
@@ -219,7 +207,7 @@ struct UserProfileModuleView: View {
                             .foregroundColor(.DarkBlack)
                         
                         Text("Lv.\(profileData?.level ?? 0)")
-                            .pretendardFont(.bold, size: 20)
+                            .pretendardFont(.bold, size: 16)
                             .foregroundColor(.MindOrange)
                             .frame(maxWidth: .infinity, alignment: .trailing)
                     }
@@ -267,8 +255,8 @@ struct UserProfileModuleView: View {
                                 .foregroundColor(.DarkBlack)
                         }
                         
-                        Text("\(profileData?.monthlyCategoryCount ?? 0) times")
-                            .pretendardFont(.bold, size: 20)
+                        Text("\(profileData?.monthlyCategoryCount ?? 0)")
+                            .pretendardFont(.bold, size: 16)
                             .foregroundColor(.MindOrange)
                             .frame(width: 136, alignment: .trailing)
                     }
@@ -305,4 +293,3 @@ struct UserProfileModuleView: View {
         onCategoryTap: { print("카테고리 카드 클릭") }
     )
 }
-
