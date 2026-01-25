@@ -40,8 +40,8 @@ struct GlassUI: View {
                 .fill(
                     LinearGradient(
                         gradient: Gradient(stops: [
-                            .init(color: Color.white.opacity(0.05), location: -0.4),
-                            .init(color: Color.white.opacity(opacity*2), location: 1.0)
+                            .init(color: Color.white.opacity(0), location: -0.1),
+                            .init(color: Color.white.opacity(opacity*1.5), location: 1.0)
                         ]),
                         startPoint: .top,
                         endPoint: .bottom
@@ -52,8 +52,8 @@ struct GlassUI: View {
                 .fill(
                     LinearGradient(
                         gradient: Gradient(stops: [
-                            .init(color: Color.white.opacity(0.2), location: 0),
-                            .init(color: Color.clear, location: opacity)
+                            .init(color: Color.white.opacity(opacity), location: 0),
+                            .init(color: Color.clear, location: 0.1)
                         ]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -65,7 +65,7 @@ struct GlassUI: View {
                 .fill(
                     LinearGradient(
                         gradient: Gradient(stops: [
-                            .init(color: Color.clear, location: 0.8),
+                            .init(color: Color.clear, location: 0.9),
                             .init(color: Color.white.opacity(opacity), location: 1)
                         ]),
                         startPoint: .topLeading,
@@ -88,9 +88,9 @@ struct GlassUI: View {
 
 #Preview {
     VStack(spacing: 20) {
-        GlassUI(text: "누적 수련 : 10", width: 92, height: 32, opacity: 0.15)
-        GlassUI(text: "예정된 수련 : 5", width: 92, height: 32, opacity: 0.15)
+        GlassUI(text: "누적된 수련:0", width: 92, height: 32, opacity: 0.15)
+        GlassUI(text: "예정된 수련:0", width: 92, height: 32, opacity: 0.15)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(Color.black)
+    .background(Color(hex: "#272727"))
 }
