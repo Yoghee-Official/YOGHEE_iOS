@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		52295B122F23DE6700E615E1 /* GlassUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B102F23DE6600E615E1 /* GlassUI.swift */; };
+		52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B132F27B46C00E615E1 /* GlassUI.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
 		522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */; };
 		522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */; };
@@ -80,7 +80,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		52295B102F23DE6600E615E1 /* GlassUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassUI.swift; sourceTree = "<group>"; };
+		52295B132F27B46C00E615E1 /* GlassUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassUI.swift; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
 		522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 		522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Font.swift"; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 		52295B112F23DE6600E615E1 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				52295B102F23DE6600E615E1 /* GlassUI.swift */,
+				52295B132F27B46C00E615E1 /* GlassUI.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -579,6 +579,7 @@
 				522CE5EB2F12A6BF0063FDF5 /* YogaClassItemView.swift in Sources */,
 				522CE5EC2F12A6BF0063FDF5 /* InterestedCenterModuleView.swift in Sources */,
 				522CE5ED2F12A6BF0063FDF5 /* InterestedClassModuleView.swift in Sources */,
+				52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */,
 				522CE5EE2F12A6BF0063FDF5 /* MainBannerModuleView.swift in Sources */,
 				522CE5EF2F12A6BF0063FDF5 /* NewReviewModuleView.swift in Sources */,
 				522CE5F02F12A6BF0063FDF5 /* OneDayCategoryModuleView.swift in Sources */,
@@ -600,7 +601,6 @@
 				522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */,
 				522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */,
 				522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */,
-				52295B122F23DE6700E615E1 /* GlassUI.swift in Sources */,
 				522CE6032F12A6BF0063FDF5 /* MyPageTabContainer.swift in Sources */,
 				522CE6042F12A6BF0063FDF5 /* MyPageTabView.swift in Sources */,
 				522CE6052F12A6BF0063FDF5 /* ProfileEditView.swift in Sources */,
