@@ -125,8 +125,23 @@ struct UserProfileModuleView: View {
                 .fixedSize(horizontal: false, vertical: true)
             
             HStack(spacing: 15) {
-                GlassUI(text: "누적 수련 : \(profileData?.totalClass ?? 0)", width: 92, height: 32, opacity: 0.15)
-                GlassUI(text: "예정된 수련 : \(profileData?.plannedClass ?? 0)", width: 92, height: 32, opacity: 0.15)
+                // 첫 번째 박스
+                ZStack {
+                    GlassUI.mySmall()
+                    Text("누적 수련 : \(profileData?.totalClass ?? 0)")
+                        .pretendardFont(.medium, size: 12)
+                        .foregroundColor(.DarkBlack)
+                        .tracking(-0.408)
+                }
+                
+                // 두 번째 박스
+                ZStack {
+                    GlassUI.mySmall()
+                    Text("예정된 수련 : \(profileData?.plannedClass ?? 0)")
+                        .pretendardFont(.medium, size: 12)
+                        .foregroundColor(.DarkBlack)
+                        .tracking(-0.408)
+                }
             }
         }
     }
@@ -155,120 +170,118 @@ struct UserProfileModuleView: View {
             let cardWidth = availableWidth / 2
             
             HStack(spacing: cardSpacing) {
-                // 왼쪽 카드 - 레벨
-                levelCard
-                    .frame(width: cardWidth)
+                // 왼쪽 카드 - 레벨 (변경)
+                levelCardContent(width: cardWidth)
+                    .frame(width: cardWidth, height: 130.ratio())
                 
-                // 오른쪽 카드 - 카테고리
-                categoryCard
-                    .frame(width: cardWidth)
+                // 오른쪽 카드 - 카테고리 (변경)
+                categoryCardContent(width: cardWidth)
+                    .frame(width: cardWidth, height: 130.ratio())
             }
             .padding(.horizontal, horizontalPadding)
         }
         .frame(height: 130.ratio())
     }
     
-    private var levelCard: some View {
+    private func levelCardContent(width: CGFloat) -> some View {
         Button(action: onLevelInfoTap) {
-            VStack(alignment: .leading, spacing: 8) {
-                // 헤더
-                HStack(spacing: 4) {
-                    Text("요기 레벨 현황")
-                        .pretendardFont(.regular, size: 10)
-                        .foregroundColor(.DarkBlack)
-                    
-                    ZStack {
-                        Circle()
-                            .fill(Color.CleanWhite)
-                            .frame(width: 12, height: 12)
-                        
-                        Text("?")
-                            .pretendardFont(.regular, size: 10)
-                            .foregroundColor(.Info)
-                    }
-                }
+            ZStack {
+                GlassUI.myBig()
                 
-                VStack(alignment: .trailing, spacing: 8) {
-                    // 메인 텍스트
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text("몸과 마음을 채우는")
-                            .pretendardFont(.bold, size: 14)
+                // 기존 컨텐츠
+                VStack(alignment: .leading, spacing: 8) {
+                    // 헤더
+                    HStack(spacing: 4) {
+                        Text("요기 레벨 현황")
+                            .pretendardFont(.regular, size: 10)
                             .foregroundColor(.DarkBlack)
-                        Text("수련, 어떠셨나요?")
-                            .pretendardFont(.bold, size: 14)
-                            .foregroundColor(.DarkBlack)
+                        
+                        ZStack {
+                            Circle()
+                                .fill(Color.CleanWhite)
+                                .frame(width: 12, height: 12)
+                            
+                            Text("?")
+                                .pretendardFont(.regular, size: 10)
+                                .foregroundColor(.Info)
+                        }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // 하단 정보
                     VStack(alignment: .trailing, spacing: 8) {
-                        Text("시작 레벨")
-                            .pretendardFont(.regular, size: 10)
-                            .foregroundColor(.DarkBlack)
-                        
-                        Text("Lv.\(profileData?.level ?? 0)")
-                            .pretendardFont(.bold, size: 16)
-                            .foregroundColor(.MindOrange)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                }
-            }
-            .padding(12)
-            .background(Color.CleanWhite.opacity(0.4))
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.CleanWhite, lineWidth: 1)
-            )
-            .cornerRadius(8)
-        }
-    }
-    
-    private var categoryCard: some View {
-        Button(action: onCategoryTap) {
-            VStack(alignment: .leading, spacing: 8) {
-                // 헤더
-                Text("월간 카테고리 분석")
-                    .pretendardFont(.regular, size: 10)
-                    .foregroundColor(.DarkBlack)
-                    .tracking(-0.408)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                VStack(alignment: .trailing, spacing: 8) {
-                    // 메인 텍스트
-                    VStack(alignment: .leading, spacing: 0) {
-                        if let monthlyCategory = profileData?.monthlyCategory {
-                            Text("\(monthlyCategory)에 빠지셨군요")
+                        // 메인 텍스트
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("몸과 마음을 채우는")
+                                .pretendardFont(.bold, size: 14)
+                                .foregroundColor(.DarkBlack)
+                            Text("수련, 어떠셨나요?")
                                 .pretendardFont(.bold, size: 14)
                                 .foregroundColor(.DarkBlack)
                         }
-                        Text("대단해예")
-                            .pretendardFont(.bold, size: 14)
-                            .foregroundColor(.DarkBlack)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    // 하단 정보
-                    VStack(alignment: .trailing, spacing: 8) {
-                        if let monthlyCategory = profileData?.monthlyCategory {
-                            Text("\(monthlyCategory) 수련 횟수")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        // 하단 정보
+                        VStack(alignment: .trailing, spacing: 8) {
+                            Text("시작 레벨")
                                 .pretendardFont(.regular, size: 10)
                                 .foregroundColor(.DarkBlack)
+                            
+                            Text("Lv.\(profileData?.level ?? 0)")
+                                .pretendardFont(.bold, size: 16)
+                                .foregroundColor(.MindOrange)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
                         }
-                        
-                        Text("\(profileData?.monthlyCategoryCount ?? 0)")
-                            .pretendardFont(.bold, size: 16)
-                            .foregroundColor(.MindOrange)
-                            .frame(width: 136, alignment: .trailing)
                     }
                 }
+                .padding(12)
             }
-            .padding(12)
-            .background(Color.CleanWhite.opacity(0.4))
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.CleanWhite, lineWidth: 1)
-            )
-            .cornerRadius(8)
+        }
+    }
+    
+    private func categoryCardContent(width: CGFloat) -> some View {
+        Button(action: onCategoryTap) {
+            ZStack {
+                GlassUI.myBig()
+                
+                // 기존 컨텐츠
+                VStack(alignment: .leading, spacing: 8) {
+                    // 헤더
+                    Text("월간 카테고리 분석")
+                        .pretendardFont(.regular, size: 10)
+                        .foregroundColor(.DarkBlack)
+                        .tracking(-0.408)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    VStack(alignment: .trailing, spacing: 8) {
+                        // 메인 텍스트
+                        VStack(alignment: .leading, spacing: 0) {
+                            if let monthlyCategory = profileData?.monthlyCategory {
+                                Text("\(monthlyCategory)에 빠지셨군요")
+                                    .pretendardFont(.bold, size: 14)
+                                    .foregroundColor(.DarkBlack)
+                            }
+                            Text("대단해예")
+                                .pretendardFont(.bold, size: 14)
+                                .foregroundColor(.DarkBlack)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        // 하단 정보
+                        VStack(alignment: .trailing, spacing: 8) {
+                            if let monthlyCategory = profileData?.monthlyCategory {
+                                Text("\(monthlyCategory) 수련 횟수")
+                                    .pretendardFont(.regular, size: 10)
+                                    .foregroundColor(.DarkBlack)
+                            }
+                            
+                            Text("\(profileData?.monthlyCategoryCount ?? 0)")
+                                .pretendardFont(.bold, size: 16)
+                                .foregroundColor(.MindOrange)
+                                .frame(width: 136, alignment: .trailing)
+                        }
+                    }
+                }
+                .padding(12)
+            }
         }
     }
 }
