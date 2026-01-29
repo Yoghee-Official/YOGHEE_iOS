@@ -104,8 +104,8 @@ enum MyPageSection: Identifiable {
         case .profile: return ""
         case .weekClasses: return "이번주 수련 목록"
         case .reservedClasses: return "예약한 수련 미리보기"
-        case .favoriteOneDayClasses: return "찜한 하루수련 목록"
-        case .favoriteRegularClasses: return "찜한 정규수련 목록"
+        case .favoriteOneDayClasses: return "찜한 수련 목록"
+        case .favoriteRegularClasses: return "찜한 요가원 목록"
         case .detailContents: return "세부 항목"
         }
     }
