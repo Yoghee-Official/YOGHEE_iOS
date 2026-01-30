@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct FavoriteOneDayClassesModuleView: View {
-    let classes: [ClassDTO]
+    let centers: [CenterDTO]
     let onItemTap: (String) -> Void
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12.ratio()) {
-                ForEach(classes, id: \.classId) { item in
-                    YogaClassItemView(yogaClass: item, ranking: nil, onTap: { onItemTap(item.classId) })
+                ForEach(centers, id: \.centerId) { item in
+                    YogaCenterItemView(yogaCenter: item, onTap: {
+                        onItemTap(item.centerId)
+                    })
                 }
             }
             .padding(.horizontal, 16.ratio())
@@ -26,7 +28,7 @@ struct FavoriteOneDayClassesModuleView: View {
 
 #Preview {
     FavoriteOneDayClassesModuleView(
-        classes: [],
+        centers: [],
         onItemTap: { _ in }
     )
 }

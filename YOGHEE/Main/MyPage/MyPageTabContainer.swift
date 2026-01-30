@@ -306,16 +306,16 @@ class MyPageTabContainer: ObservableObject {
             sections.append(.reservedClasses(items: reservedClasses))
         }
         
-        // 4. 찜한 하루 수업 섹션 (데이터가 있을 때만)
-        if let favoriteOneDayClasses = data.favoriteOneDayClasses,
-           !favoriteOneDayClasses.isEmpty {
-            sections.append(.favoriteOneDayClasses(items: favoriteOneDayClasses))
+        // 4. 찜한 수련 목록 섹션 (데이터가 있을 때만)
+        if let favoriteRegularClasses = data.favoriteClasses,
+           !favoriteRegularClasses.isEmpty {
+            sections.append(.favoriteClasses(items: favoriteRegularClasses))
         }
         
-        // 5. 찜한 정규 수업 섹션 (데이터가 있을 때만)
-        if let favoriteRegularClasses = data.favoriteRegularClasses,
-           !favoriteRegularClasses.isEmpty {
-            sections.append(.favoriteRegularClasses(items: favoriteRegularClasses))
+        // 5. 찜한 요가원 섹션 (데이터가 있을 때만)
+        if let favoriteOneDayClasses = data.favoriteCenters,
+           !favoriteOneDayClasses.isEmpty {
+            sections.append(.favoriteCenters(items: favoriteOneDayClasses))
         }
         
         // 6. 세부 항목 섹션 (항상 최하단)
