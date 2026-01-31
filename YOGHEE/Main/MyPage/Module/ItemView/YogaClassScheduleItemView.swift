@@ -83,8 +83,7 @@ struct YogaClassScheduleItemView: View {
                             .foregroundColor(.DarkBlack)
                     }
                     .frame(width: 36.ratio(), height: 53.ratio())
-                    .background(Color.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 19.5))
+                    .background(GlassUI.reservedClass())
                 }
                 .padding(.horizontal, 16.ratio())
                 .padding(.vertical, 10.ratio())
