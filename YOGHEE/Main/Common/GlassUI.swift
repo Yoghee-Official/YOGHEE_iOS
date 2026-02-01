@@ -11,11 +11,13 @@ import SwiftUI
 enum GlassUIStyle {
     case mySmall
     case myBig
+    case reservedClass
     
     var width: CGFloat {
         switch self {
         case .mySmall: return 92.ratio()
         case .myBig: return 156.ratio()
+        case .reservedClass: return 36.ratio()
         }
     }
     
@@ -23,6 +25,15 @@ enum GlassUIStyle {
         switch self {
         case .mySmall: return 32.ratio()
         case .myBig: return 130.ratio()
+        case .reservedClass: return 54.ratio()
+        }
+    }
+    
+    var radius: CGFloat {
+        switch self {
+        case .mySmall: return 5
+        case .myBig: return 5
+        case .reservedClass: return 27
         }
     }
     
@@ -30,6 +41,7 @@ enum GlassUIStyle {
         switch self {
         case .mySmall: return 0.15
         case .myBig: return 0.15
+        case .reservedClass: return 0.12
         }
     }
     
@@ -37,6 +49,7 @@ enum GlassUIStyle {
         switch self {
         case .mySmall: return (UnitPoint(x: 0.35, y: 0), UnitPoint(x: 0.45, y: 1.0))
         case .myBig: return (UnitPoint(x: 0.4, y: 0), UnitPoint(x: 0.85, y: 0.7))
+        case .reservedClass: return (UnitPoint(x: 0.1, y: 0.7), UnitPoint(x: 0.3, y: 0.8))
         }
     }
 }
@@ -44,19 +57,22 @@ enum GlassUIStyle {
 struct GlassUI: View {
     let width: CGFloat
     let height: CGFloat
+    let radius: CGFloat
     let opacity: Double
     let strokeBorderPoints: (start: UnitPoint, end: UnitPoint)
     
     init(style: GlassUIStyle) {
         self.width = style.width
         self.height = style.height
+        self.radius = style.radius
         self.opacity = style.opacity
         self.strokeBorderPoints = style.strokeBorderPoints
+        
     }
     
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 5)
+            RoundedRectangle(cornerRadius: radius)
                 .strokeBorder(
                     LinearGradient(
                         gradient: Gradient(stops: [
@@ -70,7 +86,7 @@ struct GlassUI: View {
                     lineWidth: 1.0
                 )
             
-            RoundedRectangle(cornerRadius: 5)
+            RoundedRectangle(cornerRadius: radius)
                 .fill(
                     LinearGradient(
                         gradient: Gradient(stops: [
@@ -82,7 +98,7 @@ struct GlassUI: View {
                     )
                 )
             
-            RoundedRectangle(cornerRadius: 5)
+            RoundedRectangle(cornerRadius: radius)
                 .fill(
                     LinearGradient(
                         gradient: Gradient(stops: [
@@ -95,7 +111,7 @@ struct GlassUI: View {
                 )
                 .blur(radius: 4)
 
-            RoundedRectangle(cornerRadius: 5)
+            RoundedRectangle(cornerRadius: radius)
                 .fill(
                     LinearGradient(
                         gradient: Gradient(stops: [
@@ -121,6 +137,10 @@ extension GlassUI {
     static func myBig() -> GlassUI {
         GlassUI(style: .myBig)
     }
+    
+    static func reservedClass() -> GlassUI {
+        GlassUI(style: .reservedClass)
+    }
 }
 
 #Preview {
@@ -135,6 +155,13 @@ extension GlassUI {
         HStack {
             GlassUI.myBig()
             GlassUI.myBig()
+        }
+        
+        Spacer().frame(height: 20)
+        
+        HStack {
+            GlassUI.reservedClass()
+            GlassUI.reservedClass()
         }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)

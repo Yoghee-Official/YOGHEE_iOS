@@ -19,10 +19,8 @@ struct MyPageDataDTO: Codable, Equatable {
     let userProfile: UserProfileDTO?
     let reservedClasses: [YogaClassScheduleDTO]?
     let weekClasses: WeekClassDTO?
-//    let favoriteRegularClasses: [FavoriteRegularClassDTO]?
-//    let favoriteOneDayClasses: [FavoriteOneDayClassDTO]?
-    let favoriteRegularClasses: [ClassDTO]?
-    let favoriteOneDayClasses: [ClassDTO]?
+    let favoriteClasses: [ClassDTO]?
+    let favoriteCenters: [CenterDTO]?
 }
 
 struct UserProfileDTO: Codable, Equatable {
@@ -77,8 +75,8 @@ enum MyPageSection: Identifiable {
     case profile
     case weekClasses(weekDay: [YogaClassScheduleDTO]?, weekEnd: [YogaClassScheduleDTO]?)
     case reservedClasses(items: [YogaClassScheduleDTO])
-    case favoriteOneDayClasses(items: [ClassDTO])
-    case favoriteRegularClasses(items: [ClassDTO])
+    case favoriteClasses(items: [ClassDTO])
+    case favoriteCenters(items: [CenterDTO])
     case detailContents
     
     // Title 타입 정의
@@ -93,8 +91,8 @@ enum MyPageSection: Identifiable {
         case .profile: return "profile"
         case .weekClasses: return "weekClasses"
         case .reservedClasses: return "reservedClasses"
-        case .favoriteOneDayClasses: return "favoriteOneDayClasses"
-        case .favoriteRegularClasses: return "favoriteRegularClasses"
+        case .favoriteClasses: return "favoriteClasses"
+        case .favoriteCenters: return "favoriteCenters"
         case .detailContents: return "detailContents"
         }
     }
@@ -104,8 +102,8 @@ enum MyPageSection: Identifiable {
         case .profile: return ""
         case .weekClasses: return "이번주 수련 목록"
         case .reservedClasses: return "예약한 수련 미리보기"
-        case .favoriteOneDayClasses: return "찜한 수련 목록"
-        case .favoriteRegularClasses: return "찜한 요가원 목록"
+        case .favoriteClasses: return "찜한 수련 목록"
+        case .favoriteCenters: return "찜한 요가원 목록"
         case .detailContents: return "세부 항목"
         }
     }
@@ -114,7 +112,7 @@ enum MyPageSection: Identifiable {
         switch self {
         case .weekClasses:
             return .toggle
-        case .reservedClasses, .favoriteOneDayClasses, .favoriteRegularClasses:
+        case .reservedClasses, .favoriteClasses, .favoriteCenters:
             return .moreButton
         case .profile, .detailContents:
             return .none
