@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B132F27B46C00E615E1 /* GlassUI.swift */; };
+		52295B162F2F5A9500E615E1 /* FavoriteCenterModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */; };
+		52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
 		522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */; };
 		522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */; };
@@ -42,11 +44,8 @@
 		522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */; };
 		522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */; };
 		522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */; };
-		522CE5FB2F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */; };
 		522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */; };
 		522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */; };
-		522CE5FE2F12A6BF0063FDF5 /* FavoriteOneDayClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B82F12A6BF0063FDF5 /* FavoriteOneDayClassesModuleView.swift */; };
-		522CE5FF2F12A6BF0063FDF5 /* FavoriteRegularClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B92F12A6BF0063FDF5 /* FavoriteRegularClassesModuleView.swift */; };
 		522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */; };
 		522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BB2F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift */; };
 		522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BC2F12A6BF0063FDF5 /* UserProfileModuleView.swift */; };
@@ -81,6 +80,8 @@
 
 /* Begin PBXFileReference section */
 		52295B132F27B46C00E615E1 /* GlassUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassUI.swift; sourceTree = "<group>"; };
+		52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCenterModuleView.swift; sourceTree = "<group>"; };
+		52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteClassModuleView.swift; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
 		522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 		522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Font.swift"; sourceTree = "<group>"; };
@@ -119,11 +120,8 @@
 		522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
 		522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListContainer.swift; sourceTree = "<group>"; };
 		522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListView.swift; sourceTree = "<group>"; };
-		522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteRegularClassItemView.swift; sourceTree = "<group>"; };
 		522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogaClassScheduleItemView.swift; sourceTree = "<group>"; };
 		522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailContentsModuleView.swift; sourceTree = "<group>"; };
-		522CE5B82F12A6BF0063FDF5 /* FavoriteOneDayClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteOneDayClassesModuleView.swift; sourceTree = "<group>"; };
-		522CE5B92F12A6BF0063FDF5 /* FavoriteRegularClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteRegularClassesModuleView.swift; sourceTree = "<group>"; };
 		522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservedClassesModuleView.swift; sourceTree = "<group>"; };
 		522CE5BB2F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThisWeekClassModuleView.swift; sourceTree = "<group>"; };
 		522CE5BC2F12A6BF0063FDF5 /* UserProfileModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModuleView.swift; sourceTree = "<group>"; };
@@ -265,6 +263,7 @@
 				522CE59F2F12A6BF0063FDF5 /* NewReviewItemView.swift */,
 				522CE5A02F12A6BF0063FDF5 /* YogaCenterItemView.swift */,
 				522CE5A12F12A6BF0063FDF5 /* YogaClassItemView.swift */,
+				522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */,
 			);
 			path = ItemView;
 			sourceTree = "<group>";
@@ -300,15 +299,6 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
-		522CE5B62F12A6BF0063FDF5 /* ItemView */ = {
-			isa = PBXGroup;
-			children = (
-				522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */,
-				522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */,
-			);
-			path = ItemView;
-			sourceTree = "<group>";
-		};
 		522CE5BD2F12A6BF0063FDF5 /* Module */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,7 +309,6 @@
 				522CE61E2F12A8A70063FDF5 /* FavoriteOnedayClasses */,
 				522CE61F2F12A8C50063FDF5 /* FavoriteRegularClasses */,
 				522CE61B2F12A75B0063FDF5 /* DetailContentsModule */,
-				522CE5B62F12A6BF0063FDF5 /* ItemView */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -442,7 +431,7 @@
 		522CE61E2F12A8A70063FDF5 /* FavoriteOnedayClasses */ = {
 			isa = PBXGroup;
 			children = (
-				522CE5B82F12A6BF0063FDF5 /* FavoriteOneDayClassesModuleView.swift */,
+				52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */,
 			);
 			path = FavoriteOnedayClasses;
 			sourceTree = "<group>";
@@ -450,7 +439,7 @@
 		522CE61F2F12A8C50063FDF5 /* FavoriteRegularClasses */ = {
 			isa = PBXGroup;
 			children = (
-				522CE5B92F12A6BF0063FDF5 /* FavoriteRegularClassesModuleView.swift */,
+				52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */,
 			);
 			path = FavoriteRegularClasses;
 			sourceTree = "<group>";
@@ -584,6 +573,7 @@
 				522CE5EF2F12A6BF0063FDF5 /* NewReviewModuleView.swift in Sources */,
 				522CE5F02F12A6BF0063FDF5 /* OneDayCategoryModuleView.swift in Sources */,
 				522CE5F12F12A6BF0063FDF5 /* RegularCategoryModuleView.swift in Sources */,
+				52295B162F2F5A9500E615E1 /* FavoriteCenterModuleView.swift in Sources */,
 				522CE5F22F12A6BF0063FDF5 /* TodayClassModuleView.swift in Sources */,
 				522CE5F32F12A6BF0063FDF5 /* TopTenCenterModuleView.swift in Sources */,
 				522CE5F42F12A6BF0063FDF5 /* TopTenClassModuleView.swift in Sources */,
@@ -593,11 +583,8 @@
 				522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */,
 				522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */,
 				522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */,
-				522CE5FB2F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift in Sources */,
 				522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */,
 				522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */,
-				522CE5FE2F12A6BF0063FDF5 /* FavoriteOneDayClassesModuleView.swift in Sources */,
-				522CE5FF2F12A6BF0063FDF5 /* FavoriteRegularClassesModuleView.swift in Sources */,
 				522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */,
 				522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */,
 				522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */,
@@ -608,6 +595,7 @@
 				522CE6072F12A6BF0063FDF5 /* TeaTimeTabView.swift in Sources */,
 				522CE6082F12A6BF0063FDF5 /* MainTabView.swift in Sources */,
 				522CE6092F12A6BF0063FDF5 /* OnboardingView.swift in Sources */,
+				52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */,
 				522CE60A2F12A6BF0063FDF5 /* AuthModels.swift in Sources */,
 				522CE60B2F12A6BF0063FDF5 /* CategoryModels.swift in Sources */,
 				522CE60C2F12A6BF0063FDF5 /* MainModels.swift in Sources */,

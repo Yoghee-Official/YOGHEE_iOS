@@ -75,12 +75,13 @@ struct ClassDTO: Codable, Equatable {
     let categories: [String]?
 }
 
-struct CenterDTO: Codable {
+struct CenterDTO: Codable, Equatable {
     let centerId: String
     let address: String
     let name: String
     let thumbnail: String
     let favoriteCount: Int
+    let isFavorite: Bool
 }
 
 struct YogaReviewDTO: Codable {
