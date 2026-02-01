@@ -44,7 +44,6 @@
 		522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */; };
 		522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */; };
 		522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */; };
-		522CE5FB2F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */; };
 		522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */; };
 		522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */; };
 		522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */; };
@@ -121,7 +120,6 @@
 		522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
 		522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListContainer.swift; sourceTree = "<group>"; };
 		522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListView.swift; sourceTree = "<group>"; };
-		522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteRegularClassItemView.swift; sourceTree = "<group>"; };
 		522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogaClassScheduleItemView.swift; sourceTree = "<group>"; };
 		522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailContentsModuleView.swift; sourceTree = "<group>"; };
 		522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservedClassesModuleView.swift; sourceTree = "<group>"; };
@@ -265,6 +263,7 @@
 				522CE59F2F12A6BF0063FDF5 /* NewReviewItemView.swift */,
 				522CE5A02F12A6BF0063FDF5 /* YogaCenterItemView.swift */,
 				522CE5A12F12A6BF0063FDF5 /* YogaClassItemView.swift */,
+				522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */,
 			);
 			path = ItemView;
 			sourceTree = "<group>";
@@ -300,15 +299,6 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
-		522CE5B62F12A6BF0063FDF5 /* ItemView */ = {
-			isa = PBXGroup;
-			children = (
-				522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */,
-				522CE5B42F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift */,
-			);
-			path = ItemView;
-			sourceTree = "<group>";
-		};
 		522CE5BD2F12A6BF0063FDF5 /* Module */ = {
 			isa = PBXGroup;
 			children = (
@@ -319,7 +309,6 @@
 				522CE61E2F12A8A70063FDF5 /* FavoriteOnedayClasses */,
 				522CE61F2F12A8C50063FDF5 /* FavoriteRegularClasses */,
 				522CE61B2F12A75B0063FDF5 /* DetailContentsModule */,
-				522CE5B62F12A6BF0063FDF5 /* ItemView */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -594,7 +583,6 @@
 				522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */,
 				522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */,
 				522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */,
-				522CE5FB2F12A6BF0063FDF5 /* FavoriteRegularClassItemView.swift in Sources */,
 				522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */,
 				522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */,
 				522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */,
