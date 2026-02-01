@@ -1,5 +1,5 @@
 //
-//  FavoriteOneDayClassesModuleView.swift
+//  FavoriteCenterModuleView.swift
 //  YOGHEE
 //
 //  Created by 0ofKim on 12/21/25.
@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct FavoriteOneDayClassesModuleView: View {
+struct FavoriteCenterModuleView: View {
     let centers: [CenterDTO]
     let onItemTap: (String) -> Void
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12.ratio()) {
+            HStack(alignment: .top, spacing: 12.ratio()) {
                 ForEach(centers, id: \.centerId) { item in
                     YogaCenterItemView(yogaCenter: item, onTap: {
                         onItemTap(item.centerId)
@@ -27,7 +27,7 @@ struct FavoriteOneDayClassesModuleView: View {
 }
 
 #Preview {
-    FavoriteOneDayClassesModuleView(
+    FavoriteCenterModuleView(
         centers: [],
         onItemTap: { _ in }
     )

@@ -164,13 +164,13 @@ struct MyPageSectionView: View {
                 )
                 
             case .favoriteClasses(let classes):
-                FavoriteRegularClassesModuleView(
+                FavoriteClassModuleView(
                     classes: classes,
                     onItemTap: { itemId in onItemTap(itemId, section.id) }
                 )
                 
             case .favoriteCenters(let centers):
-                FavoriteOneDayClassesModuleView(
+                FavoriteCenterModuleView(
                     centers: centers,
                     onItemTap: { itemId in onItemTap(itemId, section.id) }
                 )
