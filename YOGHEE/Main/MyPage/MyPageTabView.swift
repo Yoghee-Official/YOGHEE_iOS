@@ -11,56 +11,76 @@ import SwiftUIIntrospect
 struct MyPageTabView: View {
     @StateObject private var container = MyPageTabContainer()
     @ObservedObject private var authManager = AuthManager.shared
+    @State private var navigationPath = NavigationPath()
     let isSelected: Bool  // 탭이 선택되었는지 여부
     var onNavigateToHome: (() -> Void)? = nil  // 홈으로 이동하는 클로저
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .top) {
-                // StatusBar 영역만 색상 변경
-                VStack(spacing: 0) {
-                    Color.GheeYellow
-                        .frame(height: geometry.safeAreaInsets.top)
+        NavigationStack(path: $navigationPath) {
+            GeometryReader { geometry in
+                ZStack(alignment: .top) {
+                    // StatusBar 영역만 색상 변경
+                    VStack(spacing: 0) {
+                        Color.GheeYellow
+                            .frame(height: geometry.safeAreaInsets.top)
+                        
+                        Color.SandBeige
+                    }
+                    .ignoresSafeArea()
                     
-                    Color.SandBeige
-                }
-                .ignoresSafeArea()
-                
-                // 메인 컨텐츠
-                ScrollView {
-                    if container.state.isLoading {
-                        ProgressView("데이터 로딩 중...")
-                            .frame(maxWidth: .infinity, minHeight: 200)
-                    } else if let errorMessage = container.state.errorMessage {
-                        VStack(spacing: 16) {
-                            Text("오류가 발생했습니다")
-                                .pretendardFont(.semiBold, size: 17)
-                            Text(errorMessage)
-                                .pretendardFont(.regular, size: 12)
-                                .foregroundColor(.gray)
-                            Button("다시 시도") {
-                                container.handleIntent(.loadMyPageData)
+                    // 메인 컨텐츠
+                    ScrollView {
+                        if container.state.isLoading {
+                            ProgressView("데이터 로딩 중...")
+                                .frame(maxWidth: .infinity, minHeight: 200)
+                        } else if let errorMessage = container.state.errorMessage {
+                            VStack(spacing: 16) {
+                                Text("오류가 발생했습니다")
+                                    .pretendardFont(.semiBold, size: 17)
+                                Text(errorMessage)
+                                    .pretendardFont(.regular, size: 12)
+                                    .foregroundColor(.gray)
+                                Button("다시 시도") {
+                                    container.handleIntent(.loadMyPageData)
+                                }
+                                .buttonStyle(.bordered)
                             }
-                            .buttonStyle(.bordered)
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 200)
-                    } else {
-                        LazyVStack(spacing: 20) {
-                            ForEach(container.state.sections) { section in
-                                MyPageSectionView(
-                                    section: section,
-                                    container: container,
-                                    onItemTap: { itemId, sectionId in
-                                        container.handleIntent(.selectItem(itemId, sectionId))
-                                    }
-                                )
+                            .frame(maxWidth: .infinity, minHeight: 200)
+                        } else {
+                            LazyVStack(spacing: 20) {
+                                ForEach(container.state.sections) { section in
+                                    MyPageSectionView(
+                                        section: section,
+                                        container: container,
+                                        onItemTap: { itemId, sectionId in
+                                            container.handleIntent(.selectItem(itemId, sectionId))
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .introspect(.scrollView, on: .iOS(.v18)) { scrollView in
+                        scrollView.bounces = false
+                    }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .introspect(.scrollView, on: .iOS(.v18)) { scrollView in
-                    scrollView.bounces = false
+            }
+            .navigationDestination(for: MyPageNavigationDestination.self) { destination in
+                switch destination {
+                case .settings:
+                    SettingsView()
+                case .messageBox:
+                    MessageBoxView()
+                }
+            }
+            .onChange(of: container.state.navigationDestination) { _, newValue in
+                if let destination = newValue {
+                    navigationPath.append(destination)
+                    // Intent를 통해 네비게이션 State 초기화
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        container.handleIntent(.clearNavigation)
+                    }
                 }
             }
         }

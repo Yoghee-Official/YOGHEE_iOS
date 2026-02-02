@@ -10,6 +10,10 @@
 		52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B132F27B46C00E615E1 /* GlassUI.swift */; };
 		52295B162F2F5A9500E615E1 /* FavoriteCenterModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */; };
 		52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */; };
+		52295B1B2F2F943B00E615E1 /* MessageBoxContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */; };
+		52295B1C2F2F943B00E615E1 /* MessageBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B1A2F2F943B00E615E1 /* MessageBoxView.swift */; };
+		52295B202F2F947000E615E1 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B1E2F2F947000E615E1 /* SettingsView.swift */; };
+		52295B212F2F947000E615E1 /* SettingsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B1D2F2F947000E615E1 /* SettingsContainer.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
 		522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */; };
 		522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */; };
@@ -42,8 +46,6 @@
 		522CE5F52F12A6BF0063FDF5 /* HomeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5AD2F12A6BF0063FDF5 /* HomeHeaderView.swift */; };
 		522CE5F62F12A6BF0063FDF5 /* HomeTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5AE2F12A6BF0063FDF5 /* HomeTabContainer.swift */; };
 		522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */; };
-		522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */; };
-		522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */; };
 		522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */; };
 		522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */; };
 		522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */; };
@@ -82,6 +84,10 @@
 		52295B132F27B46C00E615E1 /* GlassUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassUI.swift; sourceTree = "<group>"; };
 		52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCenterModuleView.swift; sourceTree = "<group>"; };
 		52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteClassModuleView.swift; sourceTree = "<group>"; };
+		52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBoxContainer.swift; sourceTree = "<group>"; };
+		52295B1A2F2F943B00E615E1 /* MessageBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBoxView.swift; sourceTree = "<group>"; };
+		52295B1D2F2F947000E615E1 /* SettingsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsContainer.swift; sourceTree = "<group>"; };
+		52295B1E2F2F947000E615E1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
 		522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 		522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Font.swift"; sourceTree = "<group>"; };
@@ -118,8 +124,6 @@
 		522CE5AD2F12A6BF0063FDF5 /* HomeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderView.swift; sourceTree = "<group>"; };
 		522CE5AE2F12A6BF0063FDF5 /* HomeTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabContainer.swift; sourceTree = "<group>"; };
 		522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
-		522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListContainer.swift; sourceTree = "<group>"; };
-		522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationListView.swift; sourceTree = "<group>"; };
 		522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogaClassScheduleItemView.swift; sourceTree = "<group>"; };
 		522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailContentsModuleView.swift; sourceTree = "<group>"; };
 		522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservedClassesModuleView.swift; sourceTree = "<group>"; };
@@ -169,6 +173,17 @@
 				52295B132F27B46C00E615E1 /* GlassUI.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		52295B1F2F2F947000E615E1 /* LandingView */ = {
+			isa = PBXGroup;
+			children = (
+				52295B1D2F2F947000E615E1 /* SettingsContainer.swift */,
+				52295B1E2F2F947000E615E1 /* SettingsView.swift */,
+				52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */,
+				52295B1A2F2F943B00E615E1 /* MessageBoxView.swift */,
+			);
+			path = LandingView;
 			sourceTree = "<group>";
 		};
 		522CE5812F12A6BF0063FDF5 /* rules */ = {
@@ -293,8 +308,6 @@
 				522CE5AD2F12A6BF0063FDF5 /* HomeHeaderView.swift */,
 				522CE5AE2F12A6BF0063FDF5 /* HomeTabContainer.swift */,
 				522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */,
-				522CE5B02F12A6BF0063FDF5 /* NotificationListContainer.swift */,
-				522CE5B12F12A6BF0063FDF5 /* NotificationListView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -335,6 +348,7 @@
 		522CE5C72F12A6BF0063FDF5 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				52295B1F2F2F947000E615E1 /* LandingView */,
 				52295B112F23DE6600E615E1 /* Common */,
 				522CE5942F12A6BF0063FDF5 /* Content */,
 				522CE5972F12A6BF0063FDF5 /* Explore */,
@@ -551,6 +565,8 @@
 				522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */,
 				522CE5DB2F12A6BF0063FDF5 /* Extension+Int.swift in Sources */,
 				522CE5DC2F12A6BF0063FDF5 /* Extension+UIViewController.swift in Sources */,
+				52295B202F2F947000E615E1 /* SettingsView.swift in Sources */,
+				52295B212F2F947000E615E1 /* SettingsContainer.swift in Sources */,
 				522CE5DD2F12A6BF0063FDF5 /* Extension+View.swift in Sources */,
 				522CE5DE2F12A6BF0063FDF5 /* LoginContainer.swift in Sources */,
 				522CE5DF2F12A6BF0063FDF5 /* LoginView.swift in Sources */,
@@ -581,8 +597,6 @@
 				522CE6C52F152F980063FDF5 /* MyPageSectionHeaderView.swift in Sources */,
 				522CE5F62F12A6BF0063FDF5 /* HomeTabContainer.swift in Sources */,
 				522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */,
-				522CE5F82F12A6BF0063FDF5 /* NotificationListContainer.swift in Sources */,
-				522CE5F92F12A6BF0063FDF5 /* NotificationListView.swift in Sources */,
 				522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */,
 				522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */,
 				522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */,
@@ -598,6 +612,8 @@
 				52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */,
 				522CE60A2F12A6BF0063FDF5 /* AuthModels.swift in Sources */,
 				522CE60B2F12A6BF0063FDF5 /* CategoryModels.swift in Sources */,
+				52295B1B2F2F943B00E615E1 /* MessageBoxContainer.swift in Sources */,
+				52295B1C2F2F943B00E615E1 /* MessageBoxView.swift in Sources */,
 				522CE60C2F12A6BF0063FDF5 /* MainModels.swift in Sources */,
 				522CE60D2F12A6BF0063FDF5 /* MyPageModels.swift in Sources */,
 				522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */,

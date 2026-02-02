@@ -114,7 +114,7 @@ struct HomeTabView: View {
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .notifications:
-                    NotificationListView()
+                    MessageBoxView()
                 case .classDetail(let classId):
                     Text("클래스 상세: \(classId)")
                 case .reviewDetail(let reviewId):
