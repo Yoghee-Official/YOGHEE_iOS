@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+// MARK: - Navigation Destination
+enum MyPageNavigationDestination: Hashable {
+    case settings
+    case messageBox
+}
+
 // MARK: - Intent
 enum MyPageTabIntent {
     case checkLoginStatus
@@ -29,6 +35,9 @@ enum MyPageTabIntent {
     
     // 토글 액션
     case toggleYogini(Bool)  // true = 요기니, false = 지도자
+    
+    // 네비게이션 액션
+    case clearNavigation
 }
 
 // MARK: - State
@@ -42,13 +51,15 @@ struct MyPageTabState: Equatable {
     var showLoginSheet: Bool = false
     var showProfileEditSheet: Bool = false
     var yoginiToggle: Bool = false  // true = 요기니, false = 지도자
+    var navigationDestination: MyPageNavigationDestination? = nil
     
     static func == (lhs: MyPageTabState, rhs: MyPageTabState) -> Bool {
         return lhs.sections.count == rhs.sections.count &&
                lhs.isLoading == rhs.isLoading &&
                lhs.errorMessage == rhs.errorMessage &&
                lhs.isLoggedIn == rhs.isLoggedIn &&
-               lhs.yoginiToggle == rhs.yoginiToggle
+               lhs.yoginiToggle == rhs.yoginiToggle &&
+               lhs.navigationDestination == rhs.navigationDestination
     }
 }
 
@@ -83,12 +94,11 @@ class MyPageTabContainer: ObservableObject {
             
         case .openSettings:
             log("앱 설정 클릭")
-            // TODO: 설정 화면 이동 또는 로그아웃
-            // logout()
+            state.navigationDestination = .settings
             
         case .openNotifications:
             log("알림 클릭")
-            // TODO: 알림 화면 이동
+            state.navigationDestination = .messageBox
             
         case .viewLevelInfo:
             log("레벨 정보 클릭")
@@ -119,6 +129,10 @@ class MyPageTabContainer: ObservableObject {
             state.yoginiToggle = isYogini
             log("토글 변경: \(isYogini ? "요기니" : "지도자")")
             // TODO: 토글 변경 시 데이터 필터링 또는 재요청
+            
+        // 네비게이션 액션
+        case .clearNavigation:
+            state.navigationDestination = nil
         }
     }
     
