@@ -13,42 +13,46 @@ struct WeekClassesModuleView: View {
     let onItemTap: (String) -> Void
     
     var body: some View {
-        VStack(spacing: 16.ratio()) {
-            // 평일 수업
-            if let weekDay = weekDay, !weekDay.isEmpty {
-                VStack(alignment: .leading, spacing: 12.ratio()) {
-                    Text("평일")
-                        .pretendardFont(.bold, size: 14)
-                        .foregroundColor(.Info)
-                        .padding(.horizontal, 16.ratio())
-                    
-                    VStack(spacing: 12.ratio()) {
-                        ForEach(weekDay, id: \.classId) { item in
-                            YogaClassScheduleItemView(item: item, onTap: { onItemTap(item.classId) })
+        if (weekDay?.isEmpty ?? true) && (weekEnd?.isEmpty ?? true) {
+            MyPageEmptyView(message: "예약된 수련이 없습니다.")
+        } else {
+            VStack(spacing: 16.ratio()) {
+                // 평일 수업
+                if let weekDay = weekDay, !weekDay.isEmpty {
+                    VStack(alignment: .leading, spacing: 12.ratio()) {
+                        Text("평일")
+                            .pretendardFont(.bold, size: 14)
+                            .foregroundColor(.Info)
+                            .padding(.horizontal, 16.ratio())
+                        
+                        VStack(spacing: 12.ratio()) {
+                            ForEach(weekDay, id: \.classId) { item in
+                                YogaClassScheduleItemView(item: item, onTap: { onItemTap(item.classId) })
+                            }
                         }
+                        .padding(.horizontal, 16.ratio())
                     }
-                    .padding(.horizontal, 16.ratio())
+                }
+                
+                // 주말 수업
+                if let weekEnd = weekEnd, !weekEnd.isEmpty {
+                    VStack(alignment: .leading, spacing: 12.ratio()) {
+                        Text("주말")
+                            .pretendardFont(.bold, size: 14)
+                            .foregroundColor(.Info)
+                            .padding(.horizontal, 16.ratio())
+                        
+                        VStack(spacing: 12.ratio()) {
+                            ForEach(weekEnd, id: \.classId) { item in
+                                YogaClassScheduleItemView(item: item, onTap: { onItemTap(item.classId) })
+                            }
+                        }
+                        .padding(.horizontal, 16.ratio())
+                    }
                 }
             }
-            
-            // 주말 수업
-            if let weekEnd = weekEnd, !weekEnd.isEmpty {
-                VStack(alignment: .leading, spacing: 12.ratio()) {
-                    Text("주말")
-                        .pretendardFont(.bold, size: 14)
-                        .foregroundColor(.Info)
-                        .padding(.horizontal, 16.ratio())
-                    
-                    VStack(spacing: 12.ratio()) {
-                        ForEach(weekEnd, id: \.classId) { item in
-                            YogaClassScheduleItemView(item: item, onTap: { onItemTap(item.classId) })
-                        }
-                    }
-                    .padding(.horizontal, 16.ratio())
-                }
-            }
+            .padding(.vertical, 16)
         }
-        .padding(.vertical, 16)
     }
 }
 
