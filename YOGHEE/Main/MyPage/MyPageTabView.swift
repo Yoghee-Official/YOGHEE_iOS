@@ -212,7 +212,8 @@ struct MyPageSectionView: View {
             case .reservedClasses(let classes):
                 ReservedClassesModuleView(
                     classes: classes,
-                    onItemTap: { itemId in onItemTap(itemId, section.id) }
+                    onItemTap: { itemId in onItemTap(itemId, section.id) },
+                    userRole: container.state.currentRole
                 )
                 
             case .favoriteClasses(let classes):

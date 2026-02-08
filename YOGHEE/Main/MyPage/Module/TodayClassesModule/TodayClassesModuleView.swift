@@ -49,6 +49,7 @@ struct TodayClassesModuleView: View {
                                     item: item,
                                     onTap: { onItemTap(item.classId) },
                                     userRole: .instructor,
+                                    showAttendanceButton: true,
                                     onAttendanceCheckTap: {
                                         print("출석 체크 화면 이동")
                                     }
