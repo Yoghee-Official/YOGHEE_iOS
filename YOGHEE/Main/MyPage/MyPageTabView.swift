@@ -19,9 +19,9 @@ struct MyPageTabView: View {
         NavigationStack(path: $navigationPath) {
             GeometryReader { geometry in
                 ZStack(alignment: .top) {
-                    // StatusBar 영역만 색상 변경
+                    // StatusBar 영역만 색상 변경 (role에 따라)
                     VStack(spacing: 0) {
-                        Color.GheeYellow
+                        (container.state.currentRole == .yogini ? Color.GheeYellow : Color.FlowBlue)
                             .frame(height: geometry.safeAreaInsets.top)
                         
                         Color.SandBeige
@@ -135,9 +135,10 @@ struct MyPageSectionView: View {
                     title: section.title,
                     titleType: section.titleType,
                     isYogini: Binding(
-                        get: { container.state.yoginiToggle },
-                        set: { newValue in
-                            container.handleIntent(.toggleYogini(newValue))
+                        get: { container.state.currentRole == .yogini },
+                        set: { isYogini in
+                            let newRole: UserRole = isYogini ? .yogini : .instructor
+                            container.handleIntent(.switchRole(newRole))
                         }
                     ),
                     onMoreButtonTap: {
@@ -149,6 +150,7 @@ struct MyPageSectionView: View {
             
             switch section {
             case .profile:
+                // 요기니 프로필
                 if let userProfile = container.state.myPageData?.userProfile {
                     UserProfileModuleView(
                         profileData: userProfile,
@@ -169,11 +171,42 @@ struct MyPageSectionView: View {
                         }
                     )
                 }
+                // 지도자 프로필
+                else if let leaderProfile = container.state.myPageData?.leaderProfile {
+                    LeaderProfileModuleView(
+                        profileData: leaderProfile,
+                        onProfileEditTap: {
+                            container.handleIntent(.editProfile)
+                        },
+                        onSettingTap: {
+                            container.handleIntent(.openSettings)
+                        },
+                        onNotificationTap: {
+                            container.handleIntent(.openNotifications)
+                        },
+                        onLevelInfoTap: {
+                            // TODO: 지도자 자격증 상세 화면 이동
+                            print("지도자 자격증 상세 클릭")
+                        },
+                        onCategoryTap: {
+                            // TODO: 지도자 카테고리 분석 화면 이동
+                            print("지도자 카테고리 분석 클릭")
+                        }
+                    )
+                }
                 
             case .weekClasses(let weekDay, let weekEnd):
                 WeekClassesModuleView(
                     weekDay: weekDay,
                     weekEnd: weekEnd,
+                    onItemTap: { itemId in onItemTap(itemId, section.id) }
+                )
+                
+            case .todayClasses(let classes):
+                // 지도자 전용 - 오늘의 수업 (TODO: TodayClassesModuleView 구현 필요)
+                // 임시로 ReservedClassesModuleView 재사용
+                ReservedClassesModuleView(
+                    classes: classes,
                     onItemTap: { itemId in onItemTap(itemId, section.id) }
                 )
                 
