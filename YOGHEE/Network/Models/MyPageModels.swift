@@ -120,17 +120,17 @@ enum MyPageSectionType: String {
     // 공통 (의미가 다름: 요기니 = 예약한 수업, 지도자 = 예약된 수업)
     case reservedClasses
     
-    var displayName: String {
-        switch self {
-        case .profile: return "프로필"
-        case .weekClasses: return "이번주 참여 수련"
-        case .reservedClasses: return "예약 수련"
-        case .favoriteClasses: return "찜한 수련"
-        case .favoriteCenters: return "찜한 요가원"
-        case .todayClasses: return "오늘의 수업"
-        case .detailContents: return "세부 항목"
-        }
-    }
+//    var displayName: String {
+//        switch self {
+//        case .profile: return "프로필"
+//        case .weekClasses: return "이번주 참여 수련"
+//        case .todayClasses: return "오늘 지도 수련 목록"
+//        case .reservedClasses: return "예약 수련"
+//        case .favoriteClasses: return "찜한 수련"
+//        case .favoriteCenters: return "찜한 요가원"
+//        case .detailContents: return "세부 항목"
+//        }
+//    }
 }
 
 // MARK: - Section Configuration
@@ -206,7 +206,7 @@ enum MyPageSection: Identifiable {
         switch self {
         case .profile: return ""
         case .weekClasses: return "이번주 참여 수련 목록"
-        case .todayClasses: return "오늘의 수업"
+        case .todayClasses: return "오늘 지도 수련 목록"
         case .reservedClasses: return "예약한 수련 미리보기"
         case .favoriteClasses: return "찜한 수련 목록"
         case .favoriteCenters: return "찜한 요가원 목록"

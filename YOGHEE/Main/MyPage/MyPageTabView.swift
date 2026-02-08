@@ -203,9 +203,8 @@ struct MyPageSectionView: View {
                 )
                 
             case .todayClasses(let classes):
-                // 지도자 전용 - 오늘의 수업 (TODO: TodayClassesModuleView 구현 필요)
-                // 임시로 ReservedClassesModuleView 재사용
-                ReservedClassesModuleView(
+                // 지도자 전용 - 오늘의 수업
+                TodayClassesModuleView(
                     classes: classes,
                     onItemTap: { itemId in onItemTap(itemId, section.id) }
                 )
