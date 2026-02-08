@@ -67,7 +67,7 @@ class APIService {
         case categoryClasses(categoryId: String, type: String)
         case categoryDetail(categoryId: String)
         case notifications
-        case myPage
+        case myPage(role: UserRole)
         
         var path: String {
             switch self {
@@ -81,8 +81,13 @@ class APIService {
                 return "/api/category/\(id)/"
             case .notifications:
                 return "/api/notifications/"
-            case .myPage:
-                return "/api/my/"
+            case .myPage(let role):
+                switch role {
+                case .yogini:
+                    return "/api/my"
+                case .instructor:
+                    return "/api/my/leader"
+                }
             }
         }
         
@@ -144,8 +149,8 @@ class APIService {
     }
     
     /// 마이페이지 데이터 조회
-    func getMyPageData() async throws -> MyPageResponse {
-        let endpoint = Endpoint.myPage
+    func getMyPageData(for role: UserRole) async throws -> MyPageResponse {
+        let endpoint = Endpoint.myPage(role: role)
         
         // AuthManager에서 토큰 가져오기
         guard let token = await getAccessToken() else {
@@ -153,6 +158,10 @@ class APIService {
         }
         
         let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        
+        log("📡 마이페이지 데이터 요청 - Role: \(role.displayName)")
+        log("🌐 Endpoint: \(endpoint.path)")
+        
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
     }
     

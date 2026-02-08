@@ -12,17 +12,21 @@ struct FavoriteCenterModuleView: View {
     let onItemTap: (String) -> Void
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .top, spacing: 12.ratio()) {
-                ForEach(centers, id: \.centerId) { item in
-                    YogaCenterItemView(yogaCenter: item, onTap: {
-                        onItemTap(item.centerId)
-                    })
+        if centers.isEmpty {
+            MyPageEmptyView(message: "찜한 요가원이 없습니다.")
+        } else {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 12.ratio()) {
+                    ForEach(centers, id: \.centerId) { item in
+                        YogaCenterItemView(yogaCenter: item, onTap: {
+                            onItemTap(item.centerId)
+                        })
+                    }
                 }
+                .padding(.horizontal, 16.ratio())
             }
-            .padding(.horizontal, 16.ratio())
+            .padding(.vertical, 12.ratio())
         }
-        .padding(.vertical, 12.ratio())
     }
 }
 

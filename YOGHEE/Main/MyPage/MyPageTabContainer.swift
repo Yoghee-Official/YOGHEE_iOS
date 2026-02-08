@@ -34,7 +34,7 @@ enum MyPageTabIntent {
     case selectItem(String, String) // itemId, sectionId
     
     // 토글 액션
-    case toggleYogini(Bool)  // true = 요기니, false = 지도자
+    case switchRole(UserRole)  // 역할 전환
     
     // 네비게이션 액션
     case clearNavigation
@@ -50,15 +50,20 @@ struct MyPageTabState: Equatable {
     var isLoggedIn: Bool = false
     var showLoginSheet: Bool = false
     var showProfileEditSheet: Bool = false
-    var yoginiToggle: Bool = false  // true = 요기니, false = 지도자
+    var currentRole: UserRole = .yogini  // 기본값: 요기니
     var navigationDestination: MyPageNavigationDestination? = nil
+    
+    /// 현재 Role의 Configuration
+    var sectionConfiguration: MyPageSectionConfiguration {
+        return MyPageSectionConfiguration(role: currentRole)
+    }
     
     static func == (lhs: MyPageTabState, rhs: MyPageTabState) -> Bool {
         return lhs.sections.count == rhs.sections.count &&
                lhs.isLoading == rhs.isLoading &&
                lhs.errorMessage == rhs.errorMessage &&
                lhs.isLoggedIn == rhs.isLoggedIn &&
-               lhs.yoginiToggle == rhs.yoginiToggle &&
+               lhs.currentRole == rhs.currentRole &&
                lhs.navigationDestination == rhs.navigationDestination
     }
 }
@@ -125,10 +130,13 @@ class MyPageTabContainer: ObservableObject {
             handleItemSelection(itemId: itemId, sectionId: sectionId)
             
         // 토글 액션
-        case .toggleYogini(let isYogini):
-            state.yoginiToggle = isYogini
-            log("토글 변경: \(isYogini ? "요기니" : "지도자")")
-            // TODO: 토글 변경 시 데이터 필터링 또는 재요청
+        case .switchRole(let role):
+            let previousRole = state.currentRole
+            state.currentRole = role
+            log("역할 전환: \(previousRole.displayName) → \(role.displayName)")
+            
+            // 역할 변경 시 데이터 다시 불러오기
+            loadMyPageData()
             
         // 네비게이션 액션
         case .clearNavigation:
@@ -139,7 +147,7 @@ class MyPageTabContainer: ObservableObject {
     private func handleItemSelection(itemId: String, sectionId: String) {
         // sectionId에 따라 적절한 네비게이션 처리
         switch sectionId {
-        case "weekClasses", "reservedClasses":
+        case "weekClasses", "todayClasses", "reservedClasses":
             // 클래스 상세 화면으로 이동
             log("클래스 상세 화면 이동: \(itemId)")
             // TODO: 네비게이션 처리
@@ -247,7 +255,7 @@ class MyPageTabContainer: ObservableObject {
         
         Task { @MainActor in
             do {
-                let response = try await APIService.shared.getMyPageData()
+                let response = try await APIService.shared.getMyPageData(for: state.currentRole)
                 await MainActor.run {
                     self.state.myPageData = response.data
                     self.state.sections = self.createSections(from: response.data)
@@ -266,7 +274,7 @@ class MyPageTabContainer: ObservableObject {
                     if AuthManager.shared.isAuthenticated {
                         log("✅ 토큰 갱신 성공 - 데이터 재요청")
                         do {
-                            let response = try await APIService.shared.getMyPageData()
+                            let response = try await APIService.shared.getMyPageData(for: state.currentRole)
                             await MainActor.run {
                                 self.state.myPageData = response.data
                                 self.state.sections = self.createSections(from: response.data)
@@ -298,42 +306,56 @@ class MyPageTabContainer: ObservableObject {
     // MARK: - Helper Methods
     
     private func createSections(from data: MyPageDataDTO) -> [MyPageSection] {
+        let config = state.sectionConfiguration
         var sections: [MyPageSection] = []
         
-        // 1. 프로필 섹션 (항상 최상단)
-        if data.userProfile != nil {
-            sections.append(.profile)
+        // availableSections 순서대로 섹션 생성
+        for sectionType in config.availableSections {
+            switch sectionType {
+            case .profile:
+                // 요기니와 지도자 모두 프로필 있으면 추가
+                if data.userProfile != nil || data.leaderProfile != nil {
+                    sections.append(.profile)
+                }
+                
+            case .weekClasses:
+                // 요기니 전용 - 이번주 수업
+                if let weekClasses = data.weekClasses,
+                   (weekClasses.weekDay?.isEmpty == false || weekClasses.weekEnd?.isEmpty == false) {
+                    sections.append(.weekClasses(
+                        weekDay: weekClasses.weekDay,
+                        weekEnd: weekClasses.weekEnd
+                    ))
+                }
+                
+            case .todayClasses:
+                // 지도자 전용 - 오늘의 수업
+                if let todayClasses = data.todayClasses, !todayClasses.isEmpty {
+                    sections.append(.todayClasses(items: todayClasses))
+                }
+                
+            case .reservedClasses:
+                // 공통 (요기니: 예약한 수업, 지도자: 예약된 수업)
+                if let reservedClasses = data.reservedClasses, !reservedClasses.isEmpty {
+                    sections.append(.reservedClasses(items: reservedClasses))
+                }
+                
+            case .favoriteClasses:
+                // 요기니 전용 - 찜한 수련
+                if let favoriteClasses = data.favoriteClasses, !favoriteClasses.isEmpty {
+                    sections.append(.favoriteClasses(items: favoriteClasses))
+                }
+                
+            case .favoriteCenters:
+                // 요기니 전용 - 찜한 요가원
+                if let favoriteCenters = data.favoriteCenters, !favoriteCenters.isEmpty {
+                    sections.append(.favoriteCenters(items: favoriteCenters))
+                }
+                
+            case .detailContents:
+                sections.append(.detailContents)
+            }
         }
-        
-        // 2. 이번 주 수업 섹션 (데이터가 있을 때만)
-        if let weekClasses = data.weekClasses,
-           (weekClasses.weekDay?.isEmpty == false || weekClasses.weekEnd?.isEmpty == false) {
-            sections.append(.weekClasses(
-                weekDay: weekClasses.weekDay,
-                weekEnd: weekClasses.weekEnd
-            ))
-        }
-        
-        // 3. 예약된 수업 섹션 (데이터가 있을 때만)
-        if let reservedClasses = data.reservedClasses,
-           !reservedClasses.isEmpty {
-            sections.append(.reservedClasses(items: reservedClasses))
-        }
-        
-        // 4. 찜한 수련 목록 섹션 (데이터가 있을 때만)
-        if let favoriteRegularClasses = data.favoriteClasses,
-           !favoriteRegularClasses.isEmpty {
-            sections.append(.favoriteClasses(items: favoriteRegularClasses))
-        }
-        
-        // 5. 찜한 요가원 섹션 (데이터가 있을 때만)
-        if let favoriteOneDayClasses = data.favoriteCenters,
-           !favoriteOneDayClasses.isEmpty {
-            sections.append(.favoriteCenters(items: favoriteOneDayClasses))
-        }
-        
-        // 6. 세부 항목 섹션 (항상 최하단)
-        sections.append(.detailContents)
         
         return sections
     }

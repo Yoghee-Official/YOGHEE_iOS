@@ -52,13 +52,9 @@ struct InstructorToggleView: View {
                 isYogini = false
             }) {
                 Text("지도자")
-                    .pretendardFont(.medium, size: 12)
+                    .pretendardFont(.bold, size: 14)
                     .foregroundColor(!isYogini ? .DarkBlack : .gray)
-                    .frame(width: 60.ratio(), height: 32.ratio())
-                    .background(
-                        RoundedRectangle(cornerRadius: 8.ratio())
-                            .fill(!isYogini ? Color.NatureGreen : Color.white)
-                    )
+                    .frame(maxWidth: .infinity)
             }
             
             // 요기니 버튼
@@ -66,17 +62,27 @@ struct InstructorToggleView: View {
                 isYogini = true
             }) {
                 Text("요기니")
-                    .pretendardFont(.medium, size: 12)
+                    .pretendardFont(.bold, size: 14)
                     .foregroundColor(isYogini ? .DarkBlack : .gray)
-                    .frame(width: 60.ratio(), height: 32.ratio())
-                    .background(
-                        RoundedRectangle(cornerRadius: 8.ratio())
-                            .fill(isYogini ? Color.NatureGreen : Color.white)
-                    )
+                    .frame(maxWidth: .infinity)
             }
         }
-        .background(Color.Background)
-        .cornerRadius(8.ratio())
+        .frame(width: 143, height: 32)
+        .background(
+            ZStack {
+                // 전체 배경
+                Capsule()
+                    .fill(Color.white)
+                
+                // 활성화된 버튼 배경
+                GeometryReader { geometry in
+                    Capsule()
+                        .fill(isYogini ? Color.GheeYellow : Color.FlowBlue)
+                        .frame(width: geometry.size.width / 2)
+                        .offset(x: isYogini ? geometry.size.width / 2 : 0)
+                }
+            }
+        )
     }
 }
 
