@@ -10,11 +10,18 @@ import SwiftUI
 struct YogaClassScheduleItemView: View {
     let item: YogaClassScheduleDTO
     let onTap: () -> Void
+    var userRole: UserRole? = nil  // 사용자 역할 (nil이면 요기니 기본)
+    var onAttendanceCheckTap: (() -> Void)? = nil  // 출석 체크 버튼 탭 핸들러
     
     private let cardHeight: CGFloat = 74.ratio()
     
     private var backgroundColor: Color {
-        item.isPast ? .Background : .NatureGreen
+        if item.isPast {
+            return .Background
+        } else {
+            // isPast가 아닐 때: 요기니는 NatureGreen, 지도자는 FlowBlue
+            return userRole == .instructor ? .FlowBlue : .NatureGreen
+        }
     }
     
     /// 요일 문자열 변환 (1=월요일, 2=화요일, ..., 7=일요일)
@@ -73,17 +80,33 @@ struct YogaClassScheduleItemView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // 왼쪽: 날짜/요일 배지
-                    VStack(spacing: 0) {
-                        Text(dayNumber)
-                            .pretendardFont(.bold, size: 20)
-                            .foregroundColor(.DarkBlack)
-                        Text(dayOfWeekString)
-                            .pretendardFont(.medium, size: 12)
-                            .foregroundColor(.DarkBlack)
+                    // 왼쪽: 날짜/요일 배지 또는 출석 체크 버튼 (역할에 따라)
+                    if userRole == .instructor {
+                        // 지도자: 출석 체크 버튼
+                        Button(action: {
+                            onAttendanceCheckTap?()
+                        }) {
+                            Text("출석\n체크")
+                                .pretendardFont(.bold, size: 12)
+                                .foregroundColor(.DarkBlack)
+                                .multilineTextAlignment(.center)
+                                .frame(width: 36.ratio(), height: 53.ratio())
+                                .background(GlassUI.reservedClass())
+                        }
+                        .buttonStyle(.plain)
+                    } else {
+                        // 요기니: 날짜/요일 배지
+                        VStack(spacing: 0) {
+                            Text(dayNumber)
+                                .pretendardFont(.bold, size: 20)
+                                .foregroundColor(.DarkBlack)
+                            Text(dayOfWeekString)
+                                .pretendardFont(.medium, size: 12)
+                                .foregroundColor(.DarkBlack)
+                        }
+                        .frame(width: 36.ratio(), height: 53.ratio())
+                        .background(GlassUI.reservedClass())
                     }
-                    .frame(width: 36.ratio(), height: 53.ratio())
-                    .background(GlassUI.reservedClass())
                 }
                 .padding(.horizontal, 16.ratio())
                 .padding(.vertical, 10.ratio())
