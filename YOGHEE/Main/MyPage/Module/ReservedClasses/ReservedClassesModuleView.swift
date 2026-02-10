@@ -10,6 +10,7 @@ import SwiftUI
 struct ReservedClassesModuleView: View {
     let classes: [YogaClassScheduleDTO]
     let onItemTap: (String) -> Void
+    var userRole: UserRole? = nil  // 사용자 역할
     
     @State private var selectedDate: String = {
         let formatter = DateFormatter()
@@ -27,7 +28,8 @@ struct ReservedClassesModuleView: View {
             // 달력 뷰
             CalendarView(
                 reservedClasses: classes,
-                selectedDate: $selectedDate
+                selectedDate: $selectedDate,
+                userRole: userRole
             )
             .padding(.horizontal, 16.ratio())
             
@@ -36,7 +38,8 @@ struct ReservedClassesModuleView: View {
                 ForEach(Array(filteredClasses.enumerated()), id: \.element.classId) { index, item in
                     YogaClassScheduleItemView(
                         item: item,
-                        onTap: { onItemTap(item.classId) }
+                        onTap: { onItemTap(item.classId) },
+                        userRole: userRole
                     )
                     .transition(.asymmetric(
                         insertion: .move(edge: .top).combined(with: .opacity),
@@ -54,6 +57,7 @@ struct ReservedClassesModuleView: View {
 struct CalendarView: View {
     let reservedClasses: [YogaClassScheduleDTO]
     @Binding var selectedDate: String
+    var userRole: UserRole? = nil  // 사용자 역할
     
     @State private var currentDate = Date()
     
@@ -85,7 +89,8 @@ struct CalendarView: View {
                 CalendarGridView(
                     currentDate: currentDate,
                     reservedDates: getReservedDates(),
-                    selectedDate: $selectedDate
+                    selectedDate: $selectedDate,
+                    userRole: userRole
                 )
             }
             .padding(.top, 16.ratio())
@@ -187,6 +192,7 @@ struct CalendarGridView: View {
     let currentDate: Date
     let reservedDates: Set<String>
     @Binding var selectedDate: String
+    var userRole: UserRole? = nil  // 사용자 역할
     
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
@@ -202,6 +208,7 @@ struct CalendarGridView: View {
                     isCurrentMonth: day.isCurrentMonth,
                     isReserved: day.isReserved,
                     isSelected: day.dateString == selectedDate,
+                    userRole: userRole,
                     onTap: {
                         if day.isCurrentMonth {
                             selectedDate = day.dateString
@@ -255,24 +262,34 @@ struct CalendarDayCell: View {
     let isCurrentMonth: Bool
     let isReserved: Bool
     let isSelected: Bool
+    var userRole: UserRole? = nil  // 사용자 역할
     let onTap: () -> Void
     
     var body: some View {
         Button(action: onTap) {
             ZStack {
                 if isReserved {
-                    // 예약된 날짜 배경 (그라데이션)
-                    RadialGradient(
-                        gradient: Gradient(stops: [
-                            .init(color: Color(red: 214/255, green: 246/255, blue: 149/255), location: 0.4),
-                            .init(color: Color(red: 241/255, green: 255/255, blue: 212/255), location: 1.0)
-                        ]),
-                        center: .center,
-                        startRadius: 0,
-                        endRadius: 14.ratio()
-                    )
-                    .frame(width: 28.ratio(), height: 28.ratio())
-                    .clipShape(Circle())
+                    if userRole == .yogini {
+                        EllipticalGradient(
+                            stops: [
+                                .init(color: .NatureGreen, location: 0.40),
+                                .init(color: .NatureGreenLight, location: 1.00)
+                            ],
+                            center: UnitPoint(x: 0.5, y: 0.5)
+                        )
+                        .frame(width: 28, height: 28)
+                        .clipShape(Circle())
+                    } else {
+                        EllipticalGradient(
+                            stops: [
+                                .init(color: .FlowBlue, location: 0.40),
+                                .init(color: Color(red: 0.93, green: 0.96, blue: 1), location: 1.00)
+                            ],
+                            center: UnitPoint(x: 0.5, y: 0.5)
+                        )
+                        .frame(width: 28, height: 28)
+                        .clipShape(Circle())
+                    }
                 }
                 
                 // 선택된 날짜 테두리

@@ -207,7 +207,7 @@ enum MyPageSection: Identifiable {
         case .profile: return ""
         case .weekClasses: return "이번주 참여 수련 목록"
         case .todayClasses: return "오늘 지도 수련 목록"
-        case .reservedClasses: return "예약한 수련 미리보기"
+        case .reservedClasses: return "수련 미리보기"
         case .favoriteClasses: return "찜한 수련 목록"
         case .favoriteCenters: return "찜한 요가원 목록"
         case .detailContents: return "세부 항목"

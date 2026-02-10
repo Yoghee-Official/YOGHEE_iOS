@@ -11,6 +11,7 @@ struct YogaClassScheduleItemView: View {
     let item: YogaClassScheduleDTO
     let onTap: () -> Void
     var userRole: UserRole? = nil  // 사용자 역할 (nil이면 요기니 기본)
+    var showAttendanceButton: Bool = false  // 출석 체크 버튼 표시 여부
     var onAttendanceCheckTap: (() -> Void)? = nil  // 출석 체크 버튼 탭 핸들러
     
     private let cardHeight: CGFloat = 74.ratio()
@@ -80,9 +81,9 @@ struct YogaClassScheduleItemView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    // 왼쪽: 날짜/요일 배지 또는 출석 체크 버튼 (역할에 따라)
-                    if userRole == .instructor {
-                        // 지도자: 출석 체크 버튼
+                    // 왼쪽: 날짜/요일 배지 또는 출석 체크 버튼
+                    if showAttendanceButton {
+                        // 출석 체크 버튼 (TodayClassesModuleView 전용)
                         Button(action: {
                             onAttendanceCheckTap?()
                         }) {
@@ -95,7 +96,7 @@ struct YogaClassScheduleItemView: View {
                         }
                         .buttonStyle(.plain)
                     } else {
-                        // 요기니: 날짜/요일 배지
+                        // 날짜/요일 배지 (기본)
                         VStack(spacing: 0) {
                             Text(dayNumber)
                                 .pretendardFont(.bold, size: 20)
