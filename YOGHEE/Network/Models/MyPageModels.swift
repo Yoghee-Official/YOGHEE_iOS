@@ -116,6 +116,7 @@ enum MyPageSectionType: String {
     
     // 지도자 전용
     case todayClasses
+    case classRegisterBanner
     
     // 공통 (의미가 다름: 요기니 = 예약한 수업, 지도자 = 예약된 수업)
     case reservedClasses
@@ -128,6 +129,7 @@ enum MyPageSectionType: String {
 //        case .reservedClasses: return "예약 수련"
 //        case .favoriteClasses: return "찜한 수련"
 //        case .favoriteCenters: return "찜한 요가원"
+//        case .classRegisterBanner: return "클래스 등록하기"
 //        case .detailContents: return "세부 항목"
 //        }
 //    }
@@ -155,6 +157,7 @@ struct MyPageSectionConfiguration {
                 .profile,              // 지도자 프로필
                 .todayClasses,         // 오늘의 수업
                 .reservedClasses,      // 예약된 수업
+                .classRegisterBanner,  // 클래스 등록하기 배너
                 .detailContents        // 세부 항목
             ]
         }
@@ -179,6 +182,7 @@ enum MyPageSection: Identifiable {
     
     // 지도자 전용
     case todayClasses(items: [YogaClassScheduleDTO])
+    case classRegisterBanner
     
     // 공통 (의미가 다름)
     case reservedClasses(items: [YogaClassScheduleDTO])
@@ -198,6 +202,7 @@ enum MyPageSection: Identifiable {
         case .reservedClasses: return "reservedClasses"
         case .favoriteClasses: return "favoriteClasses"
         case .favoriteCenters: return "favoriteCenters"
+        case .classRegisterBanner: return "classRegisterBanner"
         case .detailContents: return "detailContents"
         }
     }
@@ -210,6 +215,7 @@ enum MyPageSection: Identifiable {
         case .reservedClasses: return "수련 미리보기"
         case .favoriteClasses: return "찜한 수련 목록"
         case .favoriteCenters: return "찜한 요가원 목록"
+        case .classRegisterBanner: return ""
         case .detailContents: return "세부 항목"
         }
     }
@@ -220,7 +226,7 @@ enum MyPageSection: Identifiable {
             return .toggle
         case .reservedClasses, .favoriteClasses, .favoriteCenters:
             return .moreButton
-        case .profile, .detailContents:
+        case .profile, .classRegisterBanner, .detailContents:
             return .none
         }
     }
@@ -234,6 +240,7 @@ enum MyPageSection: Identifiable {
         case .reservedClasses: return .reservedClasses
         case .favoriteClasses: return .favoriteClasses
         case .favoriteCenters: return .favoriteCenters
+        case .classRegisterBanner: return .classRegisterBanner
         case .detailContents: return .detailContents
         }
     }

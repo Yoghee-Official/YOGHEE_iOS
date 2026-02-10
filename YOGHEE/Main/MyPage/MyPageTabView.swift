@@ -228,6 +228,12 @@ struct MyPageSectionView: View {
                     onItemTap: { itemId in onItemTap(itemId, section.id) }
                 )
                 
+            case .classRegisterBanner:
+                ClassRegisterBannerView {
+                    // TODO: 클래스 등록 화면으로 이동
+                    print("클래스 등록하기 클릭")
+                }
+                
             case .detailContents:
                 DetailContentsModuleView { itemName in
                     container.handleIntent(.selectDetailItem(itemName))

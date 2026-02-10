@@ -17,6 +17,7 @@
 		52295B232F324D5900E615E1 /* MyPageEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B222F324D5900E615E1 /* MyPageEmptyView.swift */; };
 		52295B252F389DB300E615E1 /* LeaderProfileModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */; };
 		52295B282F38E3D000E615E1 /* TodayClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */; };
+		52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
 		522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */; };
 		522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */; };
@@ -94,6 +95,7 @@
 		52295B222F324D5900E615E1 /* MyPageEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageEmptyView.swift; sourceTree = "<group>"; };
 		52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderProfileModuleView.swift; sourceTree = "<group>"; };
 		52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayClassesModuleView.swift; sourceTree = "<group>"; };
+		52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterBannerView.swift; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
 		522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 		522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Font.swift"; sourceTree = "<group>"; };
@@ -193,12 +195,20 @@
 			path = LandingView;
 			sourceTree = "<group>";
 		};
-		52295B272F38E3D000E615E1 /* TodayClassesModule */ = {
+		52295B272F38E3D000E615E1 /* TodayClasses */ = {
 			isa = PBXGroup;
 			children = (
 				52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */,
 			);
-			path = TodayClassesModule;
+			path = TodayClasses;
+			sourceTree = "<group>";
+		};
+		52295B2B2F3B93BC00E615E1 /* ClassRegisterBanner */ = {
+			isa = PBXGroup;
+			children = (
+				52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */,
+			);
+			path = ClassRegisterBanner;
 			sourceTree = "<group>";
 		};
 		522CE5812F12A6BF0063FDF5 /* rules */ = {
@@ -331,13 +341,14 @@
 			isa = PBXGroup;
 			children = (
 				522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */,
-				522CE61A2F12A7470063FDF5 /* ProfileModule */,
-				522CE61C2F12A7810063FDF5 /* WeekClassesModule */,
-				52295B272F38E3D000E615E1 /* TodayClassesModule */,
+				522CE61A2F12A7470063FDF5 /* Profile */,
+				522CE61C2F12A7810063FDF5 /* WeekClasses */,
+				52295B272F38E3D000E615E1 /* TodayClasses */,
 				522CE61D2F12A8650063FDF5 /* ReservedClasses */,
 				522CE61E2F12A8A70063FDF5 /* FavoriteOnedayClasses */,
 				522CE61F2F12A8C50063FDF5 /* FavoriteRegularClasses */,
-				522CE61B2F12A75B0063FDF5 /* DetailContentsModule */,
+				52295B2B2F3B93BC00E615E1 /* ClassRegisterBanner */,
+				522CE61B2F12A75B0063FDF5 /* DetailContents */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -425,30 +436,30 @@
 			path = YOGHEE;
 			sourceTree = "<group>";
 		};
-		522CE61A2F12A7470063FDF5 /* ProfileModule */ = {
+		522CE61A2F12A7470063FDF5 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
 				522CE5BC2F12A6BF0063FDF5 /* UserProfileModuleView.swift */,
 				52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */,
 				522CE5C02F12A6BF0063FDF5 /* ProfileEditView.swift */,
 			);
-			path = ProfileModule;
+			path = Profile;
 			sourceTree = "<group>";
 		};
-		522CE61B2F12A75B0063FDF5 /* DetailContentsModule */ = {
+		522CE61B2F12A75B0063FDF5 /* DetailContents */ = {
 			isa = PBXGroup;
 			children = (
 				522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */,
 			);
-			path = DetailContentsModule;
+			path = DetailContents;
 			sourceTree = "<group>";
 		};
-		522CE61C2F12A7810063FDF5 /* WeekClassesModule */ = {
+		522CE61C2F12A7810063FDF5 /* WeekClasses */ = {
 			isa = PBXGroup;
 			children = (
 				522CE5BB2F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift */,
 			);
-			path = WeekClassesModule;
+			path = WeekClasses;
 			sourceTree = "<group>";
 		};
 		522CE61D2F12A8650063FDF5 /* ReservedClasses */ = {
@@ -637,6 +648,7 @@
 				522CE60D2F12A6BF0063FDF5 /* MyPageModels.swift in Sources */,
 				522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */,
 				522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */,
+				52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */,
 				522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */,
 				522CE6112F12A6BF0063FDF5 /* SplashView.swift in Sources */,
 				522CE6122F12A6BF0063FDF5 /* ContentView.swift in Sources */,

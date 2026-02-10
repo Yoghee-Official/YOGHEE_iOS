@@ -352,6 +352,10 @@ class MyPageTabContainer: ObservableObject {
                     sections.append(.favoriteCenters(items: favoriteCenters))
                 }
                 
+            case .classRegisterBanner:
+                // 지도자 전용 - 클래스 등록하기 배너
+                sections.append(.classRegisterBanner)
+                
             case .detailContents:
                 sections.append(.detailContents)
             }
