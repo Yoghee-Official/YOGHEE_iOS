@@ -16,7 +16,7 @@ struct YogaCenterItemView: View {
         Button(action: onTap) {
             VStack(spacing: 8) {
                 // 썸네일 이미지
-                AsyncImage(url: URL(string: yogaCenter.thumbnail)) { image in
+                AsyncImage(url: URL(string: yogaCenter.thumbnail ?? "")) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
