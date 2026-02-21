@@ -320,19 +320,12 @@ class MyPageTabContainer: ObservableObject {
                 
             case .weekClasses:
                 // 요기니 전용 - 이번주 수업
-                if let weekClasses = data.weekClasses,
-                   (weekClasses.weekDay?.isEmpty == false || weekClasses.weekEnd?.isEmpty == false) {
-                    sections.append(.weekClasses(
-                        weekDay: weekClasses.weekDay,
-                        weekEnd: weekClasses.weekEnd
-                    ))
-                }
+                sections.append(.weekClasses(weekDay: data.weekClasses?.weekDay,
+                                             weekEnd: data.weekClasses?.weekEnd))
                 
             case .todayClasses:
                 // 지도자 전용 - 오늘의 수업
-                if let todayClasses = data.todayClasses, !todayClasses.isEmpty {
-                    sections.append(.todayClasses(items: todayClasses))
-                }
+                sections.append(.todayClasses(items: data.todayClasses ?? []))
                 
             case .reservedClasses:
                 // 공통 (요기니: 예약한 수업, 지도자: 예약된 수업)
