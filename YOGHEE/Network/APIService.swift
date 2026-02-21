@@ -74,7 +74,7 @@ class APIService {
             case .login:
                 return "/auth/login"
             case .main:
-                return "/api/main/"
+                return "/api/main"
             case .categoryClasses(let categoryId, _):
                 return "/api/class/category/\(categoryId)"
             case .categoryDetail(let id):
