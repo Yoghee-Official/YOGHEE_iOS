@@ -11,6 +11,7 @@ import SwiftUI
 enum MyPageNavigationDestination: Hashable {
     case settings
     case messageBox
+    case classRegister
 }
 
 // MARK: - Intent
@@ -26,6 +27,9 @@ enum MyPageTabIntent {
     case openNotifications
     case viewLevelInfo
     case viewCategoryAnalysis
+    
+    // ClassRegister 액션
+    case openClassRegister
     
     // DetailContents 액션
     case selectDetailItem(String)
@@ -112,6 +116,11 @@ class MyPageTabContainer: ObservableObject {
         case .viewCategoryAnalysis:
             log("카테고리 분석 클릭")
             // TODO: 카테고리 분석 화면 이동
+            
+        // ClassRegister 액션
+        case .openClassRegister:
+            log("클래스 등록하기 클릭")
+            state.navigationDestination = .classRegister
             
         // DetailContents 액션
         case .selectDetailItem(let itemName):

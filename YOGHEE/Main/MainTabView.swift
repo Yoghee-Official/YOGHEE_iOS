@@ -11,6 +11,7 @@ import SwiftUI
 struct MainTabView: View {
     @State private var selectedTab: TabItem = .home
     @State private var homeNavigationPath = NavigationPath()
+    @State private var mypageNavigationPath = NavigationPath()
     @State private var isTabBarHiddenByScroll = false
     
     var body: some View {
@@ -42,7 +43,9 @@ struct MainTabView: View {
         switch selectedTab {
         case .home:
             return homeNavigationPath.count == 0
-        case .content, .explore, .teatime, .mypage:
+        case .mypage:
+            return mypageNavigationPath.count == 0
+        case .content, .explore, .teatime:
             return true // 다른 탭들은 현재 네비게이션이 없으므로 항상 표시
         }
     }
@@ -67,6 +70,7 @@ struct MainTabView: View {
             .allowsHitTesting(selectedTab == .teatime)
         
         MyPageTabView(
+            navigationPath: $mypageNavigationPath,
             isSelected: selectedTab == .mypage,
             onNavigateToHome: {
                 selectedTab = .home

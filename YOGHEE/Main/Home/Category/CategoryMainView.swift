@@ -100,35 +100,10 @@ struct CategoryMainView: View {
             }
             .background(Color.SandBeige)
         }
-        .navigationTitle(navigationTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image("BackArrow")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 24, height: 24)
-                }
-            }
-        }
+        .customNavigationBar(title: navigationTitle)
         .onAppear {
-            enableSwipeBack()
             container.handleIntent(.initialize(categoryId: categoryId, type: classType.rawValue))
         }
-    }
-    
-    private func enableSwipeBack() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first,
-              let navigationController = window.rootViewController?.findNavigationController() else {
-            return
-        }
-        navigationController.interactivePopGestureRecognizer?.isEnabled = true
-        navigationController.interactivePopGestureRecognizer?.delegate = nil
     }
     
     // MARK: - Filter Button
