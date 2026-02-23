@@ -12,12 +12,14 @@ enum GlassUIStyle {
     case mySmall
     case myBig
     case reservedClass
+    case classRegisterButton
     
     var width: CGFloat {
         switch self {
         case .mySmall: return 92.ratio()
         case .myBig: return 156.ratio()
         case .reservedClass: return 36.ratio()
+        case .classRegisterButton: return 279.ratio()
         }
     }
     
@@ -26,6 +28,7 @@ enum GlassUIStyle {
         case .mySmall: return 32.ratio()
         case .myBig: return 130.ratio()
         case .reservedClass: return 54.ratio()
+        case .classRegisterButton: return 36.ratio()
         }
     }
     
@@ -34,6 +37,7 @@ enum GlassUIStyle {
         case .mySmall: return 5
         case .myBig: return 5
         case .reservedClass: return 27
+        case .classRegisterButton: return 40
         }
     }
     
@@ -42,6 +46,7 @@ enum GlassUIStyle {
         case .mySmall: return 0.15
         case .myBig: return 0.15
         case .reservedClass: return 0.12
+        case .classRegisterButton: return 0.3
         }
     }
     
@@ -50,6 +55,7 @@ enum GlassUIStyle {
         case .mySmall: return (UnitPoint(x: 0.35, y: 0), UnitPoint(x: 0.45, y: 1.0))
         case .myBig: return (UnitPoint(x: 0.4, y: 0), UnitPoint(x: 0.85, y: 0.7))
         case .reservedClass: return (UnitPoint(x: 0.1, y: 0.7), UnitPoint(x: 0.3, y: 0.8))
+        case .classRegisterButton: return (UnitPoint(x: 0.5, y: 0), UnitPoint(x: 0.5, y: 1.0))
         }
     }
 }
@@ -141,27 +147,35 @@ extension GlassUI {
     static func reservedClass() -> GlassUI {
         GlassUI(style: .reservedClass)
     }
+    
+    static func classRegisterButton() -> GlassUI {
+        GlassUI(style: .classRegisterButton)
+    }
 }
 
 #Preview {
-    VStack(spacing: 20) {
+    VStack(spacing: 10) {
         HStack {
             GlassUI.mySmall()
             GlassUI.mySmall()
         }
         
-        Spacer().frame(height: 20)
+//        Spacer().frame(height: 20)
         
         HStack {
             GlassUI.myBig()
             GlassUI.myBig()
         }
         
-        Spacer().frame(height: 20)
+//        Spacer().frame(height: 20)
         
         HStack {
             GlassUI.reservedClass()
             GlassUI.reservedClass()
+        }
+        
+        HStack {
+            GlassUI.classRegisterButton()
         }
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
