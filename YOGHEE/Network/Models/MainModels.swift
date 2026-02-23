@@ -79,7 +79,7 @@ struct CenterDTO: Codable, Equatable {
     let centerId: String
     let address: String
     let name: String
-    let thumbnail: String
+    let thumbnail: String?
     let favoriteCount: Int
     let isFavorite: Bool
 }
@@ -96,7 +96,6 @@ struct YogaReviewDTO: Codable {
 struct CategoryDTO: Codable, Hashable {
     let categoryId: String
     let name: String
-    let description: String
     let mainDisplay: String
     let type: ClassType
 }

@@ -65,7 +65,7 @@ struct YogaClassScheduleItemView: View {
                             .lineLimit(1)
                         
                         HStack(spacing: 6.ratio()) {
-                            Text(item.address)
+                            Text(item.address ?? "")
                                 .pretendardFont(.medium, size: 10)
                                 .foregroundColor(.DarkBlack)
                             

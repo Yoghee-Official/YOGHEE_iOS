@@ -100,35 +100,10 @@ struct CategoryMainView: View {
             }
             .background(Color.SandBeige)
         }
-        .navigationTitle(navigationTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image("BackArrow")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 24, height: 24)
-                }
-            }
-        }
+        .customNavigationBar(title: navigationTitle)
         .onAppear {
-            enableSwipeBack()
             container.handleIntent(.initialize(categoryId: categoryId, type: classType.rawValue))
         }
-    }
-    
-    private func enableSwipeBack() {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first,
-              let navigationController = window.rootViewController?.findNavigationController() else {
-            return
-        }
-        navigationController.interactivePopGestureRecognizer?.isEnabled = true
-        navigationController.interactivePopGestureRecognizer?.delegate = nil
     }
     
     // MARK: - Filter Button
@@ -260,11 +235,11 @@ struct FilterPopup: View {
             categoryName: "서울",
             categoryType: .regular,
             categories: [
-                CategoryDTO(categoryId: "1", name: "서울", description: "서울", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "2", name: "경기도", description: "경기도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "3", name: "경상도", description: "경상도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "4", name: "강원도", description: "강원도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "5", name: "전라도", description: "전라도", mainDisplay: "Y", type: .regular)
+                CategoryDTO(categoryId: "1", name: "서울", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "2", name: "경기도", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "3", name: "경상도", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "4", name: "강원도", mainDisplay: "Y", type: .regular),
+                CategoryDTO(categoryId: "5", name: "전라도", mainDisplay: "Y", type: .regular)
             ]
         )
     }
@@ -277,11 +252,11 @@ struct FilterPopup: View {
             categoryName: "릴렉스",
             categoryType: .oneDay,
             categories: [
-                CategoryDTO(categoryId: "1", name: "릴렉스", description: "릴렉스", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "2", name: "파워", description: "파워", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "3", name: "초심자", description: "초심자", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "4", name: "이색요가", description: "이색요가", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "5", name: "전통요가", description: "전통요가", mainDisplay: "Y", type: .oneDay)
+                CategoryDTO(categoryId: "1", name: "릴렉스", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "2", name: "파워", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "3", name: "초심자", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "4", name: "이색요가", mainDisplay: "Y", type: .oneDay),
+                CategoryDTO(categoryId: "5", name: "전통요가", mainDisplay: "Y", type: .oneDay)
             ]
         )
     }

@@ -18,6 +18,9 @@
 		52295B252F389DB300E615E1 /* LeaderProfileModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */; };
 		52295B282F38E3D000E615E1 /* TodayClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */; };
 		52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */; };
+		52295B2D2F43686A00E615E1 /* ClassRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B2C2F43686A00E615E1 /* ClassRegisterView.swift */; };
+		52295B302F49F94400E615E1 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B2F2F49F94400E615E1 /* CustomNavigationBar.swift */; };
+		52295B322F4A0B5E00E615E1 /* Extension+UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
 		522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */; };
 		522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */; };
@@ -96,6 +99,9 @@
 		52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderProfileModuleView.swift; sourceTree = "<group>"; };
 		52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayClassesModuleView.swift; sourceTree = "<group>"; };
 		52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterBannerView.swift; sourceTree = "<group>"; };
+		52295B2C2F43686A00E615E1 /* ClassRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterView.swift; sourceTree = "<group>"; };
+		52295B2F2F49F94400E615E1 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
+		52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UINavigationController.swift"; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
 		522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
 		522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Font.swift"; sourceTree = "<group>"; };
@@ -191,6 +197,7 @@
 				52295B1E2F2F947000E615E1 /* SettingsView.swift */,
 				52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */,
 				52295B1A2F2F943B00E615E1 /* MessageBoxView.swift */,
+				52295B2C2F43686A00E615E1 /* ClassRegisterView.swift */,
 			);
 			path = LandingView;
 			sourceTree = "<group>";
@@ -211,6 +218,14 @@
 			path = ClassRegisterBanner;
 			sourceTree = "<group>";
 		};
+		52295B2E2F49F81400E615E1 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				52295B2F2F49F94400E615E1 /* CustomNavigationBar.swift */,
+			);
+			path = CustomView;
+			sourceTree = "<group>";
+		};
 		522CE5812F12A6BF0063FDF5 /* rules */ = {
 			isa = PBXGroup;
 			children = (
@@ -229,6 +244,7 @@
 		522CE5892F12A6BF0063FDF5 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */,
 				522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */,
 				522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */,
 				522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */,
@@ -375,6 +391,7 @@
 		522CE5C72F12A6BF0063FDF5 /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				52295B2E2F49F81400E615E1 /* CustomView */,
 				52295B1F2F2F947000E615E1 /* LandingView */,
 				52295B112F23DE6600E615E1 /* CommonView */,
 				522CE5942F12A6BF0063FDF5 /* Content */,
@@ -600,7 +617,9 @@
 				522CE5DF2F12A6BF0063FDF5 /* LoginView.swift in Sources */,
 				522CE5E02F12A6BF0063FDF5 /* ContentTabContainer.swift in Sources */,
 				522CE5E12F12A6BF0063FDF5 /* ContentTabView.swift in Sources */,
+				52295B302F49F94400E615E1 /* CustomNavigationBar.swift in Sources */,
 				522CE5E22F12A6BF0063FDF5 /* ExploreTabContainer.swift in Sources */,
+				52295B322F4A0B5E00E615E1 /* Extension+UINavigationController.swift in Sources */,
 				522CE5E32F12A6BF0063FDF5 /* ExploreTabView.swift in Sources */,
 				522CE5E42F12A6BF0063FDF5 /* CategoryClassListItemView.swift in Sources */,
 				522CE5E52F12A6BF0063FDF5 /* YogheeClubDiscountBanner.swift in Sources */,
@@ -631,6 +650,7 @@
 				522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */,
 				522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */,
 				522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */,
+				52295B2D2F43686A00E615E1 /* ClassRegisterView.swift in Sources */,
 				522CE6032F12A6BF0063FDF5 /* MyPageTabContainer.swift in Sources */,
 				522CE6042F12A6BF0063FDF5 /* MyPageTabView.swift in Sources */,
 				522CE6052F12A6BF0063FDF5 /* ProfileEditView.swift in Sources */,

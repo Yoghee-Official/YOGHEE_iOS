@@ -11,7 +11,7 @@ import SwiftUIIntrospect
 struct MyPageTabView: View {
     @StateObject private var container = MyPageTabContainer()
     @ObservedObject private var authManager = AuthManager.shared
-    @State private var navigationPath = NavigationPath()
+    @Binding var navigationPath: NavigationPath
     let isSelected: Bool  // 탭이 선택되었는지 여부
     var onNavigateToHome: (() -> Void)? = nil  // 홈으로 이동하는 클로저
     
@@ -72,6 +72,8 @@ struct MyPageTabView: View {
                     SettingsView()
                 case .messageBox:
                     MessageBoxView()
+                case .classRegister:
+                    ClassRegisterView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
@@ -230,8 +232,7 @@ struct MyPageSectionView: View {
                 
             case .classRegisterBanner:
                 ClassRegisterBannerView {
-                    // TODO: 클래스 등록 화면으로 이동
-                    print("클래스 등록하기 클릭")
+                    container.handleIntent(.openClassRegister)
                 }
                 
             case .detailContents:
@@ -244,5 +245,5 @@ struct MyPageSectionView: View {
 }
 
 #Preview {
-    MyPageTabView(isSelected: false, onNavigateToHome: nil)
+    MyPageTabView(navigationPath: .constant(NavigationPath()), isSelected: false, onNavigateToHome: nil)
 }
