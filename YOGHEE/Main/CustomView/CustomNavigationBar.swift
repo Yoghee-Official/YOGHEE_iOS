@@ -22,14 +22,14 @@ struct CustomNavigationBarModifier: ViewModifier {
                         Image("BackArrow")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 24.ratio(), height: 24.ratio())
+                            .frame(width: 23.ratio(), height: 20.ratio())
                     }
                     .padding(.leading, 16.ratio())
                     
                     Spacer()
                     
                     Text(title)
-                        .pretendardFont(.bold, size: 17)
+                        .pretendardFont(.bold, size: 20)
                         .foregroundColor(.DarkBlack)
                     
                     Spacer()
