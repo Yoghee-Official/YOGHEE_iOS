@@ -18,7 +18,7 @@
 		52295B252F389DB300E615E1 /* LeaderProfileModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */; };
 		52295B282F38E3D000E615E1 /* TodayClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */; };
 		52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */; };
-		52295B2D2F43686A00E615E1 /* ClassRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B2C2F43686A00E615E1 /* ClassRegisterView.swift */; };
+		52295B2D2F43686A00E615E1 /* ClassTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B2C2F43686A00E615E1 /* ClassTypeRegisterView.swift */; };
 		52295B302F49F94400E615E1 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B2F2F49F94400E615E1 /* CustomNavigationBar.swift */; };
 		52295B322F4A0B5E00E615E1 /* Extension+UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
@@ -99,7 +99,7 @@
 		52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderProfileModuleView.swift; sourceTree = "<group>"; };
 		52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayClassesModuleView.swift; sourceTree = "<group>"; };
 		52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterBannerView.swift; sourceTree = "<group>"; };
-		52295B2C2F43686A00E615E1 /* ClassRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterView.swift; sourceTree = "<group>"; };
+		52295B2C2F43686A00E615E1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
 		52295B2F2F49F94400E615E1 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UINavigationController.swift"; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
@@ -197,7 +197,7 @@
 				52295B1E2F2F947000E615E1 /* SettingsView.swift */,
 				52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */,
 				52295B1A2F2F943B00E615E1 /* MessageBoxView.swift */,
-				52295B2C2F43686A00E615E1 /* ClassRegisterView.swift */,
+				52295B2C2F43686A00E615E1 /* ClassTypeRegisterView.swift */,
 			);
 			path = LandingView;
 			sourceTree = "<group>";
@@ -650,7 +650,7 @@
 				522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */,
 				522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */,
 				522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */,
-				52295B2D2F43686A00E615E1 /* ClassRegisterView.swift in Sources */,
+				52295B2D2F43686A00E615E1 /* ClassTypeRegisterView.swift in Sources */,
 				522CE6032F12A6BF0063FDF5 /* MyPageTabContainer.swift in Sources */,
 				522CE6042F12A6BF0063FDF5 /* MyPageTabView.swift in Sources */,
 				522CE6052F12A6BF0063FDF5 /* ProfileEditView.swift in Sources */,

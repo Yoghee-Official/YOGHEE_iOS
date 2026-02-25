@@ -73,7 +73,7 @@ struct MyPageTabView: View {
                 case .messageBox:
                     MessageBoxView()
                 case .classRegister:
-                    ClassRegisterView()
+                    ClassTypeRegisterView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
