@@ -51,21 +51,21 @@ struct CategoryItemView: View {
 #Preview {
     HStack {
         CategoryItemView(
-            category: CategoryDTO(categoryId: "1", name: "서울", mainDisplay: "Y", type: .regular),
+            category: CategoryDTO(categoryId: "1", name: "서울", mainDisplay: "Y"),
             isFirst: true,
             isWide: false,
             onTap: {}
         )
         
         CategoryItemView(
-            category: CategoryDTO(categoryId: "2", name: "경기도", mainDisplay: "Y", type: .regular),
+            category: CategoryDTO(categoryId: "2", name: "경기도", mainDisplay: "Y"),
             isFirst: false,
             isWide: false,
             onTap: {}
         )
         
         CategoryItemView(
-            category: CategoryDTO(categoryId: "3", name: "이색요가", mainDisplay: "Y", type: .oneDay),
+            category: CategoryDTO(categoryId: "3", name: "이색요가", mainDisplay: "Y"),
             isFirst: false,
             isWide: true,
             onTap: {}
