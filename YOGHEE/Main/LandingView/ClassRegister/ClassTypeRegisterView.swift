@@ -18,7 +18,7 @@ struct ClassTypeData: Identifiable {
 }
 
 struct ClassTypeRegisterView: View {
-    @Environment(\.dismiss) var dismiss
+    @StateObject private var container = ClassRegisterContainer()
     
     private let classTypes: [ClassTypeData] = [
         ClassTypeData(
@@ -65,7 +65,7 @@ struct ClassTypeRegisterView: View {
                 .padding(.top, 40.ratio())
             
             // 스와이프 카드
-            ClassTypeCardsView(classTypes: classTypes)
+            ClassTypeCardsView(classTypes: classTypes, container: container)
             
             // 설명 텍스트
             Text("수련 방식은 한가지만 선택 가능합니다.\n다른 운영 방식으로 등록 하시려면 새 수련으로 추가해주세요.\n수련은 1개월씩 등록할 수 있습니다.")
@@ -85,14 +85,33 @@ struct ClassTypeRegisterView: View {
 // MARK: - Class Type Cards View
 struct ClassTypeCardsView: View {
     let classTypes: [ClassTypeData]
+    @ObservedObject var container: ClassRegisterContainer
     
     var body: some View {
         GeometryReader { geometry in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12.ratio()) {
                     ForEach(classTypes) { classType in
-                        ClassTypeCardView(classType: classType)
-                            .frame(width: geometry.size.width - 48.ratio())
+                        if classType.id == "oneDay" {
+                            NavigationLink {
+                                OnedayClassExplanationRegisterView(container: container)
+                                    .onAppear {
+                                        container.handleIntent(.selectClassType(classType.id))
+                                    }
+                            } label: {
+                                ClassTypeCardView(classType: classType)
+                                    .frame(width: geometry.size.width - 48.ratio())
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            // TODO: 나머지 타입들 화면 구현 후 NavigationLink 추가
+                            ClassTypeCardView(classType: classType)
+                                .frame(width: geometry.size.width - 48.ratio())
+                                .onTapGesture {
+                                    container.handleIntent(.selectClassType(classType.id))
+                                    print("\(classType.title) - 준비 중입니다.")
+                                }
+                        }
                     }
                 }
                 .padding(.horizontal, 20.ratio())
@@ -173,20 +192,13 @@ struct ClassTypeCardView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             
-            // 수련 개설하기 버튼
-            Button(action: {
-                // TODO: 각 타입별 수련 개설 화면으로 이동
-                // 하루 수련, 시즌 수련, 워크숍 → COC_MO_1
-                // 정규 수련 → CRC_MO_1
-                print("\(classType.title) 개설하기 클릭")
-            }) {
-                ZStack {
-                    GlassUI.classRegisterButton()
-                    
-                    Text("수련 개설하기")
-                        .pretendardFont(.medium, size: 12)
-                        .foregroundColor(.CleanWhite)
-                }
+            // 수련 개설하기 버튼 (NavigationLink로 감싸져 있어 자동 작동)
+            ZStack {
+                GlassUI.classRegisterButton()
+                
+                Text("수련 개설하기")
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.CleanWhite)
             }
             .padding(.bottom, 16.ratio())
             }

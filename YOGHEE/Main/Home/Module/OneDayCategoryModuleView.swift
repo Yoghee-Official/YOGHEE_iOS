@@ -55,11 +55,11 @@ struct OneDayCategoryModuleView: View {
     ScrollView {
         OneDayCategoryModuleView(
             items: [
-                CategoryDTO(categoryId: "1", name: "릴렉스", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "2", name: "파워", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "3", name: "초심자", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "4", name: "이색요가", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "5", name: "전통 요가", mainDisplay: "Y", type: .oneDay)
+                CategoryDTO(categoryId: "1", name: "릴렉스", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "2", name: "파워", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "3", name: "초심자", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "4", name: "이색요가", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "5", name: "전통 요가", mainDisplay: "Y")
             ]
         ) { categoryId in
             print("Tapped category: \(categoryId)")

@@ -50,14 +50,14 @@ struct RegularCategoryModuleView: View {
     ScrollView {
         RegularCategoryModuleView(
             items: [
-                CategoryDTO(categoryId: "1", name: "서울", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "2", name: "경기도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "3", name: "경상도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "4", name: "강원도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "5", name: "전라도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "6", name: "충청도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "7", name: "제주도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "8", name: "기타", mainDisplay: "Y", type: .regular)
+                CategoryDTO(categoryId: "1", name: "서울", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "2", name: "경기도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "3", name: "경상도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "4", name: "강원도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "5", name: "전라도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "6", name: "충청도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "7", name: "제주도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "8", name: "기타", mainDisplay: "Y")
             ]
         ) { categoryId in
             print("Tapped category: \(categoryId)")

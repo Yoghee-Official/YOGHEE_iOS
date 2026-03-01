@@ -97,7 +97,6 @@ struct CategoryDTO: Codable, Hashable {
     let categoryId: String
     let name: String
     let mainDisplay: String
-    let type: ClassType
 }
 
 struct LayoutDTO: Codable {

@@ -75,7 +75,7 @@ class HomeTabContainer: ObservableObject {
                 state.navigationDestination = .categoryDetail(
                     categoryId: itemId,
                     categoryName: category.name,
-                    categoryType: category.type,
+                    categoryType: state.selectedClassType,
                     categories: items
                 )
             }

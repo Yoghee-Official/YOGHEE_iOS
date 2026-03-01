@@ -235,11 +235,11 @@ struct FilterPopup: View {
             categoryName: "서울",
             categoryType: .regular,
             categories: [
-                CategoryDTO(categoryId: "1", name: "서울", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "2", name: "경기도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "3", name: "경상도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "4", name: "강원도", mainDisplay: "Y", type: .regular),
-                CategoryDTO(categoryId: "5", name: "전라도", mainDisplay: "Y", type: .regular)
+                CategoryDTO(categoryId: "1", name: "서울", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "2", name: "경기도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "3", name: "경상도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "4", name: "강원도", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "5", name: "전라도", mainDisplay: "Y")
             ]
         )
     }
@@ -252,11 +252,11 @@ struct FilterPopup: View {
             categoryName: "릴렉스",
             categoryType: .oneDay,
             categories: [
-                CategoryDTO(categoryId: "1", name: "릴렉스", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "2", name: "파워", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "3", name: "초심자", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "4", name: "이색요가", mainDisplay: "Y", type: .oneDay),
-                CategoryDTO(categoryId: "5", name: "전통요가", mainDisplay: "Y", type: .oneDay)
+                CategoryDTO(categoryId: "1", name: "릴렉스", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "2", name: "파워", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "3", name: "초심자", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "4", name: "이색요가", mainDisplay: "Y"),
+                CategoryDTO(categoryId: "5", name: "전통요가", mainDisplay: "Y")
             ]
         )
     }
