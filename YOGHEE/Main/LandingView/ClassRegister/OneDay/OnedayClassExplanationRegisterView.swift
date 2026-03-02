@@ -206,9 +206,9 @@ struct OnedayClassExplanationRegisterView: View {
                 }
                 .buttonStyle(.plain)
                 
-                Button(action: {
-                    // TODO: 다음 단계(수련 유형 선택)로 이동
-                }) {
+                NavigationLink {
+                    OnedayClassSelectTypeRegisterView(container: container)
+                } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)
                         .foregroundColor(canProceed ? .CleanWhite : .Info)

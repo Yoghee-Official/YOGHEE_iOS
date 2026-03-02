@@ -86,6 +86,7 @@
 		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
 		52F987A02F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */; };
 		52F987A42F4D07E800C905D1 /* ClassTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */; };
+		52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */; };
 		52F987A82F4D07EA00C905D1 /* ClassRegisterContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A72F4D07EA00C905D1 /* ClassRegisterContainer.swift */; };
 		52F987AC2F4D07EC00C905D1 /* ClassRegisterModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987AB2F4D07EC00C905D1 /* ClassRegisterModels.swift */; };
 /* End PBXBuildFile section */
@@ -169,6 +170,7 @@
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassExplanationRegisterView.swift; sourceTree = "<group>"; };
 		52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
+		52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassSelectTypeRegisterView.swift; sourceTree = "<group>"; };
 		52F987A72F4D07EA00C905D1 /* ClassRegisterContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterContainer.swift; sourceTree = "<group>"; };
 		52F987AB2F4D07EC00C905D1 /* ClassRegisterModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -541,6 +543,7 @@
 			isa = PBXGroup;
 			children = (
 				52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */,
+				52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */,
 			);
 			path = OneDay;
 			sourceTree = "<group>";
@@ -694,6 +697,7 @@
 				52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */,
 				522CE60A2F12A6BF0063FDF5 /* AuthModels.swift in Sources */,
 				52F987AC2F4D07EC00C905D1 /* ClassRegisterModels.swift in Sources */,
+				52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */,
 				522CE60B2F12A6BF0063FDF5 /* CategoryModels.swift in Sources */,
 				52295B1B2F2F943B00E615E1 /* MessageBoxContainer.swift in Sources */,
 				52295B1C2F2F943B00E615E1 /* MessageBoxView.swift in Sources */,
