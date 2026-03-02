@@ -44,7 +44,7 @@ struct OnedayClassSelectTypeRegisterView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: "유형 선택")
+        .customNavigationBar(title: "수련 유형 선택")
         .onAppear {
             if container.state.types.isEmpty && container.state.categories.isEmpty && container.state.targets.isEmpty {
                 container.loadCodeList()
