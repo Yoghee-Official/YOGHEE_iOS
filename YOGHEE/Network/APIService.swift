@@ -64,6 +64,7 @@ class APIService {
     private enum Endpoint {
         case login
         case main(type: String)
+        case codeList
         case categoryClasses(categoryId: String, type: String)
         case categoryDetail(categoryId: String)
         case notifications
@@ -75,6 +76,8 @@ class APIService {
                 return "/auth/login"
             case .main:
                 return "/api/main"
+            case .codeList:
+                return "/api/main/code"
             case .categoryClasses(let categoryId, _):
                 return "/api/class/category/\(categoryId)"
             case .categoryDetail(let id):
@@ -97,7 +100,7 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
-            case .login, .categoryDetail, .notifications, .myPage:
+            case .login, .codeList, .categoryDetail, .notifications, .myPage:
                 return nil
             }
         }
@@ -127,6 +130,12 @@ class APIService {
     /// 메인 데이터 조회
     func getMainData(type: String) async throws -> MainResponse {
         let endpoint = Endpoint.main(type: type)
+        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+    }
+    
+    /// 코드 목록 조회 (카테고리/특징/편의시설) - 인증 불필요
+    func getCodeList() async throws -> CodeListResponse {
+        let endpoint = Endpoint.codeList
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     

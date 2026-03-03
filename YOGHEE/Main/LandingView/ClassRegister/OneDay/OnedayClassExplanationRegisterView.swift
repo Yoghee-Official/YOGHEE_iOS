@@ -9,29 +9,257 @@ import SwiftUI
 
 struct OnedayClassExplanationRegisterView: View {
     @ObservedObject var container: ClassRegisterContainer
+    @Environment(\.dismiss) private var dismiss
+    
+    private let totalSteps = 6
+    private let currentStep = 1
+    
+    private var canProceed: Bool {
+        !container.state.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !container.state.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24.ratio()) {
-                // TODO: 수련 설명 폼 구현
-                VStack(spacing: 16.ratio()) {
-                    Text("수련 설명 페이지")
-                        .pretendardFont(.bold, size: 20)
-                        .foregroundColor(.DarkBlack)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    // 2a: 수련 상세 설명
+                    explanationSection
                     
-                    Text("여기에 수련 설명 폼을 구현하세요.")
-                        .pretendardFont(.regular, size: 14)
-                        .foregroundColor(.Info)
+                    // 2b: 수련 장점 (어디에 도움되는 수업인지)
+                    featureSection
+                    
+                    Spacer(minLength: 100)
                 }
-                .padding(.top, 40.ratio())
-                
-                Spacer()
+                .padding(.horizontal, 16.ratio())
+                .padding(.top, 24.ratio())
             }
-            .frame(maxWidth: .infinity)
-            .padding(.horizontal, 16.ratio())
+            .scrollDismissesKeyboard(.immediately)
+            
+            // 3: 하단 네비게이션 (프로그레스 + 이전페이지/계속)
+            bottomNavigation
         }
         .background(Color.SandBeige)
         .customNavigationBar(title: "수련 설명")
+        .onAppear {
+            container.loadCodeList()
+        }
+    }
+    
+    // MARK: - 2a: 수련 상세 설명
+    private var explanationSection: some View {
+        VStack(alignment: .leading, spacing: 16.ratio()) {
+            Text("수련에 대해 알려주세요.")
+                .pretendardFont(.bold, size: 16)
+                .foregroundColor(.DarkBlack)
+            
+            Text("[마이페이지] → [개설 수련 목록] 에서 수정할 수 있습니다.")
+                .pretendardFont(.bold, size: 10)
+                .foregroundColor(.Info)
+            
+            // 제목 입력
+            TextField("", text: Binding(
+                get: { container.state.name },
+                set: {
+                    let name = String($0.prefix(22))
+                    container.handleIntent(.updateExplanation(name: name, description: container.state.description))
+                }
+            ))
+            .pretendardFont(.medium, size: 12)
+            .foregroundColor(.DarkBlack)
+            .padding(12.ratio())
+            .frame(minHeight: 112.ratio())
+            .background(Color.CleanWhite)
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.Background, lineWidth: 1)
+            )
+            .overlay(alignment: .topLeading) {
+                if container.state.name.isEmpty {
+                    Text("대표 제목 (상세페이지 최상단에 노출돼요!)\n\n수련 테마를 한줄로 표현해주세요.")
+                        .pretendardFont(.medium, size: 12)
+                        .foregroundColor(.Info)
+                        .padding(12.ratio())
+                        .allowsHitTesting(false)
+                }
+            }
+            .overlay(alignment: .bottomLeading) {
+                Text("\(container.state.name.count) / 22")
+                    .pretendardFont(.regular, size: 12)
+                    .foregroundColor(.Info)
+                    .padding(12.ratio())
+                    .allowsHitTesting(false)
+            }
+            
+            // 내용 입력
+            TextEditor(text: Binding(
+                get: { container.state.description },
+                set: {
+                    let description = String($0.prefix(3000))
+                    container.handleIntent(.updateExplanation(name: container.state.name, description: description))
+                }
+            ))
+            .pretendardFont(.medium, size: 12)
+            .foregroundColor(.DarkBlack)
+            .padding(12.ratio())
+            .frame(minHeight: 112.ratio())
+            .scrollContentBackground(.hidden)
+            .background(Color.CleanWhite)
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.Background, lineWidth: 1)
+            )
+            .overlay(alignment: .topLeading) {
+                if container.state.description.isEmpty {
+                    Text("내용\n\n수련 관련 내용을 작성해주세요.")
+                        .pretendardFont(.medium, size: 12)
+                        .foregroundColor(.Info)
+                        .padding(12.ratio())
+                        .allowsHitTesting(false)
+                }
+            }
+            .overlay(alignment: .bottomLeading) {
+                Text("\(container.state.description.count) / 3000")
+                    .pretendardFont(.regular, size: 12)
+                    .foregroundColor(.Info)
+                    .padding(12.ratio())
+                    .allowsHitTesting(false)
+            }
+        }
+        .padding(.bottom, 32.ratio())
+    }
+    
+    // MARK: - 2b: 수련 장점 (어디에 도움되는 수업인지)
+    private var featureSection: some View {
+        VStack(alignment: .leading, spacing: 16.ratio()) {
+            Text("어디에 도움되는 수업인가요?")
+                .pretendardFont(.bold, size: 16)
+                .foregroundColor(.DarkBlack)
+            
+            Text("최대 3개까지 선택 가능합니다.")
+                .pretendardFont(.regular, size: 12)
+                .foregroundColor(.Info)
+            
+            if container.state.isLoadingCodeList {
+                HStack {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                }
+                .padding(.vertical, 24.ratio())
+            } else if let error = container.state.codeListError {
+                Text("목록을 불러오지 못했습니다: \(error)")
+                    .pretendardFont(.regular, size: 12)
+                    .foregroundColor(.red)
+                    .padding(.vertical, 16.ratio())
+            } else {
+                LazyVGrid(columns: [
+                    GridItem(.flexible(), spacing: 12.ratio()),
+                    GridItem(.flexible(), spacing: 12.ratio())
+                ], spacing: 12.ratio()) {
+                    ForEach(container.state.features) { feature in
+                        FeatureChipView(
+                            feature: feature,
+                            isSelected: container.state.featureIds.contains(feature.id),
+                            onTap: {
+                                container.handleIntent(.toggleFeature(feature.id))
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: - 3: 하단 네비게이션
+    private var bottomNavigation: some View {
+        VStack(spacing: 0) {
+            // 프로그레스 인디케이터
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color.gray.opacity(0.3))
+                    
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color.DarkBlack)
+                        .frame(width: geo.size.width * CGFloat(currentStep) / CGFloat(totalSteps))
+                }
+            }
+            .frame(height: 4.ratio())
+            .padding(.horizontal, 16.ratio())
+            .padding(.bottom, 16.ratio())
+            
+            // 이전페이지 / 계속 버튼
+            HStack(spacing: 12.ratio()) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Text("이전페이지")
+                        .pretendardFont(.medium, size: 15)
+                        .foregroundColor(.DarkBlack)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48.ratio())
+                        .background(Color.Background)
+                        .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
+                
+                NavigationLink {
+                    OnedayClassSelectTypeRegisterView(container: container)
+                } label: {
+                    Text("계속")
+                        .pretendardFont(.medium, size: 15)
+                        .foregroundColor(canProceed ? .CleanWhite : .Info)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48.ratio())
+                        .background(canProceed ? Color.DarkBlack : Color.Background)
+                        .cornerRadius(8)
+                }
+                .buttonStyle(.plain)
+                .disabled(!canProceed)
+            }
+            .padding(.horizontal, 16.ratio())
+            .padding(.bottom, 24.ratio())
+        }
+        .background(Color.SandBeige)
+    }
+}
+
+// MARK: - Feature Chip View
+private struct FeatureChipView: View {
+    let feature: CodeInfoDTO
+    let isSelected: Bool
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 8.ratio()) {
+                Text(feature.name)
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.DarkBlack)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(2)
+                
+                Spacer(minLength: 0)
+                
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 20.ratio()))
+                        .foregroundColor(.DarkBlack)
+                }
+            }
+            .padding(12.ratio())
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(isSelected ? Color.NatureGreen : Color.CleanWhite)
+            .cornerRadius(8)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.Background, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
 
