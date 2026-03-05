@@ -88,7 +88,12 @@
 		52F987A42F4D07E800C905D1 /* ClassTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */; };
 		52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */; };
 		52F987A82F4D07EA00C905D1 /* ClassRegisterContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A72F4D07EA00C905D1 /* ClassRegisterContainer.swift */; };
+		52F987A92F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A82F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift */; };
 		52F987AC2F4D07EC00C905D1 /* ClassRegisterModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987AB2F4D07EC00C905D1 /* ClassRegisterModels.swift */; };
+		52F987AE2F572E3600C905D1 /* ScheduleSheetContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987AD2F572E2F00C905D1 /* ScheduleSheetContext.swift */; };
+		52F987B02F572EA300C905D1 /* ScheduleDateSelectionCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987AF2F572E9700C905D1 /* ScheduleDateSelectionCalendarView.swift */; };
+		52F987B22F572F2D00C905D1 /* ScheduleCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987B12F572F2600C905D1 /* ScheduleCardView.swift */; };
+		52F987B42F572F5900C905D1 /* ScheduleInputBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987B32F572F5700C905D1 /* ScheduleInputBottomSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -172,7 +177,12 @@
 		52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
 		52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassSelectTypeRegisterView.swift; sourceTree = "<group>"; };
 		52F987A72F4D07EA00C905D1 /* ClassRegisterContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterContainer.swift; sourceTree = "<group>"; };
+		52F987A82F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassInformationRegisterView.swift; sourceTree = "<group>"; };
 		52F987AB2F4D07EC00C905D1 /* ClassRegisterModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterModels.swift; sourceTree = "<group>"; };
+		52F987AD2F572E2F00C905D1 /* ScheduleSheetContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSheetContext.swift; sourceTree = "<group>"; };
+		52F987AF2F572E9700C905D1 /* ScheduleDateSelectionCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDateSelectionCalendarView.swift; sourceTree = "<group>"; };
+		52F987B12F572F2600C905D1 /* ScheduleCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCardView.swift; sourceTree = "<group>"; };
+		52F987B32F572F5700C905D1 /* ScheduleInputBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleInputBottomSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -542,8 +552,9 @@
 		52F9879E2F4D061C00C905D1 /* OneDay */ = {
 			isa = PBXGroup;
 			children = (
-				52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */,
-				52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */,
+				52F987AA2F572DF200C905D1 /* Explanation */,
+				52F987AB2F572DFD00C905D1 /* SelectType */,
+				52F987AC2F572E0C00C905D1 /* Information */,
 			);
 			path = OneDay;
 			sourceTree = "<group>";
@@ -554,6 +565,34 @@
 				52F987AB2F4D07EC00C905D1 /* ClassRegisterModels.swift */,
 			);
 			path = ClassRegister;
+			sourceTree = "<group>";
+		};
+		52F987AA2F572DF200C905D1 /* Explanation */ = {
+			isa = PBXGroup;
+			children = (
+				52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */,
+			);
+			path = Explanation;
+			sourceTree = "<group>";
+		};
+		52F987AB2F572DFD00C905D1 /* SelectType */ = {
+			isa = PBXGroup;
+			children = (
+				52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */,
+			);
+			path = SelectType;
+			sourceTree = "<group>";
+		};
+		52F987AC2F572E0C00C905D1 /* Information */ = {
+			isa = PBXGroup;
+			children = (
+				52F987A82F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift */,
+				52F987AD2F572E2F00C905D1 /* ScheduleSheetContext.swift */,
+				52F987B32F572F5700C905D1 /* ScheduleInputBottomSheet.swift */,
+				52F987AF2F572E9700C905D1 /* ScheduleDateSelectionCalendarView.swift */,
+				52F987B12F572F2600C905D1 /* ScheduleCardView.swift */,
+			);
+			path = Information;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -643,11 +682,14 @@
 			files = (
 				522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */,
 				522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */,
+				52F987B22F572F2D00C905D1 /* ScheduleCardView.swift in Sources */,
 				522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */,
 				522CE5DB2F12A6BF0063FDF5 /* Extension+Int.swift in Sources */,
+				52F987B02F572EA300C905D1 /* ScheduleDateSelectionCalendarView.swift in Sources */,
 				522CE5DC2F12A6BF0063FDF5 /* Extension+UIViewController.swift in Sources */,
 				52295B202F2F947000E615E1 /* SettingsView.swift in Sources */,
 				52295B212F2F947000E615E1 /* SettingsContainer.swift in Sources */,
+				52F987A92F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift in Sources */,
 				522CE5DD2F12A6BF0063FDF5 /* Extension+View.swift in Sources */,
 				522CE5DE2F12A6BF0063FDF5 /* LoginContainer.swift in Sources */,
 				522CE5DF2F12A6BF0063FDF5 /* LoginView.swift in Sources */,
@@ -655,6 +697,7 @@
 				522CE5E12F12A6BF0063FDF5 /* ContentTabView.swift in Sources */,
 				52295B302F49F94400E615E1 /* CustomNavigationBar.swift in Sources */,
 				522CE5E22F12A6BF0063FDF5 /* ExploreTabContainer.swift in Sources */,
+				52F987AE2F572E3600C905D1 /* ScheduleSheetContext.swift in Sources */,
 				52295B322F4A0B5E00E615E1 /* Extension+UINavigationController.swift in Sources */,
 				522CE5E32F12A6BF0063FDF5 /* ExploreTabView.swift in Sources */,
 				522CE5E42F12A6BF0063FDF5 /* CategoryClassListItemView.swift in Sources */,
@@ -673,6 +716,7 @@
 				522CE5EF2F12A6BF0063FDF5 /* NewReviewModuleView.swift in Sources */,
 				522CE5F02F12A6BF0063FDF5 /* OneDayCategoryModuleView.swift in Sources */,
 				522CE5F12F12A6BF0063FDF5 /* RegularCategoryModuleView.swift in Sources */,
+				52F987B42F572F5900C905D1 /* ScheduleInputBottomSheet.swift in Sources */,
 				52295B162F2F5A9500E615E1 /* FavoriteCenterModuleView.swift in Sources */,
 				522CE5F22F12A6BF0063FDF5 /* TodayClassModuleView.swift in Sources */,
 				522CE5F32F12A6BF0063FDF5 /* TopTenCenterModuleView.swift in Sources */,
