@@ -26,6 +26,12 @@ enum ClassRegisterIntent {
     case toggleCategory(String)
     /// 이용 대상 토글 (최대 7개)
     case toggleTarget(String)
+    
+    // Step 3: 수련 정보 (스케줄)
+    /// 스케줄 추가
+    case addSchedule(NewScheduleDTO)
+    /// 스케줄 삭제
+    case removeSchedule(String)
 }
 
 // MARK: - State
@@ -59,6 +65,10 @@ struct ClassRegisterState: Equatable {
     var categoryIds: Set<String> = []
     /// 선택된 이용 대상 ID (최대 7개)
     var targetIds: Set<String> = []
+    
+    // Step 3: 수련 정보 (스케줄)
+    /// 등록된 스케줄 목록 (NewClassDto.schedules)
+    var schedules: [NewScheduleDTO] = []
 }
 
 // MARK: - Container
@@ -102,6 +112,12 @@ class ClassRegisterContainer: ObservableObject {
             } else if state.targetIds.count < 7 {
                 state.targetIds.insert(targetId)
             }
+            
+        case .addSchedule(let schedule):
+            state.schedules.append(schedule)
+            
+        case .removeSchedule(let id):
+            state.schedules.removeAll { $0.id == id }
         }
     }
     
