@@ -30,7 +30,7 @@ struct CategoryCodeListDTO: Codable {
     let target: [CodeInfoDTO]
 }
 
-struct AmenityCodeListDTO: Codable {
+struct AmenityCodeListDTO: Codable, Equatable {
     let amenity: [CodeInfoDTO]
     let facility: [CodeInfoDTO]
 }
@@ -38,6 +38,73 @@ struct AmenityCodeListDTO: Codable {
 struct CodeInfoDTO: Codable, Identifiable, Hashable {
     let id: String
     let name: String
+}
+
+// MARK: - 카카오 우편번호 서비스 선택 결과 (postcode.map.daum.net/guide oncomplete 데이터)
+
+/// 카카오 우편번호 서비스에서 사용자가 선택한 주소 정보 (oncomplete 인자 기준)
+struct KakaoPostcodeResult: Codable, Equatable {
+    /// 국가기초구역번호 (새 우편번호, 5자리)
+    let zonecode: String
+    /// 기본 주소 (사용자가 선택한 타입에 따른 도로명 또는 지번)
+    let address: String
+    /// 도로명 주소 (없을 수 있음)
+    let roadAddress: String
+    /// 지번 주소 (없을 수 있음)
+    let jibunAddress: String
+    /// 사용자가 선택한 주소 타입: R(도로명), J(지번)
+    let userSelectedType: String
+    /// 건물명 (없을 수 있음)
+    let buildingName: String?
+    /// 도/시 이름 (광역시/도)
+    let sido: String?
+    /// 시/군/구 이름 (시/구)
+    let sigungu: String?
+}
+
+// MARK: - 요가원 정보 목록 조회 API (GET /api/center)
+
+/// 요가원 목록 조회 API 응답 (code, status, data 배열)
+struct CenterListResponse: Codable {
+    let code: Int
+    let status: String
+    let data: [CenterBaseDTO]
+}
+
+/// 등록된 요가원 한 건 (수련 장소 등록 화면 2b용)
+struct CenterBaseDTO: Codable, Identifiable, Equatable {
+    let centerId: String
+    let name: String
+    let address: String
+    let createdAt: String
+    
+    var id: String { centerId }
+}
+
+// MARK: - 요가원 정보 등록 API (POST /api/center)
+
+/// 신규 요가원 등록 요청 바디 (NewCenterDto). 도로명/지번은 둘 중 하나만 있어도 됨.
+struct NewCenterDto: Codable {
+    var name: String
+    var description: String?
+    var thumbnail: String?
+    var masterId: String?
+    var depth1: String?
+    var depth2: String?
+    var depth3: String?
+    var roadAddress: String?
+    var jibunAddress: String?
+    var zonecode: String?
+    var addressDetail: String?
+    var fullAddress: String?
+    var amenityIds: [String]?
+}
+
+/// 요가원 등록 API 응답 (200 시 data: 메시지 문자열)
+struct NewCenterResponse: Codable {
+    let code: Int
+    let status: String
+    let data: String?
 }
 
 // MARK: - NewScheduleDTO (클래스 등록 시 schedules 배열 요소)
