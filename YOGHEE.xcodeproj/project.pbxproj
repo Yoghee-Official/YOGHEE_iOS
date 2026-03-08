@@ -88,12 +88,18 @@
 		52F987A42F4D07E800C905D1 /* ClassTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */; };
 		52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */; };
 		52F987A82F4D07EA00C905D1 /* ClassRegisterContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A72F4D07EA00C905D1 /* ClassRegisterContainer.swift */; };
+		52F987C02F5A0B5E00C905D1 /* FlowChipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987BF2F5A0B5E00C905D1 /* FlowChipView.swift */; };
+		52F987C22F5A0C0100C905D1 /* ClassRegisterSharedViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987C12F5A0C0100C905D1 /* ClassRegisterSharedViews.swift */; };
+		52F987C42F5A0C0200C905D1 /* Extension+String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987C32F5A0C0200C905D1 /* Extension+String.swift */; };
 		52F987A92F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A82F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift */; };
 		52F987AC2F4D07EC00C905D1 /* ClassRegisterModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987AB2F4D07EC00C905D1 /* ClassRegisterModels.swift */; };
 		52F987AE2F572E3600C905D1 /* ScheduleSheetContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987AD2F572E2F00C905D1 /* ScheduleSheetContext.swift */; };
 		52F987B02F572EA300C905D1 /* ScheduleDateSelectionCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987AF2F572E9700C905D1 /* ScheduleDateSelectionCalendarView.swift */; };
 		52F987B22F572F2D00C905D1 /* ScheduleCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987B12F572F2600C905D1 /* ScheduleCardView.swift */; };
 		52F987B42F572F5900C905D1 /* ScheduleInputBottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987B32F572F5700C905D1 /* ScheduleInputBottomSheet.swift */; };
+		52F987BA2F59C25900C905D1 /* OnedayClassLocationRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987B92F59C25900C905D1 /* OnedayClassLocationRegisterView.swift */; };
+		52F987BC2F5A012000C905D1 /* KakaoPostcodeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987BB2F5A012000C905D1 /* KakaoPostcodeWebView.swift */; };
+		52F987BE2F5A0A3B00C905D1 /* NewPlaceRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987BD2F5A0A3B00C905D1 /* NewPlaceRegisterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -177,12 +183,18 @@
 		52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
 		52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassSelectTypeRegisterView.swift; sourceTree = "<group>"; };
 		52F987A72F4D07EA00C905D1 /* ClassRegisterContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterContainer.swift; sourceTree = "<group>"; };
+		52F987BF2F5A0B5E00C905D1 /* FlowChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowChipView.swift; sourceTree = "<group>"; };
+		52F987C12F5A0C0100C905D1 /* ClassRegisterSharedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterSharedViews.swift; sourceTree = "<group>"; };
+		52F987C32F5A0C0200C905D1 /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 		52F987A82F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassInformationRegisterView.swift; sourceTree = "<group>"; };
 		52F987AB2F4D07EC00C905D1 /* ClassRegisterModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterModels.swift; sourceTree = "<group>"; };
 		52F987AD2F572E2F00C905D1 /* ScheduleSheetContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleSheetContext.swift; sourceTree = "<group>"; };
 		52F987AF2F572E9700C905D1 /* ScheduleDateSelectionCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleDateSelectionCalendarView.swift; sourceTree = "<group>"; };
 		52F987B12F572F2600C905D1 /* ScheduleCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCardView.swift; sourceTree = "<group>"; };
 		52F987B32F572F5700C905D1 /* ScheduleInputBottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleInputBottomSheet.swift; sourceTree = "<group>"; };
+		52F987B92F59C25900C905D1 /* OnedayClassLocationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassLocationRegisterView.swift; sourceTree = "<group>"; };
+		52F987BB2F5A012000C905D1 /* KakaoPostcodeWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoPostcodeWebView.swift; sourceTree = "<group>"; };
+		52F987BD2F5A0A3B00C905D1 /* NewPlaceRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPlaceRegisterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,6 +280,7 @@
 				522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */,
 				522CE5862F12A6BF0063FDF5 /* Extension+Int.swift */,
 				522CE5872F12A6BF0063FDF5 /* Extension+UIViewController.swift */,
+				52F987C32F5A0C0200C905D1 /* Extension+String.swift */,
 				522CE5882F12A6BF0063FDF5 /* Extension+View.swift */,
 			);
 			path = Extension;
@@ -544,6 +557,8 @@
 			children = (
 				52F987A72F4D07EA00C905D1 /* ClassRegisterContainer.swift */,
 				52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */,
+				52F987C12F5A0C0100C905D1 /* ClassRegisterSharedViews.swift */,
+				52F987BF2F5A0B5E00C905D1 /* FlowChipView.swift */,
 				52F9879E2F4D061C00C905D1 /* OneDay */,
 			);
 			path = ClassRegister;
@@ -555,6 +570,7 @@
 				52F987AA2F572DF200C905D1 /* Explanation */,
 				52F987AB2F572DFD00C905D1 /* SelectType */,
 				52F987AC2F572E0C00C905D1 /* Information */,
+				52F987B52F59C25800C905D1 /* Location */,
 			);
 			path = OneDay;
 			sourceTree = "<group>";
@@ -593,6 +609,16 @@
 				52F987B12F572F2600C905D1 /* ScheduleCardView.swift */,
 			);
 			path = Information;
+			sourceTree = "<group>";
+		};
+		52F987B52F59C25800C905D1 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				52F987B92F59C25900C905D1 /* OnedayClassLocationRegisterView.swift */,
+				52F987BD2F5A0A3B00C905D1 /* NewPlaceRegisterView.swift */,
+				52F987BB2F5A012000C905D1 /* KakaoPostcodeWebView.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -690,6 +716,9 @@
 				52295B202F2F947000E615E1 /* SettingsView.swift in Sources */,
 				52295B212F2F947000E615E1 /* SettingsContainer.swift in Sources */,
 				52F987A92F55CF7000C905D1 /* OnedayClassInformationRegisterView.swift in Sources */,
+				52F987BA2F59C25900C905D1 /* OnedayClassLocationRegisterView.swift in Sources */,
+				52F987BC2F5A012000C905D1 /* KakaoPostcodeWebView.swift in Sources */,
+				52F987BE2F5A0A3B00C905D1 /* NewPlaceRegisterView.swift in Sources */,
 				522CE5DD2F12A6BF0063FDF5 /* Extension+View.swift in Sources */,
 				522CE5DE2F12A6BF0063FDF5 /* LoginContainer.swift in Sources */,
 				522CE5DF2F12A6BF0063FDF5 /* LoginView.swift in Sources */,
@@ -757,6 +786,9 @@
 				52F987A02F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift in Sources */,
 				52F987A42F4D07E800C905D1 /* ClassTypeRegisterView.swift in Sources */,
 				52F987A82F4D07EA00C905D1 /* ClassRegisterContainer.swift in Sources */,
+				52F987C02F5A0B5E00C905D1 /* FlowChipView.swift in Sources */,
+				52F987C22F5A0C0100C905D1 /* ClassRegisterSharedViews.swift in Sources */,
+				52F987C42F5A0C0200C905D1 /* Extension+String.swift in Sources */,
 				522CE6132F12A6BF0063FDF5 /* YOGHEEApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

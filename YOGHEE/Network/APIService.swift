@@ -69,6 +69,7 @@ class APIService {
         case categoryDetail(categoryId: String)
         case notifications
         case myPage(role: UserRole)
+        case centerList
         
         var path: String {
             switch self {
@@ -91,6 +92,8 @@ class APIService {
                 case .instructor:
                     return "/api/my/leader"
                 }
+            case .centerList:
+                return "/api/center"
             }
         }
         
@@ -100,7 +103,7 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
-            case .login, .codeList, .categoryDetail, .notifications, .myPage:
+            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList:
                 return nil
             }
         }
@@ -172,6 +175,29 @@ class APIService {
         log("🌐 Endpoint: \(endpoint.path)")
         
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
+    }
+    
+    /// 요가원 정보 목록 조회 (인증된 사용자가 등록한 요가원)
+    func getCenterList() async throws -> [CenterBaseDTO] {
+        guard let token = await getAccessToken() else {
+            throw APIError.unauthorized
+        }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: CenterListResponse = try await get(endPoint: Endpoint.centerList.path, parameters: nil, headers: headers)
+        return response.data
+    }
+    
+    /// 요가원 정보 신규 등록 (POST /api/center). 도로명/지번은 둘 중 하나만 있어도 됨.
+    func registerCenter(body: NewCenterDto) async throws -> NewCenterResponse {
+        guard let token = await getAccessToken() else {
+            throw APIError.unauthorized
+        }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else {
+            throw APIError.invalidResponse
+        }
+        return try await post(endPoint: Endpoint.centerList.path, parameters: parameters, headers: headers)
     }
     
     // MARK: - Internal Methods

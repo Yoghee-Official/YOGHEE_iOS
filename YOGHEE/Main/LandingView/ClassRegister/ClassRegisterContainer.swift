@@ -32,7 +32,12 @@ enum ClassRegisterIntent {
     case addSchedule(NewScheduleDTO)
     /// 스케줄 삭제
     case removeSchedule(String)
+    
+    // Step 4: 수련 장소
+    /// 요가원(수련 장소) 선택
+    case selectCenter(String?)
 }
+
 
 // MARK: - State
 struct ClassRegisterState: Equatable {
@@ -59,6 +64,8 @@ struct ClassRegisterState: Equatable {
     var categories: [CodeInfoDTO] = []
     /// 이용 대상 목록 (CodeListDto > categories > target)
     var targets: [CodeInfoDTO] = []
+    /// 편의시설 목록 (CodeListDto > amenities > amenity, facility)
+    var amenities: AmenityCodeListDTO?
     /// 선택된 전문 수련 유형 ID (최대 13개)
     var typeIds: Set<String> = []
     /// 선택된 수련 카테고리 ID (최대 9개)
@@ -69,6 +76,14 @@ struct ClassRegisterState: Equatable {
     // Step 3: 수련 정보 (스케줄)
     /// 등록된 스케줄 목록 (NewClassDto.schedules)
     var schedules: [NewScheduleDTO] = []
+    
+    // Step 4: 수련 장소
+    /// 등록된 요가원 목록 (GET /api/center)
+    var centers: [CenterBaseDTO] = []
+    /// 선택된 요가원 ID (2b에서 선택 시 다음 단계 활성화)
+    var selectedCenterId: String?
+    var isLoadingCenters: Bool = false
+    var centersError: String?
 }
 
 // MARK: - Container
@@ -118,6 +133,31 @@ class ClassRegisterContainer: ObservableObject {
             
         case .removeSchedule(let id):
             state.schedules.removeAll { $0.id == id }
+            
+        case .selectCenter(let centerId):
+            state.selectedCenterId = centerId
+        }
+    }
+    
+    /// 요가원 목록 로드 (GET /api/center)
+    func loadCenterList() {
+        state.isLoadingCenters = true
+        state.centersError = nil
+        
+        Task {
+            do {
+                let list = try await APIService.shared.getCenterList()
+                await MainActor.run {
+                    self.state.centers = list
+                    self.state.isLoadingCenters = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.state.centersError = error.localizedDescription
+                    self.state.centers = []
+                    self.state.isLoadingCenters = false
+                }
+            }
         }
     }
     
@@ -134,6 +174,7 @@ class ClassRegisterContainer: ObservableObject {
                     self.state.types = response.data.categories.type
                     self.state.categories = response.data.categories.category
                     self.state.targets = response.data.categories.target
+                    self.state.amenities = response.data.amenities
                     self.state.isLoadingCodeList = false
                 }
             } catch {

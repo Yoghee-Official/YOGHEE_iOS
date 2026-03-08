@@ -143,9 +143,9 @@ struct OnedayClassInformationRegisterView: View {
                 }
                 .buttonStyle(.plain)
                 
-                Button(action: {
-                    // TODO: 다음 단계로 이동
-                }) {
+                NavigationLink {
+                    OnedayClassLocationRegisterView(container: container)
+                } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)
                         .foregroundColor(canProceed ? .DarkBlack : .Info)
