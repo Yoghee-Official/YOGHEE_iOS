@@ -43,7 +43,8 @@ struct MainDataDTO: Codable {
     let top10Class: [ClassDTO]?
     let top10Center: [CenterDTO]?
     let newReview: [YogaReviewDTO]
-    let yogaCategory: [CategoryDTO]
+    /// API에서는 내려오지 않음. layoutOrder에만 yogaCategory 노출 여부가 내려오고, 모듈 데이터는 하드코딩 사용.
+    let yogaCategory: [CategoryDTO]?
     let layoutOrder: [LayoutDTO]
 }
 
@@ -96,7 +97,6 @@ struct YogaReviewDTO: Codable {
 struct CategoryDTO: Codable, Hashable {
     let categoryId: String
     let name: String
-    let mainDisplay: String
 }
 
 struct LayoutDTO: Codable {
@@ -104,6 +104,36 @@ struct LayoutDTO: Codable {
     let type: String
     let key: String
     let text: String?
+}
+
+// MARK: - Yoga Category 하드코딩 데이터 (layoutOrder에만 노출 제어, 모듈 데이터는 전부 하드코딩)
+enum YogaCategoryHardcoded {
+    /// 취향탐색(하루수련)용 카테고리
+    static let oneDay: [CategoryDTO] = [
+        CategoryDTO(categoryId: "1", name: "릴렉스"),
+        CategoryDTO(categoryId: "2", name: "파워"),
+        CategoryDTO(categoryId: "3", name: "초심자"),
+        CategoryDTO(categoryId: "4", name: "이색요가"),
+        CategoryDTO(categoryId: "5", name: "전통 요가")
+    ]
+    /// 위치탐색(정규수련)용 카테고리
+    static let regular: [CategoryDTO] = [
+        CategoryDTO(categoryId: "1", name: "서울"),
+        CategoryDTO(categoryId: "2", name: "경기도"),
+        CategoryDTO(categoryId: "3", name: "경상도"),
+        CategoryDTO(categoryId: "4", name: "강원도"),
+        CategoryDTO(categoryId: "5", name: "전라도"),
+        CategoryDTO(categoryId: "6", name: "충청도"),
+        CategoryDTO(categoryId: "7", name: "제주도"),
+        CategoryDTO(categoryId: "8", name: "기타")
+    ]
+    
+    static func items(for classType: ClassType) -> [CategoryDTO] {
+        switch classType {
+        case .oneDay: return oneDay
+        case .regular: return regular
+        }
+    }
 }
 
 // MARK: - Category Class Response
@@ -152,15 +182,15 @@ enum HomeSection: Identifiable {
         }
     }
     
-    // API key로 HomeSection 생성하는 헬퍼 메서드
+    /// API key로 HomeSection 생성. layoutOrder에 포함된 키만 섹션으로 생성하며, yogaCategory는 데이터 없이 하드코딩으로 노출.
     static func create(
         fromKey key: String,
         title: String,
-        data: MainDataDTO
+        data: MainDataDTO,
+        classType: ClassType
     ) -> HomeSection? {
         switch key {
         case "todayClass":
-            // todayClass는 빈 배열이어도 표시
             return .todayClass(title: title, items: data.todayClass)
         case "imageBanner":
             guard !data.imageBanner.isEmpty else { return nil }
@@ -172,8 +202,8 @@ enum HomeSection: Identifiable {
             guard let items = data.interestedCenter, !items.isEmpty else { return nil }
             return .interestedCenter(title: title, items: items)
         case "yogaCategory":
-            guard !data.yogaCategory.isEmpty else { return nil }
-            return .yogaCategory(title: title, items: data.yogaCategory)
+            // layoutOrder에 포함되면 노출. 모듈 데이터는 하드코딩 사용
+            return .yogaCategory(title: title, items: YogaCategoryHardcoded.items(for: classType))
         case "top10Class":
             guard let items = data.top10Class, !items.isEmpty else { return nil }
             return .top10Class(title: title, items: items)

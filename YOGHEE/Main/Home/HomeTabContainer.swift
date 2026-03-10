@@ -100,7 +100,7 @@ class HomeTabContainer: ObservableObject {
                 )
                 
                 await MainActor.run {
-                    self.state.sections = self.createSections(from: response.data)
+                    self.state.sections = self.createSections(from: response.data, classType: self.state.selectedClassType)
                     self.state.isLoading = false
                 }
                 
@@ -153,14 +153,14 @@ class HomeTabContainer: ObservableObject {
         }
     }
     
-    private func createSections(from data: MainDataDTO) -> [HomeSection] {
+    private func createSections(from data: MainDataDTO, classType: ClassType) -> [HomeSection] {
         var sections: [HomeSection] = []
         
-        // layoutOrder에 따라 섹션 생성
+        // layoutOrder에 따라 섹션 생성 (yogaCategory는 layoutOrder에 포함되면 하드코딩 데이터로 노출)
         for layoutType in data.layoutOrder {
             let title = layoutType.text ?? ""
             
-            if let section = HomeSection.create(fromKey: layoutType.key, title: title, data: data) {
+            if let section = HomeSection.create(fromKey: layoutType.key, title: title, data: data, classType: classType) {
                 sections.append(section)
             }
         }
