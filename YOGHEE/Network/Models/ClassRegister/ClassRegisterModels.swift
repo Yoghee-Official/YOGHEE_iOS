@@ -107,6 +107,26 @@ struct NewCenterResponse: Codable {
     let data: String?
 }
 
+// MARK: - 클래스 이미지 등록 (수련원 이미지, 최대 20장)
+
+/// 등록된 수련원 이미지 한 장 (드래그 순서·삭제용)
+struct ClassRegisterImageItem: Identifiable, Equatable {
+    let id: String
+    let imageData: Data
+    /// 업로드/처리 중이면 true, 완료되면 false (로딩 시 placeholder 표시)
+    var isLoading: Bool
+    
+    init(id: String, imageData: Data, isLoading: Bool = true) {
+        self.id = id
+        self.imageData = imageData
+        self.isLoading = isLoading
+    }
+    
+    static func == (lhs: ClassRegisterImageItem, rhs: ClassRegisterImageItem) -> Bool {
+        lhs.id == rhs.id && lhs.isLoading == rhs.isLoading
+    }
+}
+
 // MARK: - NewScheduleDTO (클래스 등록 시 schedules 배열 요소)
 
 /// API LocalTime (hour, minute, second, nano)

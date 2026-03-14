@@ -151,8 +151,7 @@ struct OnedayClassLocationRegisterView: View {
                 .buttonStyle(.plain)
                 
                 NavigationLink {
-                    // TODO: 다음 단계 뷰
-                    EmptyView()
+                    OnedayClassImageRegisterView(container: container)
                 } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)

@@ -36,6 +36,16 @@ enum ClassRegisterIntent {
     // Step 4: 수련 장소
     /// 요가원(수련 장소) 선택
     case selectCenter(String?)
+    
+    // Step 5: 이미지 등록
+    /// 수련원 이미지 추가 (최대 20장, 추가 시 isLoading: true)
+    case addClassImages([Data])
+    /// 특정 이미지 로딩 완료 (placeholder → 실제 이미지 표시)
+    case setClassImageLoaded(String)
+    /// 수련원 이미지 삭제
+    case removeClassImage(String)
+    /// 수련원 이미지 순서 변경
+    case reorderClassImages([String])
 }
 
 
@@ -84,6 +94,10 @@ struct ClassRegisterState: Equatable {
     var selectedCenterId: String?
     var isLoadingCenters: Bool = false
     var centersError: String?
+    
+    // Step 5: 이미지 등록
+    /// 수련원 이미지 (최대 20장, 드래그로 순서 변경)
+    var classImages: [ClassRegisterImageItem] = []
 }
 
 // MARK: - Container
@@ -136,6 +150,27 @@ class ClassRegisterContainer: ObservableObject {
             
         case .selectCenter(let centerId):
             state.selectedCenterId = centerId
+            
+        case .addClassImages(let dataList):
+            var newImages = state.classImages
+            for data in dataList where newImages.count < 20 {
+                newImages.append(ClassRegisterImageItem(id: UUID().uuidString, imageData: data, isLoading: true))
+            }
+            objectWillChange.send()
+            state.classImages = newImages
+        case .setClassImageLoaded(let id):
+            guard let index = state.classImages.firstIndex(where: { $0.id == id }) else { return }
+            var updated = state.classImages[index]
+            updated.isLoading = false
+            state.classImages[index] = updated
+            objectWillChange.send()
+        case .removeClassImage(let id):
+            objectWillChange.send()
+            state.classImages = state.classImages.filter { $0.id != id }
+        case .reorderClassImages(let orderedIds):
+            let orderMap = Dictionary(uniqueKeysWithValues: orderedIds.enumerated().map { ($1, $0) })
+            objectWillChange.send()
+            state.classImages = state.classImages.sorted { (orderMap[$0.id] ?? 0) < (orderMap[$1.id] ?? 0) }
         }
     }
     
