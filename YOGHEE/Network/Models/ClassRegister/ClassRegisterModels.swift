@@ -107,24 +107,75 @@ struct NewCenterResponse: Codable {
     let data: String?
 }
 
+// MARK: - 이미지 Presigned URL 발급 (POST /api/image/presign)
+
+/// 업로드할 이미지 파일 정보 (presign 요청용)
+struct ImageUploadInfoDto: Codable {
+    let fileName: String
+    let contentType: String
+    let width: Int
+    let height: Int
+    let fileSize: Int
+}
+
+/// Presigned URL 발급 요청 바디 (서버 필드명: type)
+struct ImageUploadDto: Codable {
+    let type: String   // "class" | "center" | "profile" | "license"
+    let files: [ImageUploadInfoDto]
+}
+
+/// Presigned URL 발급 응답 - 파일별 presignedUrl, imageKey
+struct PresignFileResponseDto: Codable {
+    let fileName: String
+    let contentType: String
+    let width: Int
+    let height: Int
+    let fileSize: Int
+    let imageKey: String
+    let presignedUrl: String
+}
+
+/// Presigned URL 발급 응답 (API는 code/status/data 래핑)
+struct ImagePresignResponse: Codable {
+    let type: String?
+    let files: [PresignFileResponseDto]
+}
+
+/// Presigned API 전체 응답 (code, status, data)
+struct ImagePresignApiResponse: Codable {
+    let code: Int
+    let status: String
+    let data: ImagePresignResponse
+}
+
 // MARK: - 클래스 이미지 등록 (수련원 이미지, 최대 20장)
 
-/// 등록된 수련원 이미지 한 장 (드래그 순서·삭제용)
+/// 등록된 수련원 이미지 한 장 (드래그 순서·삭제용). 업로드 완료 시 imageKey 저장.
 struct ClassRegisterImageItem: Identifiable, Equatable {
     let id: String
     let imageData: Data
     /// 업로드/처리 중이면 true, 완료되면 false (로딩 시 placeholder 표시)
     var isLoading: Bool
+    /// Presigned 업로드 후 서버가 준 imageKey (클래스 등록 API images 배열에 사용)
+    var imageKey: String?
     
-    init(id: String, imageData: Data, isLoading: Bool = true) {
+    init(id: String, imageData: Data, isLoading: Bool = true, imageKey: String? = nil) {
         self.id = id
         self.imageData = imageData
         self.isLoading = isLoading
+        self.imageKey = imageKey
     }
     
     static func == (lhs: ClassRegisterImageItem, rhs: ClassRegisterImageItem) -> Bool {
-        lhs.id == rhs.id && lhs.isLoading == rhs.isLoading
+        lhs.id == rhs.id && lhs.isLoading == rhs.isLoading && lhs.imageKey == rhs.imageKey
     }
+}
+
+// MARK: - 환불 기준 한 줄 (수련 시작 N시간 전 N% 환불)
+struct RefundRuleRow: Identifiable, Equatable {
+    let id: String
+    var hoursBefore: Int
+    var percent: Int
 }
 
 // MARK: - NewScheduleDTO (클래스 등록 시 schedules 배열 요소)
@@ -200,4 +251,54 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
         try container.encode(maxCapacity, forKey: .maxCapacity)
         try container.encode(name, forKey: .name)
     }
+}
+
+// MARK: - 클래스 등록 API (POST /api/class)
+
+/// 스케줄 항목 (API는 startTime/endTime 문자열 "HH:mm")
+struct ClassRegisterScheduleItemDto: Codable {
+    let scheduleId: String?
+    let dates: [String]
+    let startTime: String
+    let endTime: String
+    let minCapacity: Int
+    let maxCapacity: Int
+    let name: String
+}
+
+/// 환불 정책 한 줄
+struct ClassRegisterRefundPolicyDto: Codable {
+    let hoursBeforeClass: Int
+    let refundRate: Int
+}
+
+/// 정책 (할인·안내·환불)
+struct ClassRegisterPolicyDto: Codable {
+    let discountPrice: Int?
+    let discountRate: Int?
+    let reservationNote: String?
+    let refundPolicies: [ClassRegisterRefundPolicyDto]?
+}
+
+/// POST /api/class 요청 바디
+struct ClassRegisterRequestDto: Codable {
+    /// 수련 유형: 원데이 "O", 정규 "R"
+    let type: String
+    let classId: String?
+    let name: String
+    let description: String?
+    let centerId: String?
+    let featureIds: [String]?
+    let schedules: [ClassRegisterScheduleItemDto]
+    let images: [String]?
+    let price: Int
+    let categoryIds: [String]?
+    let policy: ClassRegisterPolicyDto?
+}
+
+/// 클래스 등록 API 응답 (code, status, data)
+struct ClassRegisterResponse: Codable {
+    let code: Int
+    let status: String
+    let data: String?
 }

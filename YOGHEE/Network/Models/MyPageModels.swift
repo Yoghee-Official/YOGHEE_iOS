@@ -78,7 +78,7 @@ struct YogaClassScheduleDTO: Codable, Equatable {
     let className: String
     let day: String
     let dayOfWeek: Int
-    let thumbnailUrl: String
+    let thumbnailUrl: String?
     let address: String?
     let attendance: Int
     let isPast: Bool

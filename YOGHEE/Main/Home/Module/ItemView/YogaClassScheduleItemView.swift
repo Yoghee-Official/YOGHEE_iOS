@@ -47,7 +47,7 @@ struct YogaClassScheduleItemView: View {
                 
                 HStack(spacing: 13.ratio()) {
                     // 오른쪽: 썸네일 이미지
-                    AsyncImage(url: URL(string: item.thumbnailUrl)) { image in
+                    AsyncImage(url: URL(string: item.thumbnailUrl ?? "")) { image in
                         image
                             .resizable()
                             .scaledToFill()
