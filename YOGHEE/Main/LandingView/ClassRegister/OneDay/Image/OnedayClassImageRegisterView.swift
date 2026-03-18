@@ -138,12 +138,9 @@ struct OnedayClassImageRegisterView: View {
         guard container.state.classImages.count < maxImages else { return }
         let countBefore = container.state.classImages.count
         container.handleIntent(.addClassImages([data]))
-        let newIds = Array(container.state.classImages.suffix(container.state.classImages.count - countBefore)).map(\.id)
-        // 실제 업로드 API 연동 시 여기서 응답 후 setClassImageLoaded 호출. 현재는 로딩 UI 확인용으로 짧게 유지
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            for id in newIds {
-                container.handleIntent(.setClassImageLoaded(id))
-            }
+        guard let newId = container.state.classImages.suffix(container.state.classImages.count - countBefore).map(\.id).first else { return }
+        Task {
+            await container.uploadClassImage(itemId: newId, imageData: data)
         }
     }
     
@@ -222,7 +219,7 @@ struct OnedayClassImageRegisterView: View {
                 .buttonStyle(.plain)
                 
                 NavigationLink {
-                    EmptyView() // TODO: 다음 단계
+                    OnedayClassSetPriceView(container: container)
                 } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)

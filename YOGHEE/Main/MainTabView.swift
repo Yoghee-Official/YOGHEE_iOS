@@ -76,6 +76,10 @@ struct MainTabView: View {
                 selectedTab = .home
             }
         )
+        .environment(\.classRegisterPopToRoot, {
+            selectedTab = .mypage
+            mypageNavigationPath = NavigationPath()
+        })
         .opacity(selectedTab == .mypage ? 1 : 0)
         .allowsHitTesting(selectedTab == .mypage)
     }

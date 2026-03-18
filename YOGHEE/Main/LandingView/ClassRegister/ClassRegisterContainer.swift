@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Foundation
+import UIKit
 
 // MARK: - Intent
 enum ClassRegisterIntent {
@@ -42,10 +43,26 @@ enum ClassRegisterIntent {
     case addClassImages([Data])
     /// 특정 이미지 로딩 완료 (placeholder → 실제 이미지 표시)
     case setClassImageLoaded(String)
+    /// Presigned 업로드 완료 시 imageKey 저장
+    case setClassImageUploaded(id: String, imageKey: String)
     /// 수련원 이미지 삭제
     case removeClassImage(String)
     /// 수련원 이미지 순서 변경
     case reorderClassImages([String])
+    
+    // Step 6: 가격 설정
+    /// 1회 수업 금액 (원)
+    case setPricePerSession(String)
+    /// 할인 방식: "rate" 정률 / "amount" 정액
+    case setDiscountMethod(String?)
+    /// 할인률 (%)
+    case setDiscountRate(String)
+    /// 할인액 (원)
+    case setDiscountAmount(String)
+    /// 환불 기준 행 수정 (피그마 기준 3칸 고정, id로 구분)
+    case updateRefundRule(id: String, hoursBefore: Int, percent: Int)
+    /// 예약 시 안내사항 (최대 3000자)
+    case setReservationNotice(String)
 }
 
 
@@ -98,6 +115,24 @@ struct ClassRegisterState: Equatable {
     // Step 5: 이미지 등록
     /// 수련원 이미지 (최대 20장, 드래그로 순서 변경)
     var classImages: [ClassRegisterImageItem] = []
+    
+    // Step 6: 가격 설정
+    /// 1회 수업 금액 (원) - 입력 문자열
+    var pricePerSession: String = ""
+    /// 할인 방식: "rate" 정률 / "amount" 정액 / nil 미선택
+    var discountMethod: String? = nil
+    /// 할인률 (%) - 정률 선택 시
+    var discountRate: String = ""
+    /// 할인액 (원) - 정액 선택 시
+    var discountAmount: String = ""
+    /// 환불 기준 3칸 고정 (수련 시작 N시간 전 N% 환불)
+    var refundRules: [RefundRuleRow] = [
+        RefundRuleRow(id: "refund_0", hoursBefore: 0, percent: 0),
+        RefundRuleRow(id: "refund_1", hoursBefore: 0, percent: 0),
+        RefundRuleRow(id: "refund_2", hoursBefore: 0, percent: 0)
+    ]
+    /// 예약 시 안내사항 (최대 3000자)
+    var reservationNotice: String = ""
 }
 
 // MARK: - Container
@@ -164,6 +199,13 @@ class ClassRegisterContainer: ObservableObject {
             updated.isLoading = false
             state.classImages[index] = updated
             objectWillChange.send()
+        case .setClassImageUploaded(let id, let imageKey):
+            guard let index = state.classImages.firstIndex(where: { $0.id == id }) else { return }
+            var updated = state.classImages[index]
+            updated.isLoading = false
+            updated.imageKey = imageKey
+            state.classImages[index] = updated
+            objectWillChange.send()
         case .removeClassImage(let id):
             objectWillChange.send()
             state.classImages = state.classImages.filter { $0.id != id }
@@ -171,6 +213,55 @@ class ClassRegisterContainer: ObservableObject {
             let orderMap = Dictionary(uniqueKeysWithValues: orderedIds.enumerated().map { ($1, $0) })
             objectWillChange.send()
             state.classImages = state.classImages.sorted { (orderMap[$0.id] ?? 0) < (orderMap[$1.id] ?? 0) }
+        case .setPricePerSession(let value):
+            objectWillChange.send()
+            state.pricePerSession = value
+        case .setDiscountMethod(let value):
+            objectWillChange.send()
+            state.discountMethod = value
+        case .setDiscountRate(let value):
+            objectWillChange.send()
+            state.discountRate = value
+        case .setDiscountAmount(let value):
+            objectWillChange.send()
+            state.discountAmount = value
+        case .updateRefundRule(let id, let hoursBefore, let percent):
+            if let idx = state.refundRules.firstIndex(where: { $0.id == id }) {
+                objectWillChange.send()
+                state.refundRules[idx].hoursBefore = hoursBefore
+                state.refundRules[idx].percent = percent
+            }
+        case .setReservationNotice(let value):
+            objectWillChange.send()
+            state.reservationNotice = String(value.prefix(3000))
+        }
+    }
+    
+    /// 이미지 1장 Presigned 발급 → PUT 업로드 → imageKey 저장
+    func uploadClassImage(itemId: String, imageData: Data) async {
+        guard let image = UIImage(data: imageData) else {
+            handleIntent(.setClassImageLoaded(itemId))
+            return
+        }
+        let width = Int(image.size.width * image.scale)
+        let height = Int(image.size.height * image.scale)
+        let fileSize = imageData.count
+        let fileName = "\(UUID().uuidString).jpg"
+        let contentType = "image/jpeg"
+        let dto = ImageUploadDto(
+            type: "class",
+            files: [ImageUploadInfoDto(fileName: fileName, contentType: contentType, width: width, height: height, fileSize: fileSize)]
+        )
+        do {
+            let response = try await APIService.shared.postImagePresign(body: dto)
+            guard let first = response.files.first else {
+                handleIntent(.setClassImageLoaded(itemId))
+                return
+            }
+            try await APIService.shared.uploadImageToPresignedUrl(data: imageData, presignedUrl: first.presignedUrl, contentType: first.contentType)
+            await MainActor.run { handleIntent(.setClassImageUploaded(id: itemId, imageKey: first.imageKey)) }
+        } catch {
+            await MainActor.run { handleIntent(.setClassImageLoaded(itemId)) }
         }
     }
     
@@ -219,5 +310,48 @@ class ClassRegisterContainer: ObservableObject {
                 }
             }
         }
+    }
+    
+    /// state 기준으로 클래스 등록 요청 DTO 생성 후 POST /api/class 호출
+    func registerClass() async throws -> ClassRegisterResponse {
+        let s = state
+        let price = Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0
+        let schedules = s.schedules.map {
+            ClassRegisterScheduleItemDto(
+                scheduleId: $0.scheduleId,
+                dates: $0.dates,
+                startTime: $0.startTime.timeString,
+                endTime: $0.endTime.timeString,
+                minCapacity: $0.minCapacity,
+                maxCapacity: $0.maxCapacity,
+                name: $0.name
+            )
+        }
+        let imageKeys = s.classImages.compactMap(\.imageKey)
+        let refundPolicies = s.refundRules.map {
+            ClassRegisterRefundPolicyDto(hoursBeforeClass: $0.hoursBefore, refundRate: $0.percent)
+        }
+        let discountPrice: Int? = s.discountMethod == "amount" ? Int(s.discountAmount) : nil
+        let discountRate: Int? = s.discountMethod == "rate" ? Int(s.discountRate) : nil
+        let classType: String = (s.selectedClassTypeId == "regular") ? "R" : "O"
+        let body = ClassRegisterRequestDto(
+            type: classType,
+            classId: nil,
+            name: s.name,
+            description: s.description.nilIfEmpty,
+            centerId: s.selectedCenterId,
+            featureIds: s.featureIds.isEmpty ? nil : Array(s.featureIds),
+            schedules: schedules,
+            images: imageKeys.isEmpty ? nil : imageKeys,
+            price: price,
+            categoryIds: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
+            policy: ClassRegisterPolicyDto(
+                discountPrice: discountPrice,
+                discountRate: discountRate,
+                reservationNote: s.reservationNotice.nilIfEmpty,
+                refundPolicies: refundPolicies.isEmpty ? nil : refundPolicies
+            )
+        )
+        return try await APIService.shared.postRegisterClass(body: body)
     }
 }

@@ -70,6 +70,8 @@ class APIService {
         case notifications
         case myPage(role: UserRole)
         case centerList
+        case imagePresign
+        case classRegister
         
         var path: String {
             switch self {
@@ -94,6 +96,10 @@ class APIService {
                 }
             case .centerList:
                 return "/api/center"
+            case .imagePresign:
+                return "/api/image/presign"
+            case .classRegister:
+                return "/api/class"
             }
         }
         
@@ -103,7 +109,7 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
-            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList:
+            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister:
                 return nil
             }
         }
@@ -200,7 +206,46 @@ class APIService {
         return try await post(endPoint: Endpoint.centerList.path, parameters: parameters, headers: headers)
     }
     
-    // MARK: - Internal Methods
+    /// 이미지 업로드용 Presigned URL 발급 (POST /api/image/presign). bucket "class" 등. 응답은 { code, status, data: { type, files } } 형태.
+    func postImagePresign(body: ImageUploadDto) async throws -> ImagePresignResponse {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let response: ImagePresignApiResponse = try await post(endPoint: Endpoint.imagePresign.path, parameters: parameters, headers: headers)
+        return response.data
+    }
+    
+    /// Presigned URL로 이미지 바이너리 PUT 업로드 (S3/오브젝트 스토리지)
+    func uploadImageToPresignedUrl(data: Data, presignedUrl: String, contentType: String) async throws {
+        guard let url = URL(string: presignedUrl) else { throw APIError.invalidResponse }
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        // body는 uploadTask(with:from: data)로 전달되므로 httpBody 설정하면 안 됨
+        _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            URLSession.shared.uploadTask(with: request, from: data) { _, response, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                    continuation.resume(throwing: APIError.invalidResponse)
+                    return
+                }
+                continuation.resume()
+            }.resume()
+        }
+    }
+    
+    /// 클래스 등록 (POST /api/class)
+    func postRegisterClass(body: ClassRegisterRequestDto) async throws -> ClassRegisterResponse {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        return try await post(endPoint: Endpoint.classRegister.path, parameters: parameters, headers: headers)
+    }
     
     // MARK: - Internal Methods
     
