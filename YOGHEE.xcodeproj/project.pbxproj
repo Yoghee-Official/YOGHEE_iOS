@@ -197,10 +197,10 @@
 		52F987BD2F5A0A3B00C905D1 /* NewPlaceRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPlaceRegisterView.swift; sourceTree = "<group>"; };
 		52F987BF2F5A0B5E00C905D1 /* FlowChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowChipView.swift; sourceTree = "<group>"; };
 		52F987C12F5A0C0100C905D1 /* ClassRegisterSharedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterSharedViews.swift; sourceTree = "<group>"; };
-		52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterEnvironment.swift; sourceTree = "<group>"; };
 		52F987C32F5A0C0200C905D1 /* Extension+String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+String.swift"; sourceTree = "<group>"; };
 		52F987C52F60C00100C905D1 /* OnedayClassImageRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassImageRegisterView.swift; sourceTree = "<group>"; };
 		52F987C82F64EEB200C905D1 /* OnedayClassSetPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassSetPriceView.swift; sourceTree = "<group>"; };
+		52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterEnvironment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
