@@ -19,6 +19,10 @@ struct OnedayClassExplanationRegisterView: View {
         !container.state.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
+    private var navigationTitle: String {
+        container.state.selectedClassTypeId == "regular" ? "요가원 설명" : "수련 설명"
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -40,7 +44,7 @@ struct OnedayClassExplanationRegisterView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: "수련 설명")
+        .customNavigationBar(title: navigationTitle)
         .onAppear {
             container.loadCodeList()
         }

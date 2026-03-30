@@ -18,7 +18,7 @@ struct YogaClassItemView: View {
             VStack(spacing: 8) {
                 // 썸네일 이미지
                 ZStack(alignment: .topLeading) {
-                    AsyncImage(url: URL(string: yogaClass.thumbnail)) { image in
+                    AsyncImage(url: URL(string: yogaClass.thumbnail ?? "")) { image in
                         image
                             .resizable()
                             .aspectRatio(contentMode: .fill)

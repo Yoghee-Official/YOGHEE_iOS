@@ -68,7 +68,7 @@ struct MainBannerClassDTO: Codable {
 struct ClassDTO: Codable, Equatable {
     let classId: String
     let className: String
-    let thumbnail: String
+    let thumbnail: String?
     let masterId: String?
     let masterName: String?
     let rating: Double?
