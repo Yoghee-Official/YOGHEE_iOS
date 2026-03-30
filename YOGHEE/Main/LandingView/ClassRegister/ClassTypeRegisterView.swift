@@ -92,7 +92,7 @@ struct ClassTypeCardsView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12.ratio()) {
                     ForEach(classTypes) { classType in
-                        if classType.id == "oneDay" {
+                        if classType.id == "oneDay" || classType.id == "regular" {
                             NavigationLink {
                                 OnedayClassExplanationRegisterView(container: container)
                                     .onAppear {
