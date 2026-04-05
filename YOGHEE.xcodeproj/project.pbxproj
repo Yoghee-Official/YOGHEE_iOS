@@ -103,6 +103,7 @@
 		52F987C62F60C00100C905D1 /* OnedayClassImageRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987C52F60C00100C905D1 /* OnedayClassImageRegisterView.swift */; };
 		52F987C92F64EEB200C905D1 /* OnedayClassSetPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987C82F64EEB200C905D1 /* OnedayClassSetPriceView.swift */; };
 		52F987D12F65000100C905D1 /* ClassRegisterEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */; };
+		529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -201,6 +202,7 @@
 		52F987C52F60C00100C905D1 /* OnedayClassImageRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassImageRegisterView.swift; sourceTree = "<group>"; };
 		52F987C82F64EEB200C905D1 /* OnedayClassSetPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassSetPriceView.swift; sourceTree = "<group>"; };
 		52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterEnvironment.swift; sourceTree = "<group>"; };
+		529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassHolidayRegisterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -544,6 +546,7 @@
 		529D09842F8251040039C770 /* Regular */ = {
 			isa = PBXGroup;
 			children = (
+				529D09862F82577C0039C770 /* Holiday */,
 			);
 			path = Regular;
 			sourceTree = "<group>";
@@ -557,6 +560,14 @@
 				52F987AB2F572DFD00C905D1 /* SelectType */,
 			);
 			path = Both;
+			sourceTree = "<group>";
+		};
+		529D09862F82577C0039C770 /* Holiday */ = {
+			isa = PBXGroup;
+			children = (
+				529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */,
+			);
+			path = Holiday;
 			sourceTree = "<group>";
 		};
 		52F308782E3F4CD10066ED1B = {
@@ -832,6 +843,7 @@
 				52F987C02F5A0B5E00C905D1 /* FlowChipView.swift in Sources */,
 				52F987C22F5A0C0100C905D1 /* ClassRegisterSharedViews.swift in Sources */,
 				52F987D12F65000100C905D1 /* ClassRegisterEnvironment.swift in Sources */,
+				529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */,
 				52F987C42F5A0C0200C905D1 /* Extension+String.swift in Sources */,
 				522CE6132F12A6BF0063FDF5 /* YOGHEEApp.swift in Sources */,
 			);

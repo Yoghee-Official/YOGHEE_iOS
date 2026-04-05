@@ -178,6 +178,50 @@ struct RefundRuleRow: Identifiable, Equatable {
     var percent: Int
 }
 
+// MARK: - 정규 수련 휴무 (공휴일 칩)
+
+/// 공휴일 휴무 선택용 고정 목록 (표시 문구는 기획/피그마 기준)
+enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
+    case newYear = "new_year"
+    case lunarNewYearDay = "lunar_new_year_day"
+    case march1 = "march_1"
+    case buddhaBirthday = "buddha_birthday"
+    case childrenDay = "children_day"
+    case memorialDay = "memorial_day"
+    case liberationDay = "liberation_day"
+    case foundationDay = "foundation_day"
+    case hangulDay = "hangul_day"
+    case chuseokDay = "chuseok_day"
+    case christmas = "christmas"
+    
+    var id: String { rawValue }
+    
+    var title: String {
+        switch self {
+        case .newYear: return "신정"
+        case .lunarNewYearDay: return "연휴 | 설날 당일 | 연휴"
+        case .march1: return "삼일절"
+        case .buddhaBirthday: return "석가탄신일"
+        case .childrenDay: return "어린이날"
+        case .memorialDay: return "현충일"
+        case .liberationDay: return "광복절"
+        case .foundationDay: return "개천절"
+        case .hangulDay: return "한글날"
+        case .chuseokDay: return "연휴 | 추석 당일 | 연휴"
+        case .christmas: return "크리스마스"
+        }
+    }
+    
+    static var allHolidayIds: Set<String> {
+        Set(allCases.map(\.rawValue))
+    }
+    
+    /// 설·추석 당일만 휴무 프리셋
+    static var seolChuseokOnlyIds: Set<String> {
+        [lunarNewYearDay.rawValue, chuseokDay.rawValue]
+    }
+}
+
 // MARK: - NewScheduleDTO (클래스 등록 시 schedules 배열 요소)
 
 /// API LocalTime (hour, minute, second, nano)

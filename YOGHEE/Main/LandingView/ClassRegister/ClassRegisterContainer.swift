@@ -63,6 +63,18 @@ enum ClassRegisterIntent {
     case updateRefundRule(id: String, hoursBefore: Int, percent: Int)
     /// 예약 시 안내사항 (최대 3000자)
     case setReservationNotice(String)
+    
+    // 정규 수련: 휴무 정보
+    /// 고정 휴무 있음 / 없음 (없으면 주간·공휴일 UI 숨김)
+    case setRegularHasFixedHolidays(Bool)
+    /// 주간 휴무 요일 토글 (1=월 … 7=일, 포함 시 해당 요일 휴무)
+    case toggleRegularWeeklyOffWeekday(Int)
+    /// 공휴일 휴무 칩 토글
+    case toggleRegularPublicHolidayOff(String)
+    /// 공휴일 전체 휴무 프리셋
+    case applyRegularPublicHolidayPresetAll
+    /// 설·추석 당일만 휴무 프리셋
+    case applyRegularPublicHolidayPresetSeolChuseokOnly
 }
 
 
@@ -133,6 +145,14 @@ struct ClassRegisterState: Equatable {
     ]
     /// 예약 시 안내사항 (최대 3000자)
     var reservationNotice: String = ""
+    
+    // MARK: 정규 수련 — 휴무 정보
+    /// true: 휴무일 있음(상세 선택 표시), false: 없음
+    var regularHasFixedHolidays: Bool = true
+    /// 1=월 … 7=일. 포함된 요일이 휴무
+    var regularWeeklyOffWeekdays: Set<Int> = []
+    /// 휴무로 지정한 공휴일 id (`RegularPublicHoliday.rawValue`)
+    var regularPublicHolidayOffIds: Set<String> = RegularPublicHoliday.allHolidayIds
 }
 
 // MARK: - Container
@@ -234,6 +254,35 @@ class ClassRegisterContainer: ObservableObject {
         case .setReservationNotice(let value):
             objectWillChange.send()
             state.reservationNotice = String(value.prefix(3000))
+            
+        case .setRegularHasFixedHolidays(let value):
+            objectWillChange.send()
+            state.regularHasFixedHolidays = value
+            
+        case .toggleRegularWeeklyOffWeekday(let weekday):
+            guard (1...7).contains(weekday) else { return }
+            objectWillChange.send()
+            if state.regularWeeklyOffWeekdays.contains(weekday) {
+                state.regularWeeklyOffWeekdays.remove(weekday)
+            } else {
+                state.regularWeeklyOffWeekdays.insert(weekday)
+            }
+            
+        case .toggleRegularPublicHolidayOff(let id):
+            objectWillChange.send()
+            if state.regularPublicHolidayOffIds.contains(id) {
+                state.regularPublicHolidayOffIds.remove(id)
+            } else {
+                state.regularPublicHolidayOffIds.insert(id)
+            }
+            
+        case .applyRegularPublicHolidayPresetAll:
+            objectWillChange.send()
+            state.regularPublicHolidayOffIds = RegularPublicHoliday.allHolidayIds
+            
+        case .applyRegularPublicHolidayPresetSeolChuseokOnly:
+            objectWillChange.send()
+            state.regularPublicHolidayOffIds = RegularPublicHoliday.seolChuseokOnlyIds
         }
     }
     

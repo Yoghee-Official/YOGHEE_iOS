@@ -181,8 +181,7 @@ struct OnedayClassSelectTypeRegisterView: View {
                 NavigationLink {
                     Group {
                         if isRegularStudioFlow {
-                            // TODO: 휴무 정보 → 운영 정보 화면 추가 후 그 사이로 라우팅
-                            OnedayClassSetPriceView(container: container)
+                            RegularClassHolidayRegisterView(container: container)
                         } else {
                             OnedayClassInformationRegisterView(container: container)
                         }
