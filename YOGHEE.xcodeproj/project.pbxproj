@@ -541,6 +541,21 @@
 			path = FavoriteRegularClasses;
 			sourceTree = "<group>";
 		};
+		529D09842F8251040039C770 /* Regular */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Regular;
+			sourceTree = "<group>";
+		};
+		529D09852F82511D0039C770 /* Both */ = {
+			isa = PBXGroup;
+			children = (
+				52F987AA2F572DF200C905D1 /* Explanation */,
+			);
+			path = Both;
+			sourceTree = "<group>";
+		};
 		52F308782E3F4CD10066ED1B = {
 			isa = PBXGroup;
 			children = (
@@ -567,6 +582,8 @@
 				52F987C12F5A0C0100C905D1 /* ClassRegisterSharedViews.swift */,
 				52F987BF2F5A0B5E00C905D1 /* FlowChipView.swift */,
 				52F9879E2F4D061C00C905D1 /* OneDay */,
+				529D09842F8251040039C770 /* Regular */,
+				529D09852F82511D0039C770 /* Both */,
 			);
 			path = ClassRegister;
 			sourceTree = "<group>";
@@ -574,7 +591,6 @@
 		52F9879E2F4D061C00C905D1 /* OneDay */ = {
 			isa = PBXGroup;
 			children = (
-				52F987AA2F572DF200C905D1 /* Explanation */,
 				52F987AB2F572DFD00C905D1 /* SelectType */,
 				52F987AC2F572E0C00C905D1 /* Information */,
 				52F987B52F59C25800C905D1 /* Location */,

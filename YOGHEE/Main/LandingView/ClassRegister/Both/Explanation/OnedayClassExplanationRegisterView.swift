@@ -14,13 +14,32 @@ struct OnedayClassExplanationRegisterView: View {
     private let totalSteps = 6
     private let currentStep = 1
     
+    private var isRegularStudioFlow: Bool {
+        container.state.selectedClassTypeId == "regular"
+    }
+    
     private var canProceed: Bool {
-        !container.state.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !container.state.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        let descOK = !container.state.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        if isRegularStudioFlow {
+            return descOK
+        }
+        return !container.state.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && descOK
     }
     
     private var navigationTitle: String {
-        container.state.selectedClassTypeId == "regular" ? "요가원 설명" : "수련 설명"
+        isRegularStudioFlow ? "요가원 설명" : "수련 설명"
+    }
+    
+    private var explanationHeadline: String {
+        isRegularStudioFlow
+            ? "어떤 수업을 하는 요가원인지 알려주세요."
+            : "수련에 대해 알려주세요."
+    }
+    
+    private var featureSelectionHint: String {
+        isRegularStudioFlow
+            ? "최대 3개까지 자유롭게 선택 가능합니다."
+            : "최대 3개까지 선택 가능합니다."
     }
     
     var body: some View {
@@ -44,7 +63,11 @@ struct OnedayClassExplanationRegisterView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: navigationTitle)
+        .customNavigationBar(
+            title: navigationTitle,
+            trailingTitle: isRegularStudioFlow ? "문의하기" : nil,
+            onTrailingTap: isRegularStudioFlow ? { handleInquiryTap() } : nil
+        )
         .onAppear {
             container.loadCodeList()
         }
@@ -53,47 +76,56 @@ struct OnedayClassExplanationRegisterView: View {
     // MARK: - 2a: 수련 상세 설명
     private var explanationSection: some View {
         VStack(alignment: .leading, spacing: 16.ratio()) {
-            Text("수련에 대해 알려주세요.")
+            Text(explanationHeadline)
                 .pretendardFont(.bold, size: 16)
                 .foregroundColor(.DarkBlack)
             
-            Text("[마이페이지] → [개설 수련 목록] 에서 수정할 수 있습니다.")
-                .pretendardFont(.bold, size: 10)
-                .foregroundColor(.Info)
-            
-            // 제목 입력
-            TextField("", text: Binding(
-                get: { container.state.name },
-                set: {
-                    let name = String($0.prefix(22))
-                    container.handleIntent(.updateExplanation(name: name, description: container.state.description))
+            VStack(alignment: .leading, spacing: 4.ratio()) {
+                Text("[마이페이지] → [개설 수련 목록] 에서 수정할 수 있습니다.")
+                    .pretendardFont(.bold, size: 10)
+                    .foregroundColor(.Info)
+                if isRegularStudioFlow {
+                    Text("제목은 [요가원명]으로 노출됩니다.")
+                        .pretendardFont(.bold, size: 10)
+                        .foregroundColor(.Info)
                 }
-            ))
-            .pretendardFont(.medium, size: 12)
-            .foregroundColor(.DarkBlack)
-            .padding(12.ratio())
-            .frame(minHeight: 112.ratio())
-            .background(Color.CleanWhite)
-            .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.Background, lineWidth: 1)
-            )
-            .overlay(alignment: .topLeading) {
-                if container.state.name.isEmpty {
-                    Text("대표 제목 (상세페이지 최상단에 노출돼요!)\n\n수련 테마를 한줄로 표현해주세요.")
-                        .pretendardFont(.medium, size: 12)
+            }
+            
+            if !isRegularStudioFlow {
+                // 제목 입력 (원데이)
+                TextField("", text: Binding(
+                    get: { container.state.name },
+                    set: {
+                        let name = String($0.prefix(22))
+                        container.handleIntent(.updateExplanation(name: name, description: container.state.description))
+                    }
+                ))
+                .pretendardFont(.medium, size: 12)
+                .foregroundColor(.DarkBlack)
+                .padding(12.ratio())
+                .frame(minHeight: 112.ratio())
+                .background(Color.CleanWhite)
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.Background, lineWidth: 1)
+                )
+                .overlay(alignment: .topLeading) {
+                    if container.state.name.isEmpty {
+                        Text("대표 제목 (상세페이지 최상단에 노출돼요!)\n\n수련 테마를 한줄로 표현해주세요.")
+                            .pretendardFont(.medium, size: 12)
+                            .foregroundColor(.Info)
+                            .padding(12.ratio())
+                            .allowsHitTesting(false)
+                    }
+                }
+                .overlay(alignment: .bottomLeading) {
+                    Text("\(container.state.name.count) / 22")
+                        .pretendardFont(.regular, size: 12)
                         .foregroundColor(.Info)
                         .padding(12.ratio())
                         .allowsHitTesting(false)
                 }
-            }
-            .overlay(alignment: .bottomLeading) {
-                Text("\(container.state.name.count) / 22")
-                    .pretendardFont(.regular, size: 12)
-                    .foregroundColor(.Info)
-                    .padding(12.ratio())
-                    .allowsHitTesting(false)
             }
             
             // 내용 입력
@@ -142,7 +174,7 @@ struct OnedayClassExplanationRegisterView: View {
                 .pretendardFont(.bold, size: 16)
                 .foregroundColor(.DarkBlack)
             
-            Text("최대 3개까지 선택 가능합니다.")
+            Text(featureSelectionHint)
                 .pretendardFont(.regular, size: 12)
                 .foregroundColor(.Info)
             
@@ -228,6 +260,10 @@ struct OnedayClassExplanationRegisterView: View {
             .padding(.bottom, 24.ratio())
         }
         .background(Color.SandBeige)
+    }
+    
+    private func handleInquiryTap() {
+        // TODO: 문의하기 채널(웹/카카오 등) 연결
     }
 }
 

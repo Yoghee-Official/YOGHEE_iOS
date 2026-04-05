@@ -334,10 +334,22 @@ class ClassRegisterContainer: ObservableObject {
         let discountPrice: Int? = s.discountMethod == "amount" ? Int(s.discountAmount) : nil
         let discountRate: Int? = s.discountMethod == "rate" ? Int(s.discountRate) : nil
         let classType: String = (s.selectedClassTypeId == "regular") ? "R" : "O"
+        let registerName: String = {
+            if s.selectedClassTypeId == "regular" {
+                if let centerId = s.selectedCenterId,
+                   let centerName = s.centers.first(where: { $0.centerId == centerId })?.name {
+                    let trimmed = centerName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmed.isEmpty { return String(trimmed.prefix(22)) }
+                }
+                let desc = s.description.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !desc.isEmpty { return String(desc.prefix(22)) }
+            }
+            return s.name
+        }()
         let body = ClassRegisterRequestDto(
             type: classType,
             classId: nil,
-            name: s.name,
+            name: registerName,
             description: s.description.nilIfEmpty,
             centerId: s.selectedCenterId,
             featureIds: s.featureIds.isEmpty ? nil : Array(s.featureIds),
