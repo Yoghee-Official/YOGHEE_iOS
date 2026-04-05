@@ -81,6 +81,8 @@
 		522CE6182F12A6BF0063FDF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 522CE5D32F12A6BF0063FDF5 /* Assets.xcassets */; };
 		522CE6C52F152F980063FDF5 /* MyPageSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */; };
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
+		529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */; };
+		529D09932F8260A10039C771 /* RegularClassManagementRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */; };
 		52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 52A174602EF7F11D00208298 /* SwiftUIIntrospect */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
 		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
@@ -103,7 +105,6 @@
 		52F987C62F60C00100C905D1 /* OnedayClassImageRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987C52F60C00100C905D1 /* OnedayClassImageRegisterView.swift */; };
 		52F987C92F64EEB200C905D1 /* OnedayClassSetPriceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987C82F64EEB200C905D1 /* OnedayClassSetPriceView.swift */; };
 		52F987D12F65000100C905D1 /* ClassRegisterEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */; };
-		529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -182,6 +183,8 @@
 		522CE5D62F12A6BF0063FDF5 /* YOGHEEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YOGHEEApp.swift; sourceTree = "<group>"; };
 		522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSectionHeaderView.swift; sourceTree = "<group>"; };
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
+		529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassHolidayRegisterView.swift; sourceTree = "<group>"; };
+		529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassManagementRegisterView.swift; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassExplanationRegisterView.swift; sourceTree = "<group>"; };
 		52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
@@ -202,7 +205,6 @@
 		52F987C52F60C00100C905D1 /* OnedayClassImageRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassImageRegisterView.swift; sourceTree = "<group>"; };
 		52F987C82F64EEB200C905D1 /* OnedayClassSetPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassSetPriceView.swift; sourceTree = "<group>"; };
 		52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterEnvironment.swift; sourceTree = "<group>"; };
-		529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassHolidayRegisterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -547,6 +549,7 @@
 			isa = PBXGroup;
 			children = (
 				529D09862F82577C0039C770 /* Holiday */,
+				529D09872F825FA40039C770 /* Management */,
 			);
 			path = Regular;
 			sourceTree = "<group>";
@@ -568,6 +571,14 @@
 				529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */,
 			);
 			path = Holiday;
+			sourceTree = "<group>";
+		};
+		529D09872F825FA40039C770 /* Management */ = {
+			isa = PBXGroup;
+			children = (
+				529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */,
+			);
+			path = Management;
 			sourceTree = "<group>";
 		};
 		52F308782E3F4CD10066ED1B = {
@@ -844,6 +855,7 @@
 				52F987C22F5A0C0100C905D1 /* ClassRegisterSharedViews.swift in Sources */,
 				52F987D12F65000100C905D1 /* ClassRegisterEnvironment.swift in Sources */,
 				529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */,
+				529D09932F8260A10039C771 /* RegularClassManagementRegisterView.swift in Sources */,
 				52F987C42F5A0C0200C905D1 /* Extension+String.swift in Sources */,
 				522CE6132F12A6BF0063FDF5 /* YOGHEEApp.swift in Sources */,
 			);

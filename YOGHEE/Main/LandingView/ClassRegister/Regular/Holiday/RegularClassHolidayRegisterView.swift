@@ -255,8 +255,7 @@ struct RegularClassHolidayRegisterView: View {
                 .buttonStyle(.plain)
                 
                 NavigationLink {
-                    // TODO: 운영 정보 화면 추가 후 교체
-                    OnedayClassSetPriceView(container: container)
+                    RegularClassManagementRegisterView(container: container)
                 } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)

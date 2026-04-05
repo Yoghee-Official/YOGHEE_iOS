@@ -255,6 +255,8 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
     let minCapacity: Int
     let maxCapacity: Int
     let name: String
+    /// 지도자(메모) — UI 전용, Codable/API에는 포함하지 않음
+    var instructorNote: String
     
     var id: String { scheduleId ?? localId ?? "\(name)-\(dates.joined())-\(startTime.timeString)" }
     
@@ -262,7 +264,7 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
         case scheduleId, dates, startTime, endTime, minCapacity, maxCapacity, name
     }
     
-    init(scheduleId: String?, localId: String? = nil, dates: [String], startTime: LocalTimeDTO, endTime: LocalTimeDTO, minCapacity: Int, maxCapacity: Int, name: String) {
+    init(scheduleId: String?, localId: String? = nil, dates: [String], startTime: LocalTimeDTO, endTime: LocalTimeDTO, minCapacity: Int, maxCapacity: Int, name: String, instructorNote: String = "") {
         self.scheduleId = scheduleId
         self.localId = localId
         self.dates = dates
@@ -271,6 +273,7 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
         self.minCapacity = minCapacity
         self.maxCapacity = maxCapacity
         self.name = name
+        self.instructorNote = instructorNote
     }
     
     init(from decoder: Decoder) throws {
@@ -283,6 +286,7 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
         minCapacity = try container.decode(Int.self, forKey: .minCapacity)
         maxCapacity = try container.decode(Int.self, forKey: .maxCapacity)
         name = try container.decode(String.self, forKey: .name)
+        instructorNote = ""
     }
     
     func encode(to encoder: Encoder) throws {

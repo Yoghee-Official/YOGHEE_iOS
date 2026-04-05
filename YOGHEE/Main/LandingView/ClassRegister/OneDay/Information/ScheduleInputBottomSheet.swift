@@ -263,7 +263,8 @@ struct ScheduleInputBottomSheet: View {
             endTime: LocalTimeDTO(hour: endHour, minute: endMinute),
             minCapacity: minCapacity,
             maxCapacity: maxCapacity,
-            name: trimmedScheduleName
+            name: trimmedScheduleName,
+            instructorNote: ""
         )
         onSave(schedule, replacingScheduleId)
     }
