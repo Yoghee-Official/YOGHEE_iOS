@@ -552,6 +552,9 @@
 			isa = PBXGroup;
 			children = (
 				52F987AA2F572DF200C905D1 /* Explanation */,
+				52F987B52F59C25800C905D1 /* Location */,
+				52F987B62F60BFF400C905D1 /* Image */,
+				52F987AB2F572DFD00C905D1 /* SelectType */,
 			);
 			path = Both;
 			sourceTree = "<group>";
@@ -591,10 +594,7 @@
 		52F9879E2F4D061C00C905D1 /* OneDay */ = {
 			isa = PBXGroup;
 			children = (
-				52F987AB2F572DFD00C905D1 /* SelectType */,
 				52F987AC2F572E0C00C905D1 /* Information */,
-				52F987B52F59C25800C905D1 /* Location */,
-				52F987B62F60BFF400C905D1 /* Image */,
 				52F987B72F64EEA100C905D1 /* SetPrice */,
 			);
 			path = OneDay;

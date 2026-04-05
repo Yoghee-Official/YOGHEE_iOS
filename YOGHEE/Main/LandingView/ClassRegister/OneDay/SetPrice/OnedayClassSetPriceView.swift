@@ -16,8 +16,13 @@ struct OnedayClassSetPriceView: View {
     @State private var isRegistering = false
     @State private var registerError: String?
     
-    private let totalSteps = 6
-    private let currentStep = 6
+    private var isRegularStudioFlow: Bool {
+        container.state.selectedClassTypeId == "regular"
+    }
+    
+    /// 원데이 6단계 / 정규 7단계
+    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
+    private var currentStep: Int { isRegularStudioFlow ? 7 : 6 }
     private let reservationNoticeLimit = 3000
     
     private var canComplete: Bool {

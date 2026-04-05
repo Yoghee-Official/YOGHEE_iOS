@@ -11,7 +11,8 @@ struct OnedayClassExplanationRegisterView: View {
     @ObservedObject var container: ClassRegisterContainer
     @Environment(\.dismiss) private var dismiss
     
-    private let totalSteps = 6
+    /// 원데이 6단계 / 정규 7단계
+    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
     private let currentStep = 1
     
     private var isRegularStudioFlow: Bool {
@@ -243,7 +244,13 @@ struct OnedayClassExplanationRegisterView: View {
                 .buttonStyle(.plain)
                 
                 NavigationLink {
-                    OnedayClassSelectTypeRegisterView(container: container)
+                    Group {
+                        if isRegularStudioFlow {
+                            OnedayClassLocationRegisterView(container: container)
+                        } else {
+                            OnedayClassSelectTypeRegisterView(container: container)
+                        }
+                    }
                 } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)

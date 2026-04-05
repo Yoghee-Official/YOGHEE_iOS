@@ -18,8 +18,14 @@ struct OnedayClassImageRegisterView: View {
     @State private var showPhotoLibrary = false
     @State private var permissionAlert: PermissionAlertKind?
     
-    private let totalSteps = 6
-    private let currentStep = 5
+    private var isRegularStudioFlow: Bool {
+        container.state.selectedClassTypeId == "regular"
+    }
+    
+    /// 원데이 6단계 / 정규 7단계
+    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
+    /// 원데이: 이미지=5 / 정규: 이미지=3
+    private var currentStep: Int { isRegularStudioFlow ? 3 : 5 }
     private let maxImages = 20
     
     private var canProceed: Bool {
@@ -46,7 +52,11 @@ struct OnedayClassImageRegisterView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: "이미지 등록")
+        .customNavigationBar(
+            title: "이미지 등록",
+            trailingTitle: "문의하기",
+            onTrailingTap: { handleInquiryTap() }
+        )
         .sheet(isPresented: $showImageSourceSheet) {
             ClassImageSourceSheet(
                 onCamera: { didSelectCamera() },
@@ -219,7 +229,13 @@ struct OnedayClassImageRegisterView: View {
                 .buttonStyle(.plain)
                 
                 NavigationLink {
-                    OnedayClassSetPriceView(container: container)
+                    Group {
+                        if isRegularStudioFlow {
+                            OnedayClassSelectTypeRegisterView(container: container)
+                        } else {
+                            OnedayClassSetPriceView(container: container)
+                        }
+                    }
                 } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)
@@ -236,6 +252,10 @@ struct OnedayClassImageRegisterView: View {
             .padding(.bottom, 24.ratio())
         }
         .background(Color.SandBeige)
+    }
+    
+    private func handleInquiryTap() {
+        // TODO: 문의하기 채널(웹/카카오 등) 연결
     }
 }
 
