@@ -63,6 +63,22 @@ enum ClassRegisterIntent {
     case updateRefundRule(id: String, hoursBefore: Int, percent: Int)
     /// 예약 시 안내사항 (최대 3000자)
     case setReservationNotice(String)
+    
+    // 정규 수련: 금액 플랜
+    case addRegularPricePlan(RegularPricePlan)
+    case removeRegularPricePlan(String)
+
+    // 정규 수련: 휴무 정보
+    /// 고정 휴무 있음 / 없음 (없으면 주간·공휴일 UI 숨김)
+    case setRegularHasFixedHolidays(Bool)
+    /// 주간 휴무 요일 토글 (1=월 … 7=일, 포함 시 해당 요일 휴무)
+    case toggleRegularWeeklyOffWeekday(Int)
+    /// 공휴일 휴무 칩 토글
+    case toggleRegularPublicHolidayOff(String)
+    /// 공휴일 전체 휴무 프리셋
+    case applyRegularPublicHolidayPresetAll
+    /// 설·추석 당일만 휴무 프리셋
+    case applyRegularPublicHolidayPresetSeolChuseokOnly
 }
 
 
@@ -133,6 +149,17 @@ struct ClassRegisterState: Equatable {
     ]
     /// 예약 시 안내사항 (최대 3000자)
     var reservationNotice: String = ""
+    
+    // MARK: 정규 수련 — 금액 플랜 목록 (기간권/회차권)
+    var regularPricePlans: [RegularPricePlan] = []
+
+    // MARK: 정규 수련 — 휴무 정보
+    /// true: 휴무일 있음(상세 선택 표시), false: 없음
+    var regularHasFixedHolidays: Bool = true
+    /// 1=월 … 7=일. 포함된 요일이 휴무
+    var regularWeeklyOffWeekdays: Set<Int> = []
+    /// 휴무로 지정한 공휴일 id (`RegularPublicHoliday.rawValue`)
+    var regularPublicHolidayOffIds: Set<String> = RegularPublicHoliday.allHolidayIds
 }
 
 // MARK: - Container
@@ -234,6 +261,41 @@ class ClassRegisterContainer: ObservableObject {
         case .setReservationNotice(let value):
             objectWillChange.send()
             state.reservationNotice = String(value.prefix(3000))
+            
+        case .addRegularPricePlan(let plan):
+            state.regularPricePlans.append(plan)
+
+        case .removeRegularPricePlan(let id):
+            state.regularPricePlans.removeAll { $0.id == id }
+
+        case .setRegularHasFixedHolidays(let value):
+            objectWillChange.send()
+            state.regularHasFixedHolidays = value
+            
+        case .toggleRegularWeeklyOffWeekday(let weekday):
+            guard (1...7).contains(weekday) else { return }
+            objectWillChange.send()
+            if state.regularWeeklyOffWeekdays.contains(weekday) {
+                state.regularWeeklyOffWeekdays.remove(weekday)
+            } else {
+                state.regularWeeklyOffWeekdays.insert(weekday)
+            }
+            
+        case .toggleRegularPublicHolidayOff(let id):
+            objectWillChange.send()
+            if state.regularPublicHolidayOffIds.contains(id) {
+                state.regularPublicHolidayOffIds.remove(id)
+            } else {
+                state.regularPublicHolidayOffIds.insert(id)
+            }
+            
+        case .applyRegularPublicHolidayPresetAll:
+            objectWillChange.send()
+            state.regularPublicHolidayOffIds = RegularPublicHoliday.allHolidayIds
+            
+        case .applyRegularPublicHolidayPresetSeolChuseokOnly:
+            objectWillChange.send()
+            state.regularPublicHolidayOffIds = RegularPublicHoliday.seolChuseokOnlyIds
         }
     }
     
@@ -315,42 +377,127 @@ class ClassRegisterContainer: ObservableObject {
     /// state 기준으로 클래스 등록 요청 DTO 생성 후 POST /api/class 호출
     func registerClass() async throws -> ClassRegisterResponse {
         let s = state
-        let price = Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0
-        let schedules = s.schedules.map {
-            ClassRegisterScheduleItemDto(
-                scheduleId: $0.scheduleId,
-                dates: $0.dates,
-                startTime: $0.startTime.timeString,
-                endTime: $0.endTime.timeString,
-                minCapacity: $0.minCapacity,
-                maxCapacity: $0.maxCapacity,
-                name: $0.name
-            )
+        let isRegular = s.selectedClassTypeId == "regular"
+        let classType: String = isRegular ? "R" : "O"
+
+        // MARK: 스케줄
+        // 정규: dates 배열 내 날짜별로 dayOfWeek를 역산하여 요일당 1개 아이템으로 분리
+        // 하루: dates 그대로, dayOfWeek 없음
+        let schedules: [ClassRegisterScheduleItemDto]
+        if isRegular {
+            let cal = Calendar.current
+            let dateFmt = DateFormatter(); dateFmt.dateFormat = "yyyy-MM-dd"
+            schedules = s.schedules.flatMap { sched -> [ClassRegisterScheduleItemDto] in
+                sched.dates.compactMap { dateStr -> ClassRegisterScheduleItemDto? in
+                    guard let date = dateFmt.date(from: dateStr) else { return nil }
+                    // Calendar weekday: 1=일,2=월...7=토 → App weekday: 1=월...7=일
+                    let calWd = cal.component(.weekday, from: date)
+                    let appWd = ((calWd - 2 + 7) % 7) + 1
+                    return ClassRegisterScheduleItemDto(
+                        scheduleId: sched.scheduleId,
+                        dates: [dateStr],
+                        dayOfWeek: appWd,
+                        startTime: sched.startTime.timeString,
+                        endTime: sched.endTime.timeString,
+                        minCapacity: sched.minCapacity,
+                        maxCapacity: sched.maxCapacity,
+                        name: sched.name
+                    )
+                }
+            }
+        } else {
+            schedules = s.schedules.map {
+                ClassRegisterScheduleItemDto(
+                    scheduleId: $0.scheduleId,
+                    dates: $0.dates,
+                    dayOfWeek: nil,
+                    startTime: $0.startTime.timeString,
+                    endTime: $0.endTime.timeString,
+                    minCapacity: $0.minCapacity,
+                    maxCapacity: $0.maxCapacity,
+                    name: $0.name
+                )
+            }
         }
+
+        // MARK: 공통 — 이미지·환불
         let imageKeys = s.classImages.compactMap(\.imageKey)
         let refundPolicies = s.refundRules.map {
             ClassRegisterRefundPolicyDto(hoursBeforeClass: $0.hoursBefore, refundRate: $0.percent)
         }
-        let discountPrice: Int? = s.discountMethod == "amount" ? Int(s.discountAmount) : nil
-        let discountRate: Int? = s.discountMethod == "rate" ? Int(s.discountRate) : nil
-        let classType: String = (s.selectedClassTypeId == "regular") ? "R" : "O"
-        let body = ClassRegisterRequestDto(
-            type: classType,
-            classId: nil,
-            name: s.name,
-            description: s.description.nilIfEmpty,
-            centerId: s.selectedCenterId,
-            featureIds: s.featureIds.isEmpty ? nil : Array(s.featureIds),
-            schedules: schedules,
-            images: imageKeys.isEmpty ? nil : imageKeys,
-            price: price,
-            categoryIds: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
-            policy: ClassRegisterPolicyDto(
-                discountPrice: discountPrice,
-                discountRate: discountRate,
-                reservationNote: s.reservationNotice.nilIfEmpty,
-                refundPolicies: refundPolicies.isEmpty ? nil : refundPolicies
+
+        // MARK: 공통 — 이름
+        let registerName: String = {
+            if isRegular {
+                if let centerId = s.selectedCenterId,
+                   let centerName = s.centers.first(where: { $0.centerId == centerId })?.name {
+                    let trimmed = centerName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmed.isEmpty { return String(trimmed.prefix(22)) }
+                }
+                let desc = s.description.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !desc.isEmpty { return String(desc.prefix(22)) }
+            }
+            return s.name
+        }()
+
+        // MARK: 원데이 전용 — 가격·할인
+        let onedayPrice     = Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0
+        let discountPrice   = s.discountMethod == "amount" ? Int(s.discountAmount) : nil
+        let discountRate    = s.discountMethod == "rate"   ? Int(s.discountRate)   : nil
+
+        // MARK: 정규 전용 — 수강권(tickets)
+        let tickets: [ClassRegisterTicketDto]? = isRegular ? s.regularPricePlans.map {
+            ClassRegisterTicketDto(
+                ticketId:      nil,
+                ticketType:    $0.planType.rawValue,
+                ticketName:    $0.ticketName,
+                price:         $0.price,
+                validMonths:   $0.planType == .period  ? $0.validMonths    : nil,
+                weeklyCount:   $0.planType == .period  ? $0.weeklyCount    : nil,
+                totalSessions: $0.planType == .session ? $0.totalSessions  : nil
             )
+        } : nil
+
+        // MARK: 정규 전용 — 휴무 정책
+        let holidayPolicy: ClassRegisterHolidayPolicyDto? = {
+            guard isRegular, s.regularHasFixedHolidays else { return nil }
+            let weeklyOffDays = s.regularWeeklyOffWeekdays.isEmpty ? nil : Array(s.regularWeeklyOffWeekdays).sorted()
+
+            // "설,추석 당일만 휴무" 프리셋 여부: 해당 IDs 집합과 일치하면 당일만 전송
+            let isDayOnly = s.regularPublicHolidayOffIds == RegularPublicHoliday.seolChuseokOnlyIds
+            let publicHolidays: [String]? = s.regularPublicHolidayOffIds.isEmpty ? nil :
+                s.regularPublicHolidayOffIds.flatMap { id -> [String] in
+                    guard let holiday = RegularPublicHoliday(rawValue: id) else { return [] }
+                    if isDayOnly, let dayOnly = holiday.dayOnlyApiValue { return [dayOnly] }
+                    return holiday.fullApiValues
+                }
+
+            guard weeklyOffDays != nil || publicHolidays != nil else { return nil }
+            return ClassRegisterHolidayPolicyDto(weeklyOffDays: weeklyOffDays, publicHolidays: publicHolidays)
+        }()
+
+        // MARK: 정규 top-level price: 최소 수강권 금액 (없으면 0)
+        let regularPrice = s.regularPricePlans.map(\.price).min() ?? 0
+
+        let body = ClassRegisterRequestDto(
+            type:          classType,
+            classId:       nil,
+            name:          registerName,
+            description:   s.description.nilIfEmpty,
+            centerId:      s.selectedCenterId,
+            featureIds:    s.featureIds.isEmpty ? nil : Array(s.featureIds),
+            schedules:     schedules,
+            images:        imageKeys.isEmpty ? nil : imageKeys,
+            price:         isRegular ? regularPrice : onedayPrice,
+            categoryIds:   s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
+            policy:        ClassRegisterPolicyDto(
+                discountPrice:   isRegular ? nil : discountPrice,
+                discountRate:    isRegular ? nil : discountRate,
+                reservationNote: s.reservationNotice.nilIfEmpty,
+                refundPolicies:  refundPolicies.isEmpty ? nil : refundPolicies
+            ),
+            holidayPolicy: holidayPolicy,
+            tickets:       tickets
         )
         return try await APIService.shared.postRegisterClass(body: body)
     }

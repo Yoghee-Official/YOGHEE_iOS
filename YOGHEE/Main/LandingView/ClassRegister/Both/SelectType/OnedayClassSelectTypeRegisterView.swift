@@ -11,8 +11,14 @@ struct OnedayClassSelectTypeRegisterView: View {
     @ObservedObject var container: ClassRegisterContainer
     @Environment(\.dismiss) private var dismiss
     
-    private let totalSteps = 6
-    private let currentStep = 2
+    private var isRegularStudioFlow: Bool {
+        container.state.selectedClassTypeId == "regular"
+    }
+    
+    /// 원데이 6단계 / 정규 7단계
+    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
+    /// 원데이: 유형=2 / 정규: 유형=4 (이미지 다음)
+    private var currentStep: Int { isRegularStudioFlow ? 4 : 2 }
     
     /// 2a, 2b, 2c 중 단 1개라도 선택되면 활성화
     private var canProceed: Bool {
@@ -44,12 +50,20 @@ struct OnedayClassSelectTypeRegisterView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: "수련 유형 선택")
+        .customNavigationBar(
+            title: "수련 유형 선택",
+            trailingTitle: "문의하기",
+            onTrailingTap: { handleInquiryTap() }
+        )
         .onAppear {
             if container.state.types.isEmpty && container.state.categories.isEmpty && container.state.targets.isEmpty {
                 container.loadCodeList()
             }
         }
+    }
+    
+    private func handleInquiryTap() {
+        // TODO: 문의하기 채널(웹/카카오 등) 연결
     }
     
     // MARK: - 2a: 전문 수련 유형
@@ -165,7 +179,13 @@ struct OnedayClassSelectTypeRegisterView: View {
                 .buttonStyle(.plain)
                 
                 NavigationLink {
-                    OnedayClassInformationRegisterView(container: container)
+                    Group {
+                        if isRegularStudioFlow {
+                            RegularClassHolidayRegisterView(container: container)
+                        } else {
+                            OnedayClassInformationRegisterView(container: container)
+                        }
+                    }
                 } label: {
                     Text("계속")
                         .pretendardFont(.medium, size: 15)

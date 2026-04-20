@@ -13,8 +13,14 @@ struct OnedayClassLocationRegisterView: View {
     
     @State private var showNewPlaceSheet = false
     
-    private let totalSteps = 6
-    private let currentStep = 4
+    private var isRegularStudioFlow: Bool {
+        container.state.selectedClassTypeId == "regular"
+    }
+    
+    /// 원데이 6단계 / 정규 7단계
+    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
+    /// 원데이: 장소=4 / 정규: 장소=2
+    private var currentStep: Int { isRegularStudioFlow ? 2 : 4 }
     
     /// 2b에서 요가원 1개 선택 시 활성화
     private var canProceed: Bool {
@@ -45,13 +51,21 @@ struct OnedayClassLocationRegisterView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: "수련 장소 등록")
+        .customNavigationBar(
+            title: "수련 장소 등록",
+            trailingTitle: "문의하기",
+            onTrailingTap: { handleInquiryTap() }
+        )
         .onAppear {
             container.loadCenterList()
         }
         .fullScreenCover(isPresented: $showNewPlaceSheet) {
             NewPlaceRegisterView(container: container, onDismiss: { showNewPlaceSheet = false })
         }
+    }
+    
+    private func handleInquiryTap() {
+        // TODO: 문의하기 채널(웹/카카오 등) 연결
     }
     
     // MARK: - 2a: 장소 등록하기
