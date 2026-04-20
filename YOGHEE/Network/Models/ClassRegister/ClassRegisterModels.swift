@@ -178,47 +178,117 @@ struct RefundRuleRow: Identifiable, Equatable {
     var percent: Int
 }
 
-// MARK: - 정규 수련 휴무 (공휴일 칩)
+// MARK: - 정규 수련 금액 플랜 (기간권 / 회차권)
 
-/// 공휴일 휴무 선택용 고정 목록 (표시 문구는 기획/피그마 기준)
-enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
-    case newYear = "new_year"
-    case lunarNewYearDay = "lunar_new_year_day"
-    case march1 = "march_1"
-    case buddhaBirthday = "buddha_birthday"
-    case childrenDay = "children_day"
-    case memorialDay = "memorial_day"
-    case liberationDay = "liberation_day"
-    case foundationDay = "foundation_day"
-    case hangulDay = "hangul_day"
-    case chuseokDay = "chuseok_day"
-    case christmas = "christmas"
-    
-    var id: String { rawValue }
-    
-    var title: String {
-        switch self {
-        case .newYear: return "신정"
-        case .lunarNewYearDay: return "연휴 | 설날 당일 | 연휴"
-        case .march1: return "삼일절"
-        case .buddhaBirthday: return "석가탄신일"
-        case .childrenDay: return "어린이날"
-        case .memorialDay: return "현충일"
-        case .liberationDay: return "광복절"
-        case .foundationDay: return "개천절"
-        case .hangulDay: return "한글날"
-        case .chuseokDay: return "연휴 | 추석 당일 | 연휴"
-        case .christmas: return "크리스마스"
+struct RegularPricePlan: Identifiable, Equatable {
+    /// API ticketType 값과 일치
+    enum PlanType: String, Equatable {
+        case period  = "PERIOD"   // 기간권
+        case session = "SESSION"  // 회차권
+    }
+
+    let id: String              // 로컬 식별용 UUID
+    var planType: PlanType      // ticketType
+    var ticketName: String      // 수강권 이름 (앱에서 자동 생성)
+    var price: Int              // 수강권 가격(원) — 필수
+    /// PERIOD 전용: 유효 개월 수 (validMonths)
+    var validMonths: Int
+    /// PERIOD 전용: 주 횟수(회) (weeklyCount)
+    var weeklyCount: Int
+    /// SESSION 전용: 총 수강 가능 횟수 (totalSessions)
+    var totalSessions: Int
+
+    init(
+        id: String = UUID().uuidString,
+        planType: PlanType,
+        ticketName: String = "",
+        price: Int = 0,
+        validMonths: Int = 1,
+        weeklyCount: Int = 1,
+        totalSessions: Int = 10
+    ) {
+        self.id = id
+        self.planType = planType
+        self.ticketName = ticketName
+        self.price = price
+        self.validMonths = validMonths
+        self.weeklyCount = weeklyCount
+        self.totalSessions = totalSessions
+    }
+
+    var formattedPrice: String {
+        let fmt = NumberFormatter(); fmt.numberStyle = .decimal
+        return (fmt.string(from: NSNumber(value: price)) ?? "0") + "원"
+    }
+
+    var displayLabel: String {
+        switch planType {
+        case .period:  return "기간권"
+        case .session: return "회차권"
         }
     }
-    
+}
+
+// MARK: - 정규 수련 휴무 (공휴일 칩)
+
+/// 공휴일 휴무 선택용 고정 목록. rawValue = 상태 추적 키 (API 전송 시 apiValues로 변환)
+enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
+    case newYear        = "NEW_YEAR_DAY"
+    case seollal        = "SEOLLAL"               // UI 칩 — 설날 연휴 전체
+    case independence   = "INDEPENDENCE_MOVEMENT_DAY"
+    case childrenDay    = "CHILDREN_DAY"
+    case buddhaBirthday = "BUDDHA_BIRTHDAY"
+    case memorialDay    = "MEMORIAL_DAY"
+    case liberationDay  = "LIBERATION_DAY"
+    case foundationDay  = "NATIONAL_FOUNDATION_DAY"
+    case hangulDay      = "HANGEUL_DAY"
+    case chuseok        = "CHUSEOK"               // UI 칩 — 추석 연휴 전체
+    case christmas      = "CHRISTMAS_DAY"
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .newYear:        return "신정"
+        case .seollal:        return "연휴 | 설날 당일 | 연휴"
+        case .independence:   return "삼일절"
+        case .childrenDay:    return "어린이날"
+        case .buddhaBirthday: return "석가탄신일"
+        case .memorialDay:    return "현충일"
+        case .liberationDay:  return "광복절"
+        case .foundationDay:  return "개천절"
+        case .hangulDay:      return "한글날"
+        case .chuseok:        return "연휴 | 추석 당일 | 연휴"
+        case .christmas:      return "크리스마스"
+        }
+    }
+
+    /// API 전송 시 실제로 보낼 문자열 배열.
+    /// "설,추석 당일만 휴무" 프리셋 여부에 따라 호출 시 조정 필요.
+    var fullApiValues: [String] {
+        switch self {
+        case .seollal: return ["SEOLLAL_PREV", "SEOLLAL_DAY", "SEOLLAL_NEXT"]
+        case .chuseok: return ["CHUSEOK_PREV", "CHUSEOK_DAY", "CHUSEOK_NEXT"]
+        default:       return [rawValue]
+        }
+    }
+
+    /// "설,추석 당일만 휴무" 프리셋일 때 당일 단일 API 값 (해당 없으면 nil)
+    var dayOnlyApiValue: String? {
+        switch self {
+        case .seollal: return "SEOLLAL_DAY"
+        case .chuseok: return "CHUSEOK_DAY"
+        default:       return nil
+        }
+    }
+
     static var allHolidayIds: Set<String> {
         Set(allCases.map(\.rawValue))
     }
-    
+
     /// 설·추석 당일만 휴무 프리셋
     static var seolChuseokOnlyIds: Set<String> {
-        [lunarNewYearDay.rawValue, chuseokDay.rawValue]
+        [seollal.rawValue, chuseok.rawValue]
     }
 }
 
@@ -306,7 +376,9 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
 /// 스케줄 항목 (API는 startTime/endTime 문자열 "HH:mm")
 struct ClassRegisterScheduleItemDto: Codable {
     let scheduleId: String?
-    let dates: [String]
+    let dates: [String]?
+    /// [Regular 전용] 수업 요일 (1=월, 2=화, 3=수, 4=목, 5=금, 6=토, 7=일)
+    let dayOfWeek: Int?
     let startTime: String
     let endTime: String
     let minCapacity: Int
@@ -328,6 +400,23 @@ struct ClassRegisterPolicyDto: Codable {
     let refundPolicies: [ClassRegisterRefundPolicyDto]?
 }
 
+/// 수강권 항목 (정규 전용)
+struct ClassRegisterTicketDto: Codable {
+    let ticketId: String?       // 신규 시 nil
+    let ticketType: String      // "PERIOD" | "SESSION"
+    let ticketName: String
+    let price: Int
+    let validMonths: Int?       // PERIOD 전용: 유효 개월 수
+    let weeklyCount: Int?       // PERIOD 전용: 주 횟수
+    let totalSessions: Int?     // SESSION 전용: 총 수강 횟수
+}
+
+/// 휴무 정책 (정규 전용)
+struct ClassRegisterHolidayPolicyDto: Codable {
+    let weeklyOffDays: [Int]?
+    let publicHolidays: [String]?
+}
+
 /// POST /api/class 요청 바디
 struct ClassRegisterRequestDto: Codable {
     /// 수련 유형: 원데이 "O", 정규 "R"
@@ -342,6 +431,8 @@ struct ClassRegisterRequestDto: Codable {
     let price: Int
     let categoryIds: [String]?
     let policy: ClassRegisterPolicyDto?
+    let holidayPolicy: ClassRegisterHolidayPolicyDto?  // 정규 전용
+    let tickets: [ClassRegisterTicketDto]?              // 정규 전용
 }
 
 /// 클래스 등록 API 응답 (code, status, data)

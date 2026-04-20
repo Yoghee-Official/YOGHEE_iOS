@@ -561,6 +561,7 @@
 				52F987B52F59C25800C905D1 /* Location */,
 				52F987B62F60BFF400C905D1 /* Image */,
 				52F987AB2F572DFD00C905D1 /* SelectType */,
+				52F987B72F64EEA100C905D1 /* SetPrice */,
 			);
 			path = Both;
 			sourceTree = "<group>";
@@ -617,7 +618,6 @@
 			isa = PBXGroup;
 			children = (
 				52F987AC2F572E0C00C905D1 /* Information */,
-				52F987B72F64EEA100C905D1 /* SetPrice */,
 			);
 			path = OneDay;
 			sourceTree = "<group>";
