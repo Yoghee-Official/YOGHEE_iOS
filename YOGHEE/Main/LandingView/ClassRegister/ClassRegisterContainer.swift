@@ -77,8 +77,6 @@ enum ClassRegisterIntent {
     case toggleRegularPublicHolidayOff(String)
     /// 공휴일 전체 휴무 프리셋
     case applyRegularPublicHolidayPresetAll
-    /// 설·추석 당일만 휴무 프리셋
-    case applyRegularPublicHolidayPresetSeolChuseokOnly
 }
 
 
@@ -292,10 +290,6 @@ class ClassRegisterContainer: ObservableObject {
         case .applyRegularPublicHolidayPresetAll:
             objectWillChange.send()
             state.regularPublicHolidayOffIds = RegularPublicHoliday.allHolidayIds
-            
-        case .applyRegularPublicHolidayPresetSeolChuseokOnly:
-            objectWillChange.send()
-            state.regularPublicHolidayOffIds = RegularPublicHoliday.seolChuseokOnlyIds
         }
     }
     

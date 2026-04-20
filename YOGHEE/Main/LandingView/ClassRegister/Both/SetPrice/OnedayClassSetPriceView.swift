@@ -71,7 +71,7 @@ struct OnedayClassSetPriceView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: "금액 설정")
+        .customNavigationBar(title: "금액 정보")
         .fullScreenCover(isPresented: $showResultPopup) {
             ClassRegisterResultPopupView(onDismiss: {
                 showResultPopup = false

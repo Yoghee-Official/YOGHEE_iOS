@@ -293,7 +293,7 @@ private struct RegularScheduleTimelineView: View {
                 Color.clear
             } else {
                 Button(action: { onAdd(appWeekday) }) {
-                    Image("CirclePlusIcon")
+                    Image("PlusCircleIcon")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 20.ratio(), height: 20.ratio())

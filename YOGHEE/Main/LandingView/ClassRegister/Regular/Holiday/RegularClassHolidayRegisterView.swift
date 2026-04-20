@@ -161,19 +161,11 @@ struct RegularClassHolidayRegisterView: View {
                 .pretendardFont(.bold, size: 16)
                 .foregroundColor(.DarkBlack)
             
-            HStack(spacing: 20.ratio()) {
-                quickFilterRow(
-                    title: "전체 휴무",
-                    isChecked: isAllPublicOffPreset
-                ) {
-                    container.handleIntent(.applyRegularPublicHolidayPresetAll)
-                }
-                quickFilterRow(
-                    title: "설,추석 당일만 휴무",
-                    isChecked: isSeolChuseokOnlyPreset
-                ) {
-                    container.handleIntent(.applyRegularPublicHolidayPresetSeolChuseokOnly)
-                }
+            quickFilterRow(
+                title: "전체 휴무",
+                isChecked: isAllPublicOffPreset
+            ) {
+                container.handleIntent(.applyRegularPublicHolidayPresetAll)
             }
             
             FlowLayout(spacing: 8.ratio()) {
@@ -205,9 +197,9 @@ struct RegularClassHolidayRegisterView: View {
                     Circle()
                         .stroke(Color.Background, lineWidth: 1)
                     if isChecked {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 10.ratio(), weight: .semibold))
-                            .foregroundColor(.DarkBlack)
+                        Image("CheckCircleIconFull")
+                    } else {
+                        Image("CheckCircleIconEmpty")
                     }
                 }
                 .frame(width: 20.ratio(), height: 20.ratio())

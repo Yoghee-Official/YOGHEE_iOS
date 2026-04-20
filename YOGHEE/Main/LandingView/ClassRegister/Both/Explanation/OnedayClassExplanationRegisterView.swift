@@ -192,10 +192,7 @@ struct OnedayClassExplanationRegisterView: View {
                     .foregroundColor(.red)
                     .padding(.vertical, 16.ratio())
             } else {
-                LazyVGrid(columns: [
-                    GridItem(.flexible(), spacing: 12.ratio()),
-                    GridItem(.flexible(), spacing: 12.ratio())
-                ], spacing: 12.ratio()) {
+                VStack(alignment: .leading, spacing: 8.ratio()) {
                     ForEach(container.state.features) { feature in
                         FeatureChipView(
                             feature: feature,
@@ -283,30 +280,30 @@ private struct FeatureChipView: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 8.ratio()) {
+                Image(isSelected ? "StarCheckIcon" : "StarCheckIconEmpty")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20.ratio(), height: 20.ratio())
+                
                 Text(feature.name)
                     .pretendardFont(.medium, size: 12)
                     .foregroundColor(.DarkBlack)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(2)
-                
-                Spacer(minLength: 0)
-                
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20.ratio()))
-                        .foregroundColor(.DarkBlack)
-                }
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
-            .padding(12.ratio())
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(isSelected ? Color.NatureGreen : Color.CleanWhite)
-            .cornerRadius(8)
+            .padding(.leading, 8.ratio())
+            .padding(.trailing, 12.ratio())
+            .padding(.vertical, 4.ratio())
+            .frame(minHeight: 28.ratio(), alignment: .leading)
+            .background(Color.CleanWhite)
+            .cornerRadius(23.ratio())
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: 23.ratio())
                     .stroke(Color.Background, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
+        .fixedSize(horizontal: true, vertical: false)
     }
 }
 
