@@ -31,10 +31,6 @@ struct RegularClassHolidayRegisterView: View {
         container.state.regularPublicHolidayOffIds == RegularPublicHoliday.allHolidayIds
     }
     
-    private var isSeolChuseokOnlyPreset: Bool {
-        container.state.regularPublicHolidayOffIds == RegularPublicHoliday.seolChuseokOnlyIds
-    }
-    
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {

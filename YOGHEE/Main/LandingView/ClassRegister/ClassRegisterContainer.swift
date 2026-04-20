@@ -456,15 +456,14 @@ class ClassRegisterContainer: ObservableObject {
         let holidayPolicy: ClassRegisterHolidayPolicyDto? = {
             guard isRegular, s.regularHasFixedHolidays else { return nil }
             let weeklyOffDays = s.regularWeeklyOffWeekdays.isEmpty ? nil : Array(s.regularWeeklyOffWeekdays).sorted()
-
-            // "설,추석 당일만 휴무" 프리셋 여부: 해당 IDs 집합과 일치하면 당일만 전송
-            let isDayOnly = s.regularPublicHolidayOffIds == RegularPublicHoliday.seolChuseokOnlyIds
-            let publicHolidays: [String]? = s.regularPublicHolidayOffIds.isEmpty ? nil :
-                s.regularPublicHolidayOffIds.flatMap { id -> [String] in
+            let publicHolidays: [String]? = {
+                guard !s.regularPublicHolidayOffIds.isEmpty else { return nil }
+                let ids = s.regularPublicHolidayOffIds.flatMap { id -> [String] in
                     guard let holiday = RegularPublicHoliday(rawValue: id) else { return [] }
-                    if isDayOnly, let dayOnly = holiday.dayOnlyApiValue { return [dayOnly] }
-                    return holiday.fullApiValues
+                    return holiday.apiValues
                 }
+                return ids.isEmpty ? nil : Array(Set(ids)).sorted()
+            }()
 
             guard weeklyOffDays != nil || publicHolidays != nil else { return nil }
             return ClassRegisterHolidayPolicyDto(weeklyOffDays: weeklyOffDays, publicHolidays: publicHolidays)

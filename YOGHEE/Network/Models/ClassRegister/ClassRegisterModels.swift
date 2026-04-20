@@ -234,7 +234,8 @@ struct RegularPricePlan: Identifiable, Equatable {
 /// 공휴일 휴무 선택용 고정 목록. rawValue = 상태 추적 키 (API 전송 시 apiValues로 변환)
 enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
     case newYear        = "NEW_YEAR_DAY"
-    case seollal        = "SEOLLAL"               // UI 칩 — 설날 연휴 전체
+    case seollalDay     = "SEOLLAL_DAY"
+    case seollalHoliday = "SEOLLAL_HOLIDAY"
     case independence   = "INDEPENDENCE_MOVEMENT_DAY"
     case childrenDay    = "CHILDREN_DAY"
     case buddhaBirthday = "BUDDHA_BIRTHDAY"
@@ -242,7 +243,8 @@ enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
     case liberationDay  = "LIBERATION_DAY"
     case foundationDay  = "NATIONAL_FOUNDATION_DAY"
     case hangulDay      = "HANGEUL_DAY"
-    case chuseok        = "CHUSEOK"               // UI 칩 — 추석 연휴 전체
+    case chuseokDay     = "CHUSEOK_DAY"
+    case chuseokHoliday = "CHUSEOK_HOLIDAY"
     case christmas      = "CHRISTMAS_DAY"
 
     var id: String { rawValue }
@@ -250,7 +252,8 @@ enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
     var title: String {
         switch self {
         case .newYear:        return "신정"
-        case .seollal:        return "연휴 | 설날 당일 | 연휴"
+        case .seollalDay:     return "설날 당일"
+        case .seollalHoliday: return "설날 연휴"
         case .independence:   return "삼일절"
         case .childrenDay:    return "어린이날"
         case .buddhaBirthday: return "석가탄신일"
@@ -258,37 +261,23 @@ enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
         case .liberationDay:  return "광복절"
         case .foundationDay:  return "개천절"
         case .hangulDay:      return "한글날"
-        case .chuseok:        return "연휴 | 추석 당일 | 연휴"
+        case .chuseokDay:     return "추석 당일"
+        case .chuseokHoliday: return "추석 연휴"
         case .christmas:      return "크리스마스"
         }
     }
 
     /// API 전송 시 실제로 보낼 문자열 배열.
-    /// "설,추석 당일만 휴무" 프리셋 여부에 따라 호출 시 조정 필요.
-    var fullApiValues: [String] {
+    var apiValues: [String] {
         switch self {
-        case .seollal: return ["SEOLLAL_PREV", "SEOLLAL_DAY", "SEOLLAL_NEXT"]
-        case .chuseok: return ["CHUSEOK_PREV", "CHUSEOK_DAY", "CHUSEOK_NEXT"]
+        case .seollalHoliday: return ["SEOLLAL_PREV", "SEOLLAL_NEXT"]
+        case .chuseokHoliday: return ["CHUSEOK_PREV", "CHUSEOK_NEXT"]
         default:       return [rawValue]
-        }
-    }
-
-    /// "설,추석 당일만 휴무" 프리셋일 때 당일 단일 API 값 (해당 없으면 nil)
-    var dayOnlyApiValue: String? {
-        switch self {
-        case .seollal: return "SEOLLAL_DAY"
-        case .chuseok: return "CHUSEOK_DAY"
-        default:       return nil
         }
     }
 
     static var allHolidayIds: Set<String> {
         Set(allCases.map(\.rawValue))
-    }
-
-    /// 설·추석 당일만 휴무 프리셋
-    static var seolChuseokOnlyIds: Set<String> {
-        [seollal.rawValue, chuseok.rawValue]
     }
 }
 
