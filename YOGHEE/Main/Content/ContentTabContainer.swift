@@ -9,23 +9,51 @@ import SwiftUI
 
 // MARK: - Intent
 enum ContentTabIntent {
-    // TODO: Content 관련 Intent 추가
+    case loadFeed
 }
 
 // MARK: - State
 struct ContentTabState: Equatable {
-    // TODO: Content 관련 상태 추가
+    var weekLabel: String = ""
+    var items: [FeedItemDTO] = []
+    var isLoading: Bool = false
+    var isEmpty: Bool = false
+    var errorMessage: String?
 }
 
 @MainActor
 class ContentTabContainer: ObservableObject {
     @Published private(set) var state = ContentTabState()
-    
+
     init() {
-        // TODO: 초기화 로직
+        loadFeed()
     }
-    
+
     func handleIntent(_ intent: ContentTabIntent) {
-        // TODO: Intent 처리 로직
+        switch intent {
+        case .loadFeed:
+            loadFeed()
+        }
+    }
+
+    private func loadFeed() {
+        state.isLoading = true
+        state.isEmpty = false
+        state.errorMessage = nil
+
+        Task { @MainActor in
+            do {
+                let response = try await APIService.shared.getFeed()
+                state.weekLabel = response.data.weekLabel
+                state.items = response.data.items
+                state.isLoading = false
+            } catch APIError.notFound {
+                state.isEmpty = true
+                state.isLoading = false
+            } catch {
+                state.errorMessage = error.localizedDescription
+                state.isLoading = false
+            }
+        }
     }
 }
