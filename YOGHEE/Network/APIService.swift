@@ -8,6 +8,7 @@ enum APIError: Error, Equatable {
     case networkError(Error)
     case decodingError(Error)
     case invalidResponse
+    case notFound
     
     var localizedDescription: String {
         switch self {
@@ -21,6 +22,8 @@ enum APIError: Error, Equatable {
             return "데이터 오류: \(error.localizedDescription)"
         case .invalidResponse:
             return "잘못된 응답입니다"
+        case .notFound:
+            return "요청한 데이터를 찾을 수 없습니다"
         }
     }
     
@@ -28,7 +31,8 @@ enum APIError: Error, Equatable {
         switch (lhs, rhs) {
         case (.unauthorized, .unauthorized),
             (.tokenExpired, .tokenExpired),
-            (.invalidResponse, .invalidResponse):
+            (.invalidResponse, .invalidResponse),
+            (.notFound, .notFound):
             return true
         case (.networkError, .networkError),
             (.decodingError, .decodingError):
@@ -72,7 +76,8 @@ class APIService {
         case centerList
         case imagePresign
         case classRegister
-        
+        case feed
+
         var path: String {
             switch self {
             case .login:
@@ -100,6 +105,8 @@ class APIService {
                 return "/api/image/presign"
             case .classRegister:
                 return "/api/class"
+            case .feed:
+                return "/api/feed"
             }
         }
         
@@ -109,7 +116,7 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
-            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister:
+            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed:
                 return nil
             }
         }
@@ -238,6 +245,15 @@ class APIService {
         }
     }
     
+    /// 이번 주 눈요기 피드 조회 (GET /api/feed)
+    func getFeed() async throws -> FeedResponse {
+        guard let token = await getAccessToken() else {
+            throw APIError.unauthorized
+        }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        return try await get(endPoint: Endpoint.feed.path, parameters: nil, headers: headers)
+    }
+
     /// 클래스 등록 (POST /api/class)
     func postRegisterClass(body: ClassRegisterRequestDto) async throws -> ClassRegisterResponse {
         guard let token = await getAccessToken() else { throw APIError.unauthorized }
@@ -285,10 +301,16 @@ class APIService {
                     case .failure(let error):
                         self?.log("❌ 네트워크 에러: \(error)")
                         
-                        // 401 에러인 경우 tokenExpired로 변환
-                        if let statusCode = response.response?.statusCode, statusCode == 401 {
-                            self?.log("⚠️ 401 Unauthorized - 토큰 만료")
-                            continuation.resume(throwing: APIError.tokenExpired)
+                        if let statusCode = response.response?.statusCode {
+                            if statusCode == 401 {
+                                self?.log("⚠️ 401 Unauthorized - 토큰 만료")
+                                continuation.resume(throwing: APIError.tokenExpired)
+                            } else if statusCode == 404 {
+                                self?.log("⚠️ 404 Not Found")
+                                continuation.resume(throwing: APIError.notFound)
+                            } else {
+                                continuation.resume(throwing: APIError.networkError(error))
+                            }
                         } else {
                             continuation.resume(throwing: APIError.networkError(error))
                         }

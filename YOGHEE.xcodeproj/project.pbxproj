@@ -86,6 +86,7 @@
 		52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 52A174602EF7F11D00208298 /* SwiftUIIntrospect */; };
 		52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92B2E50DEBF00F60E39 /* KakaoSDK */; };
 		52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6B92E2E50E27B00F60E39 /* Alamofire */; };
+		52D6F3D92F9A61E800EC9BE8 /* ContentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3D82F9A61E800EC9BE8 /* ContentModels.swift */; };
 		52F987A02F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */; };
 		52F987A42F4D07E800C905D1 /* ClassTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */; };
 		52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */; };
@@ -185,6 +186,7 @@
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
 		529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassHolidayRegisterView.swift; sourceTree = "<group>"; };
 		529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassManagementRegisterView.swift; sourceTree = "<group>"; };
+		52D6F3D82F9A61E800EC9BE8 /* ContentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentModels.swift; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassExplanationRegisterView.swift; sourceTree = "<group>"; };
 		52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
@@ -453,6 +455,7 @@
 				522CE5C82F12A6BF0063FDF5 /* AuthModels.swift */,
 				522CE5C92F12A6BF0063FDF5 /* CategoryModels.swift */,
 				522CE5CA2F12A6BF0063FDF5 /* MainModels.swift */,
+				52D6F3D82F9A61E800EC9BE8 /* ContentModels.swift */,
 				522CE5CB2F12A6BF0063FDF5 /* MyPageModels.swift */,
 			);
 			path = Models;
@@ -782,6 +785,7 @@
 				52F987BA2F59C25900C905D1 /* OnedayClassLocationRegisterView.swift in Sources */,
 				52F987BC2F5A012000C905D1 /* KakaoPostcodeWebView.swift in Sources */,
 				52F987BE2F5A0A3B00C905D1 /* NewPlaceRegisterView.swift in Sources */,
+				52D6F3D92F9A61E800EC9BE8 /* ContentModels.swift in Sources */,
 				52F987C62F60C00100C905D1 /* OnedayClassImageRegisterView.swift in Sources */,
 				52F987C92F64EEB200C905D1 /* OnedayClassSetPriceView.swift in Sources */,
 				522CE5DD2F12A6BF0063FDF5 /* Extension+View.swift in Sources */,
