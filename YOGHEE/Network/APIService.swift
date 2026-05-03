@@ -77,6 +77,7 @@ class APIService {
         case imagePresign
         case classRegister
         case feed
+        case classDetail(classId: String)
 
         var path: String {
             switch self {
@@ -107,6 +108,8 @@ class APIService {
                 return "/api/class"
             case .feed:
                 return "/api/feed"
+            case .classDetail(let classId):
+                return "/api/class/\(classId)"
             }
         }
         
@@ -116,7 +119,7 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
-            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed:
+            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail:
                 return nil
             }
         }
@@ -245,6 +248,12 @@ class APIService {
         }
     }
     
+    /// 클래스 상세 조회 (GET /api/class/{classId})
+    func getClassDetail(classId: String) async throws -> ClassDetailResponse {
+        let endpoint = Endpoint.classDetail(classId: classId)
+        return try await get(endPoint: endpoint.path, parameters: nil)
+    }
+
     /// 이번 주 눈요기 피드 조회 (GET /api/feed)
     func getFeed() async throws -> FeedResponse {
         guard let token = await getAccessToken() else {

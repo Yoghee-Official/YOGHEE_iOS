@@ -87,11 +87,14 @@ struct CenterDTO: Codable, Equatable {
 
 struct YogaReviewDTO: Codable {
     let reviewId: String
-    let userUuid: String
-    let thumbnail: String
-    let content: String
-    let rating: Double
-    let createdAt: String
+    let userUuid: String?
+    let nickname: String?
+    let userLevel: Int?
+    let profileUrl: String?
+    let thumbnail: String?
+    let content: String?
+    let rating: Double?
+    let createdAt: String?
 }
 
 struct CategoryDTO: Codable, Hashable {
