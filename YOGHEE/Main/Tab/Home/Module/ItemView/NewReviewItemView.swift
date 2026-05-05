@@ -16,7 +16,7 @@ struct NewReviewItemView: View {
         Button(action: onTap) {
             HStack() {
                 // 왼쪽: 썸네일 이미지
-                AsyncImage(url: URL(string: review.thumbnail)) { image in
+                AsyncImage(url: URL(string: review.thumbnail ?? "")) { image in
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -30,19 +30,19 @@ struct NewReviewItemView: View {
                 // 오른쪽: 리뷰 정보 영역
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
-                        Text(review.userUuid)
+                        Text(review.userUuid ?? "")
                             .pretendardFont(.medium, size: 12)
                             .foregroundColor(.Info)
                             .lineLimit(1)
-                        
+
                         Spacer()
-                        
-                        StarRatingView(rating: review.rating)
+
+                        StarRatingView(rating: review.rating ?? 0.0)
                     }
                     .padding(.horizontal, 10)
-                    
+
                     // 하단: 리뷰 내용
-                    Text(review.content)
+                    Text(review.content ?? "")
                         .pretendardFont(.medium, size: 12)
                         .foregroundColor(.black)
                         .padding(.horizontal, 10)

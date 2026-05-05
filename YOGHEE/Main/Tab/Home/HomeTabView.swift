@@ -116,7 +116,7 @@ struct HomeTabView: View {
                 case .notifications:
                     MessageBoxView()
                 case .classDetail(let classId):
-                    Text("클래스 상세: \(classId)")
+                    ClassDetailView(classId: classId)
                 case .reviewDetail(let reviewId):
                     Text("리뷰 상세: \(reviewId)")
                 case .categoryDetail(let categoryId, let categoryName, let categoryType, let categories):
