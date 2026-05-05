@@ -47,10 +47,27 @@ struct ClassDetailView: View {
                         Color.clear
                             .frame(width: screenWidth, height: cardTopOffset)
 
-                        // 디테일 시트 — 이후 모듈별 개발 예정
-                        VStack(spacing: 0) {
-                            ForEach(Array(rainbowColors.enumerated()), id: \.offset) { _, color in
-                                color.frame(height: 300)
+                        // 디테일 시트
+                        VStack(spacing: 24) {
+                            // 개발된 모듈
+                            if let detail = container.state.detail {
+                                ClassInfoModuleView(
+                                    detail: detail,
+                                    onReviewTap: {
+                                        // TODO: 리뷰 모듈 추가 시 앵커링 이동 연결
+                                    },
+                                    onFeatureTap: { _ in
+                                        // 디스크립션상 반응 없음
+                                    }
+                                )
+                                .padding(.top, 24)
+                            }
+
+                            // 임시 무지개뷰 (모듈 개발 완료 시 삭제 예정)
+                            VStack(spacing: 0) {
+                                ForEach(Array(rainbowColors.enumerated()), id: \.offset) { _, color in
+                                    color.frame(height: 300)
+                                }
                             }
                         }
                         .frame(width: screenWidth)
