@@ -61,6 +61,8 @@ struct ClassDetailView: View {
                                     }
                                 )
                                 .padding(.top, 24)
+
+                                InstructorClassModuleView(detail: detail)
                             }
 
                             // 임시 무지개뷰 (모듈 개발 완료 시 삭제 예정)
