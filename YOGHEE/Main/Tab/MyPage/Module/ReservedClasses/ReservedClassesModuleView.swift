@@ -27,7 +27,7 @@ struct ReservedClassesModuleView: View {
         VStack(spacing: 0) {
             // 달력 뷰
             CalendarView(
-                reservedClasses: classes,
+                reservedDates: Set(classes.map { $0.day }),
                 selectedDate: $selectedDate,
                 userRole: userRole
             )
@@ -55,21 +55,21 @@ struct ReservedClassesModuleView: View {
 
 // MARK: - Calendar View
 struct CalendarView: View {
-    let reservedClasses: [YogaClassScheduleDTO]
+    let reservedDates: Set<String>
     @Binding var selectedDate: String
     var userRole: UserRole? = nil  // 사용자 역할
-    
+
     @State private var currentDate = Date()
-    
+
     private let calendar = Calendar.current
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter
     }()
-    
+
     private let weekDays = ["월", "화", "수", "목", "금", "토", "일"]
-    
+
     var body: some View {
         VStack(spacing: 0) {
             // 헤더 (년도, 월, 화살표)
@@ -79,16 +79,16 @@ struct CalendarView: View {
                 onNextMonth: moveToNextMonth
             )
             .padding(.bottom, 12.ratio())
-            
-            
+
+
             VStack(spacing: 16.ratio()) {
                 // 요일 헤더
                 WeekdayHeaderView()
-                
+
                 // 날짜 그리드
                 CalendarGridView(
                     currentDate: currentDate,
-                    reservedDates: getReservedDates(),
+                    reservedDates: reservedDates,
                     selectedDate: $selectedDate,
                     userRole: userRole
                 )
@@ -101,19 +101,19 @@ struct CalendarView: View {
         .background(Color.Background)
         .cornerRadius(8.ratio())
     }
-    
+
     private func moveToPreviousMonth() {
         guard let newDate = calendar.date(byAdding: .month, value: -1, to: currentDate),
               isWithinOneYear(newDate) else { return }
         currentDate = newDate
     }
-    
+
     private func moveToNextMonth() {
         guard let newDate = calendar.date(byAdding: .month, value: 1, to: currentDate),
               isWithinOneYear(newDate) else { return }
         currentDate = newDate
     }
-    
+
     private func isWithinOneYear(_ date: Date) -> Bool {
         let today = Date()
         guard let oneYearAgo = calendar.date(byAdding: .year, value: -1, to: today),
@@ -121,15 +121,6 @@ struct CalendarView: View {
             return false
         }
         return date >= oneYearAgo && date <= oneYearLater
-    }
-    
-    private func getReservedDates() -> Set<String> {
-        var dates = Set<String>()
-        for classItem in reservedClasses {
-            // day 필드가 "yyyy-MM-dd" 형식이므로 그대로 사용
-            dates.insert(classItem.day)
-        }
-        return dates
     }
 }
 

@@ -65,6 +65,13 @@ struct ClassDetailView: View {
                                 InstructorClassModuleView(detail: detail)
 
                                 FacilitiesModuleView(detail: detail)
+
+                                ScheduleModuleView(
+                                    detail: detail,
+                                    onScheduleTap: { _ in
+                                        // TODO: 일정 탭 시 동작 (예: 예약 화면)
+                                    }
+                                )
                             }
 
                             // 임시 무지개뷰 (모듈 개발 완료 시 삭제 예정)

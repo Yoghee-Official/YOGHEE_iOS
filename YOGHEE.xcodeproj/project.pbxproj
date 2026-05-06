@@ -93,6 +93,7 @@
 		52D6F3E52FA9886600EC9BE8 /* ClassInfoModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E42FA9886600EC9BE8 /* ClassInfoModuleView.swift */; };
 		52D6F3E72FA9886600EC9BE8 /* InstructorClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */; };
 		52D6F3E92FA9886600EC9BE8 /* FacilitiesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */; };
+		52D6F3EB2FA9886600EC9BE8 /* ScheduleModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3EA2FA9886600EC9BE8 /* ScheduleModuleView.swift */; };
 		52F987A02F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */; };
 		52F987A42F4D07E800C905D1 /* ClassTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */; };
 		52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */; };
@@ -199,6 +200,7 @@
 		52D6F3E42FA9886600EC9BE8 /* ClassInfoModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassInfoModuleView.swift; sourceTree = "<group>"; };
 		52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructorClassModuleView.swift; sourceTree = "<group>"; };
 		52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacilitiesModuleView.swift; sourceTree = "<group>"; };
+		52D6F3EA2FA9886600EC9BE8 /* ScheduleModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModuleView.swift; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassExplanationRegisterView.swift; sourceTree = "<group>"; };
 		52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
@@ -631,6 +633,7 @@
 				52D6F3E42FA9886600EC9BE8 /* ClassInfoModuleView.swift */,
 				52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */,
 				52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */,
+				52D6F3EA2FA9886600EC9BE8 /* ScheduleModuleView.swift */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -890,6 +893,7 @@
 				52D6F3E52FA9886600EC9BE8 /* ClassInfoModuleView.swift in Sources */,
 				52D6F3E72FA9886600EC9BE8 /* InstructorClassModuleView.swift in Sources */,
 				52D6F3E92FA9886600EC9BE8 /* FacilitiesModuleView.swift in Sources */,
+				52D6F3EB2FA9886600EC9BE8 /* ScheduleModuleView.swift in Sources */,
 				52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */,
 				522CE60A2F12A6BF0063FDF5 /* AuthModels.swift in Sources */,
 				52F987AC2F4D07EC00C905D1 /* ClassRegisterModels.swift in Sources */,
