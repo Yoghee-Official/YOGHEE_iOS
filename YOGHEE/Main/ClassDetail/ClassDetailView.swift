@@ -74,6 +74,16 @@ struct ClassDetailView: View {
                                 )
 
                                 LocationModuleView(detail: detail)
+
+                                ReviewModuleView(
+                                    detail: detail,
+                                    onShowAll: {
+                                        print("리뷰 전체보기 탭 - classId: \(detail.classId)")
+                                    },
+                                    onItemTap: { reviewId in
+                                        print("리뷰 아이템 탭 - reviewId: \(reviewId)")
+                                    }
+                                )
                             }
 
                             // 임시 무지개뷰 (모듈 개발 완료 시 삭제 예정)
