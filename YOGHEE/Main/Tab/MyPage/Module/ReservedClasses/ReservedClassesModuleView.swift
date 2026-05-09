@@ -228,9 +228,9 @@ struct CalendarGridView: View {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        // 이전 달의 날짜들 (빈 공간)
-        for _ in 1..<firstWeekday {
-            days.append(CalendarDay(day: 0, dateString: "", date: Date(), isCurrentMonth: false, isReserved: false))
+        // 이전 달의 날짜들 (빈 공간) — 음수 기준 시각으로 ID 충돌 방지
+        for i in 1..<firstWeekday {
+            days.append(CalendarDay(day: 0, dateString: "", date: Date(timeIntervalSinceReferenceDate: Double(-i)), isCurrentMonth: false, isReserved: false))
         }
         
         // 현재 달의 날짜들

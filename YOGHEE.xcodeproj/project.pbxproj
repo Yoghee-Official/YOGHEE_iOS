@@ -92,8 +92,10 @@
 		52D6F3E22FA79B5D00EC9BE8 /* ClassDetailContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3DF2FA79B5D00EC9BE8 /* ClassDetailContainer.swift */; };
 		52D6F3E52FA9886600EC9BE8 /* ClassInfoModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E42FA9886600EC9BE8 /* ClassInfoModuleView.swift */; };
 		52D6F3E72FA9886600EC9BE8 /* InstructorClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */; };
+		52D6F3E82FAB768000EC9BE8 /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6F3E72FAB768000EC9BE8 /* KakaoMapsSDK-SPM */; };
 		52D6F3E92FA9886600EC9BE8 /* FacilitiesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */; };
 		52D6F3EB2FA9886600EC9BE8 /* ScheduleModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3EA2FA9886600EC9BE8 /* ScheduleModuleView.swift */; };
+		52D6F3EC2FA9886600EC9BE8 /* LocationModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3ED2FA9886600EC9BE8 /* LocationModuleView.swift */; };
 		52F987A02F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */; };
 		52F987A42F4D07E800C905D1 /* ClassTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */; };
 		52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987A62F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift */; };
@@ -201,6 +203,7 @@
 		52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructorClassModuleView.swift; sourceTree = "<group>"; };
 		52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacilitiesModuleView.swift; sourceTree = "<group>"; };
 		52D6F3EA2FA9886600EC9BE8 /* ScheduleModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleModuleView.swift; sourceTree = "<group>"; };
+		52D6F3ED2FA9886600EC9BE8 /* LocationModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationModuleView.swift; sourceTree = "<group>"; };
 		52F308812E3F4CD10066ED1B /* YOGHEE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YOGHEE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52F9879F2F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassExplanationRegisterView.swift; sourceTree = "<group>"; };
 		52F987A32F4D07E800C905D1 /* ClassTypeRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassTypeRegisterView.swift; sourceTree = "<group>"; };
@@ -231,6 +234,7 @@
 				52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */,
 				52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */,
 				52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */,
+				52D6F3E82FAB768000EC9BE8 /* KakaoMapsSDK-SPM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,6 +638,7 @@
 				52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */,
 				52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */,
 				52D6F3EA2FA9886600EC9BE8 /* ScheduleModuleView.swift */,
+				52D6F3ED2FA9886600EC9BE8 /* LocationModuleView.swift */,
 			);
 			path = Module;
 			sourceTree = "<group>";
@@ -760,6 +765,7 @@
 				52D6B92B2E50DEBF00F60E39 /* KakaoSDK */,
 				52D6B92E2E50E27B00F60E39 /* Alamofire */,
 				52A174602EF7F11D00208298 /* SwiftUIIntrospect */,
+				52D6F3E72FAB768000EC9BE8 /* KakaoMapsSDK-SPM */,
 			);
 			productName = YOGHEE;
 			productReference = 52F308812E3F4CD10066ED1B /* YOGHEE.app */;
@@ -793,6 +799,7 @@
 				52D6B92A2E50DEBF00F60E39 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				52D6B92D2E50E27B00F60E39 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				52A1745F2EF7F11D00208298 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+				52D6F3E62FAB768000EC9BE8 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 52F308822E3F4CD10066ED1B /* Products */;
@@ -894,6 +901,7 @@
 				52D6F3E72FA9886600EC9BE8 /* InstructorClassModuleView.swift in Sources */,
 				52D6F3E92FA9886600EC9BE8 /* FacilitiesModuleView.swift in Sources */,
 				52D6F3EB2FA9886600EC9BE8 /* ScheduleModuleView.swift in Sources */,
+				52D6F3EC2FA9886600EC9BE8 /* LocationModuleView.swift in Sources */,
 				52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */,
 				522CE60A2F12A6BF0063FDF5 /* AuthModels.swift in Sources */,
 				52F987AC2F4D07EC00C905D1 /* ClassRegisterModels.swift in Sources */,
@@ -1157,6 +1165,14 @@
 				minimumVersion = 5.10.2;
 			};
 		};
+		52D6F3E62FAB768000EC9BE8 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.12.10;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1174,6 +1190,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52D6B92D2E50E27B00F60E39 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
+		};
+		52D6F3E72FAB768000EC9BE8 /* KakaoMapsSDK-SPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 52D6F3E62FAB768000EC9BE8 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
+			productName = "KakaoMapsSDK-SPM";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

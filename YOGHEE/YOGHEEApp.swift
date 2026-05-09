@@ -8,6 +8,7 @@
 import SwiftUI
 import KakaoSDKCommon
 import KakaoSDKAuth
+import KakaoMapsSDK
 
 @main
 struct YOGHEEApp: App {
@@ -17,6 +18,7 @@ struct YOGHEEApp: App {
             return
         }
         KakaoSDK.initSDK(appKey: appKey)
+        SDKInitializer.InitSDK(appKey: appKey)
     }
     
     var body: some Scene {

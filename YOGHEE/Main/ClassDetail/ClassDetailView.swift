@@ -72,6 +72,8 @@ struct ClassDetailView: View {
                                         // TODO: 일정 탭 시 동작 (예: 예약 화면)
                                     }
                                 )
+
+                                LocationModuleView(detail: detail)
                             }
 
                             // 임시 무지개뷰 (모듈 개발 완료 시 삭제 예정)
