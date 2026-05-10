@@ -13,9 +13,11 @@ struct InstructorClassModuleView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 32) {
-            // 4a 지도자 카드
-            instructorCard
-                .padding(.horizontal, 16)
+            // 4a 지도자 카드 (하루수련 전용 — masterInfo 있을 때만 노출)
+            if detail.masterInfo != nil {
+                instructorCard
+                    .padding(.horizontal, 16)
+            }
 
             // 4b 수련 설명 + 4c 영역들
             VStack(alignment: .leading, spacing: 32) {
@@ -23,12 +25,19 @@ struct InstructorClassModuleView: View {
                     classDescriptionSection(description: description)
                 }
 
-                yogaTypeSection
-                practiceMethodSection
-                targetAudienceSection
+                if !detail.trainingTypes.isEmpty {
+                    yogaTypeSection
+                }
+                if !detail.categories.isEmpty {
+                    practiceMethodSection
+                }
+                if !detail.trainingTargets.isEmpty {
+                    targetAudienceSection
+                }
             }
             .padding(.horizontal, 16)
         }
+        .frame(maxWidth: .infinity)
     }
 
     // MARK: - 4a 지도자 카드
@@ -49,15 +58,13 @@ struct InstructorClassModuleView: View {
 
     private var instructorFront: some View {
         ZStack(alignment: .bottomLeading) {
-            instructorImage
-
             VStack(alignment: .leading, spacing: 5) {
-                Text(InstructorDummy.name)
+                Text(detail.masterInfo?.nickname ?? "")
                     .pretendardFont(.bold, size: 12)
                     .foregroundColor(.SandBeige)
                     .lineLimit(1)
 
-                Text(InstructorDummy.frontIntro)
+                Text(detail.masterInfo?.introduction ?? "")
                     .pretendardFont(.bold, size: 20)
                     .foregroundColor(.SandBeige)
                     .lineLimit(2)
@@ -67,7 +74,8 @@ struct InstructorClassModuleView: View {
             .padding(.leading, 20)
             .padding(.bottom, 20)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+        .background { instructorImage }
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(alignment: .bottomTrailing) {
             flipButton
@@ -76,14 +84,11 @@ struct InstructorClassModuleView: View {
 
     private var instructorBack: some View {
         ZStack(alignment: .topLeading) {
-            instructorImage
-                .blur(radius: 20)
-
             Color.black.opacity(0.5)
 
             VStack(alignment: .leading, spacing: 12) {
-                instructorBackRow(label: "대표 자격증명", value: InstructorDummy.certification, labelSpacing: 8)
-                instructorBackRow(label: "총 요가 경력", value: InstructorDummy.experience, labelSpacing: 15)
+                instructorBackRow(label: "대표 자격증명", value: detail.masterInfo?.certificate ?? "-", labelSpacing: 8)
+                instructorBackRow(label: "총 요가 경력", value: formattedCareer, labelSpacing: 15)
 
                 HStack(alignment: .top, spacing: 28) {
                     Text("소개말")
@@ -92,7 +97,7 @@ struct InstructorClassModuleView: View {
                         .underline()
                         .frame(width: 43, alignment: .leading)
 
-                    Text(InstructorDummy.bio)
+                    Text(detail.masterInfo?.introduction ?? "")
                         .pretendardFont(.medium, size: 12)
                         .foregroundColor(.SandBeige)
                         .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -102,6 +107,7 @@ struct InstructorClassModuleView: View {
             .padding(.vertical, 22)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background { instructorImage.blur(radius: 20) }
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(alignment: .bottomTrailing) {
             flipButton
@@ -123,7 +129,8 @@ struct InstructorClassModuleView: View {
 
     private var instructorImage: some View {
         Group {
-            if let urlString = detail.images.first, let url = URL(string: urlString) {
+            let imageUrl = detail.masterInfo?.profileImage ?? detail.images.first
+            if let urlString = imageUrl, let url = URL(string: urlString) {
                 AsyncImage(url: url) { image in
                     image.resizable().aspectRatio(contentMode: .fill)
                 } placeholder: {
@@ -133,6 +140,13 @@ struct InstructorClassModuleView: View {
                 Color.LandBrown
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+    }
+
+    private var formattedCareer: String {
+        guard let career = detail.masterInfo?.career else { return "-" }
+        return "\(career)년"
     }
 
     private var flipButton: some View {
@@ -179,26 +193,28 @@ struct InstructorClassModuleView: View {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeader("아래 요소가 함께 녹아있습니다.")
 
-            HStack(spacing: 8) {
-                ForEach(InstructorDummy.yogaTypes, id: \.self) { name in
-                    YogaTypeCardView(name: name)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(detail.trainingTypes, id: \.categoryId) { type in
+                        YogaTypeCardView(name: type.name)
+                    }
                 }
+                .padding(.horizontal, 8)
             }
-            .padding(.horizontal, 8)
         }
     }
 
     private var practiceMethodSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeader("수련 방식")
-            chipRow(items: InstructorDummy.practiceMethods)
+            chipRow(items: detail.categories.map(\.name))
         }
     }
 
     private var targetAudienceSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeader("수련 대상")
-            chipRow(items: InstructorDummy.targetAudiences)
+            chipRow(items: detail.trainingTargets.map(\.name))
         }
     }
 
@@ -211,12 +227,14 @@ struct InstructorClassModuleView: View {
     }
 
     private func chipRow(items: [String]) -> some View {
-        HStack(spacing: 10) {
-            ForEach(items, id: \.self) { item in
-                PracticeChipView(name: item)
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                ForEach(items, id: \.self) { item in
+                    PracticeChipView(name: item)
+                }
             }
+            .padding(.horizontal, 12)
         }
-        .padding(.horizontal, 12)
     }
 }
 
@@ -267,16 +285,3 @@ private struct PracticeChipView: View {
     }
 }
 
-// MARK: - 더미 데이터 (피그마 예시, 서버 필드 확정 후 교체)
-
-private enum InstructorDummy {
-    static let name = "박요기 지도자님 🚧"
-    static let frontIntro = "일이삼사오육칠팔구십일이삼사오육칠팔구십. 🚧"
-    static let certification = "요가협회 TTC 2회 어쩌고 저쩌고 🚧"
-    static let experience = "18년 🚧"
-    static let bio = "안녕하세요. 18년전 회사가 드럽고 치사해서 때려치지도 못하고 시작하게된 요가인데 어쩌다 센세가 된건지는 저도 아리마셍입니다..안녕하세요. 18년전 회사가 드럽고 치사해서 때려치지도 못하고 시작하게된 요가인데 어쩌다 센세가 된건지는 저도 아리마셍입니다.. 🚧"
-
-    static let yogaTypes: [String] = ["플라잉요가 🚧", "쉬바난다 🚧"]
-    static let practiceMethods: [String] = ["이색요가 🚧", "야외 🚧"]
-    static let targetAudiences: [String] = ["파트너 요가 🚧", "임산부 요가 🚧"]
-}
