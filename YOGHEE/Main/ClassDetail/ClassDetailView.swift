@@ -13,11 +13,6 @@ struct ClassDetailView: View {
 
     @State private var scrollOffsetY: CGFloat = 0
 
-    private let rainbowColors: [Color] = [
-        .red, .orange, .yellow, .green, .blue, .indigo, .purple,
-        .red, .orange, .yellow, .green, .blue, .indigo, .purple
-    ]
-
     var body: some View {
         // ignoresSafeArea 없이 읽어야 geo.safeAreaInsets.top이 실제 값을 반환함
         GeometryReader { geo in
@@ -32,10 +27,6 @@ struct ClassDetailView: View {
             let showHeader = scrollOffsetY >= headerThreshold
 
             ZStack(alignment: .top) {
-                // 0. 배경 fallback (이미지 기본색과 동일)
-                Color.gray.opacity(0.2)
-                    .ignoresSafeArea(edges: .all)
-
                 // 1. 배경 이미지 — safeArea 까지 확장
                 backgroundImageView
                     .frame(width: screenWidth, height: imageHeight)
@@ -85,13 +76,6 @@ struct ClassDetailView: View {
                                     }
                                 )
                             }
-
-                            // 임시 무지개뷰 (모듈 개발 완료 시 삭제 예정)
-                            VStack(spacing: 0) {
-                                ForEach(Array(rainbowColors.enumerated()), id: \.offset) { _, color in
-                                    color.frame(height: 300)
-                                }
-                            }
                         }
                         .frame(width: screenWidth)
                         .frame(minHeight: geo.size.height)
@@ -104,6 +88,9 @@ struct ClassDetailView: View {
                         ))
                     }
                     .frame(width: screenWidth)
+                }
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    Color.clear.frame(height: 92-16)
                 }
                 .onScrollGeometryChange(for: CGFloat.self) { geometry in
                     geometry.contentOffset.y
@@ -134,6 +121,21 @@ struct ClassDetailView: View {
                     )
 
                     Spacer()
+                }
+
+            }
+            // 4. 가격/예약 고정 하단바 (z축 최상단) — overlay 사용: ZStack 크기 계산에 영향 없음
+            .overlay(alignment: .bottom) {
+                if let detail = container.state.detail {
+                    PriceReservationBarView(
+                        detail: detail,
+                        onInquiry: {
+                            print("문의하기 탭 - classId: \(detail.classId)")
+                        },
+                        onReservation: {
+                            print("예약하기 탭 - classId: \(detail.classId)")
+                        }
+                    )
                 }
             }
         }

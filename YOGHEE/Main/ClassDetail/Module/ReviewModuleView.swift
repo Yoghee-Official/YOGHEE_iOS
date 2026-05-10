@@ -14,43 +14,47 @@ struct ReviewModuleView: View {
     private var reviews: [YogaReviewDTO] { detail.recentReviews }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            sectionDivider
+        VStack(alignment: .leading, spacing: 0) {
+            // 8a~8d 메인 콘텐츠
+            VStack(alignment: .leading, spacing: 16) {
+                sectionDivider
 
-            // 8a 평점 pill(좌) + 8b 리뷰 개수(우)
-            HStack(alignment: .center) {
-                reviewPillLabel
-                Spacer()
-                if !reviews.isEmpty {
-                    Text(reviewCountText)
-                        .pretendardFont(.medium, size: 12)
-                        .foregroundColor(.DarkBlack)
-                        .underline()
-                }
-            }
-
-            // 8c 리뷰 유닛 (가로 스크롤)
-            if reviews.isEmpty {
-                emptyView
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(reviews, id: \.reviewId) { review in
-                            ReviewItemCard(
-                                review: review,
-                                onTap: { onItemTap(review.reviewId) }
-                            )
-                        }
+                // 8a 평점 pill(좌) + 8b 리뷰 개수(우)
+                HStack(alignment: .center) {
+                    reviewPillLabel
+                    Spacer()
+                    if !reviews.isEmpty {
+                        Text(reviewCountText)
+                            .pretendardFont(.medium, size: 12)
+                            .foregroundColor(.DarkBlack)
+                            .underline()
                     }
-                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, -16)
-            }
 
-            // 8d 전체보기
-            showAllButton
+                // 8c 리뷰 유닛 (가로 스크롤)
+                if reviews.isEmpty {
+                    emptyView
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 12) {
+                            ForEach(reviews, id: \.reviewId) { review in
+                                ReviewItemCard(
+                                    review: review,
+                                    onTap: { onItemTap(review.reviewId) }
+                                )
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                    }
+                    .padding(.horizontal, -16)
+                }
+
+                // 8d 전체보기
+                showAllButton
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 40)
         }
-        .padding(.horizontal, 16)
     }
 
     // MARK: - 8a 헤더 pill: "리뷰 ★4.0"
