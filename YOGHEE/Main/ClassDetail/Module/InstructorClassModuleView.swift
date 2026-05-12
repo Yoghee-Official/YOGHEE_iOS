@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// 4a 지도자 소개(앞/뒷면) / 4b 수련 설명 / 4c 요가 타입·수련 방식·수련 대상 모듈
+/// 4a 지도자/수련원 소개(앞/뒷면) / 4b 수련 설명 / 4c 요가 타입·수련 방식·수련 대상 모듈
 struct InstructorClassModuleView: View {
     let detail: YogaClassDetailDTO
 
@@ -13,9 +13,12 @@ struct InstructorClassModuleView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 32) {
-            // 4a 지도자 카드 (하루수련 전용 — masterInfo 있을 때만 노출)
+            // 4a: 하루수련 → 지도자 카드 / 정규수련 → 수련원 카드
             if detail.masterInfo != nil {
                 instructorCard
+                    .padding(.horizontal, 16)
+            } else if let center = detail.center {
+                centerCard(center: center)
                     .padding(.horizontal, 16)
             }
 
@@ -163,6 +166,86 @@ struct InstructorClassModuleView: View {
             .frame(width: 56, height: 56)
         }
         .buttonStyle(.plain)
+    }
+
+    // MARK: - 4a 수련원 카드 (정규수련)
+
+    private func centerCard(center: CenterInfo) -> some View {
+        ZStack {
+            centerFront(center: center)
+                .opacity(isFlipped ? 0 : 1)
+            centerBack(center: center)
+                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+                .opacity(isFlipped ? 1 : 0)
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 303)
+        .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0))
+        .animation(.easeInOut(duration: 0.5), value: isFlipped)
+    }
+
+    private func centerFront(center: CenterInfo) -> some View {
+        ZStack(alignment: .bottomLeading) {
+            VStack(alignment: .leading, spacing: 5) {
+                Text(center.name)
+                    .pretendardFont(.bold, size: 20)
+                    .foregroundColor(.SandBeige)
+                    .lineLimit(2)
+                    .truncationMode(.tail)
+                    .frame(width: 183, alignment: .leading)
+            }
+            .padding(.leading, 20)
+            .padding(.bottom, 20)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+        .background { centerImage(thumbnail: center.thumbnail) }
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(alignment: .bottomTrailing) {
+            flipButton
+        }
+    }
+
+    private func centerBack(center: CenterInfo) -> some View {
+        ZStack(alignment: .topLeading) {
+            Color.black.opacity(0.5)
+
+            HStack(alignment: .top, spacing: 28) {
+                Text("소개말")
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.SandBeige)
+                    .underline()
+                    .frame(width: 43, alignment: .leading)
+
+                Text(center.description ?? "")
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.SandBeige)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 22)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background { centerImage(thumbnail: center.thumbnail).blur(radius: 20) }
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(alignment: .bottomTrailing) {
+            flipButton
+        }
+    }
+
+    private func centerImage(thumbnail: String?) -> some View {
+        Group {
+            if let urlString = thumbnail, let url = URL(string: urlString) {
+                AsyncImage(url: url) { image in
+                    image.resizable().aspectRatio(contentMode: .fill)
+                } placeholder: {
+                    Color.LandBrown
+                }
+            } else {
+                Color.LandBrown
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
     }
 
     // MARK: - 4b 수련 설명

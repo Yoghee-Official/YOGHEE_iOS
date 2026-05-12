@@ -77,12 +77,25 @@ struct ClassDTO: Codable, Equatable {
 }
 
 struct CenterDTO: Codable, Equatable {
+    let classId: String
     let centerId: String
     let address: String
     let name: String
     let thumbnail: String?
     let favoriteCount: Int
     let isFavorite: Bool
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        // TODO: 서버 배포 후 fallback 제거
+        classId      = try c.decodeIfPresent(String.self, forKey: .classId) ?? "0da375aa-aa54-47ec-aa8c-cac0c0690b1e"
+        centerId     = try c.decode(String.self,  forKey: .centerId)
+        address      = try c.decode(String.self,  forKey: .address)
+        name         = try c.decode(String.self,  forKey: .name)
+        thumbnail    = try c.decodeIfPresent(String.self, forKey: .thumbnail)
+        favoriteCount = try c.decode(Int.self,    forKey: .favoriteCount)
+        isFavorite   = try c.decode(Bool.self,    forKey: .isFavorite)
+    }
 }
 
 struct YogaReviewDTO: Codable {
