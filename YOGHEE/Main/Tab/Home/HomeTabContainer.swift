@@ -79,7 +79,8 @@ class HomeTabContainer: ObservableObject {
                     categories: items
                 )
             }
-        case "todayClass", "imageBanner", "interestedClass", "top10Class":
+        case "todayClass", "imageBanner", "interestedClass", "top10Class",
+             "interestedCenter", "top10Center":
             state.navigationDestination = .classDetail(itemId)
         case "newReview":
             state.navigationDestination = .reviewDetail(itemId)

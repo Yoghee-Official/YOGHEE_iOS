@@ -24,7 +24,7 @@ struct TopTenCenterModuleView: View {
                     ForEach(items.indices, id: \.self) { index in
                         YogaCenterItemView(
                             yogaCenter: items[index],
-                            onTap: { onItemTap(items[index].centerId) }
+                            onTap: { onItemTap(items[index].classId) }
                         )
                         .frame(width: cardWidth, height: cardHeight)
                     }
