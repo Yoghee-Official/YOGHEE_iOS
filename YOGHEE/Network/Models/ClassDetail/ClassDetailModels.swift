@@ -159,3 +159,18 @@ struct RefundInfo: Codable {
     let hoursBeforeClass: Int
     let refundRate: Int
 }
+
+// MARK: - Review List
+struct ReviewPageResponse: Codable {
+    let code: Int
+    let status: String
+    let data: ReviewPageDTO
+}
+
+struct ReviewPageDTO: Codable {
+    let reviews: [YogaReviewDTO]
+    let page: Int
+    let totalPages: Int
+    let totalCount: Int
+    let hasNext: Bool
+}

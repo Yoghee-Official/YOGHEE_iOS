@@ -78,6 +78,7 @@ class APIService {
         case classRegister
         case feed
         case classDetail(classId: String)
+        case reviews(classId: String)
 
         var path: String {
             switch self {
@@ -110,6 +111,8 @@ class APIService {
                 return "/api/feed"
             case .classDetail(let classId):
                 return "/api/class/\(classId)"
+            case .reviews(let classId):
+                return "/api/review/\(classId)"
             }
         }
         
@@ -119,7 +122,7 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
-            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail:
+            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
                 return nil
             }
         }
@@ -261,6 +264,12 @@ class APIService {
         }
         let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
         return try await get(endPoint: Endpoint.feed.path, parameters: nil, headers: headers)
+    }
+
+    /// 리뷰 목록 조회 (GET /api/review/{classId}?page=&sort=)
+    func getReviews(classId: String, page: Int, sort: String) async throws -> ReviewPageResponse {
+        let endpoint = Endpoint.reviews(classId: classId)
+        return try await get(endPoint: endpoint.path, parameters: ["page": page, "sort": sort])
     }
 
     /// 클래스 등록 (POST /api/class)
