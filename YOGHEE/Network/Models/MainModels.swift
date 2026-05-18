@@ -98,7 +98,7 @@ struct CenterDTO: Codable, Equatable {
     }
 }
 
-struct YogaReviewDTO: Codable {
+struct YogaReviewDTO: Codable, Equatable {
     let reviewId: String
     let userUuid: String?
     let nickname: String?

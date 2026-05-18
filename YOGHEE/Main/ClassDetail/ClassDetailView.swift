@@ -12,6 +12,7 @@ struct ClassDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var scrollOffsetY: CGFloat = 0
+    @State private var showReviewList = false
 
     var body: some View {
         // ignoresSafeArea 없이 읽어야 geo.safeAreaInsets.top이 실제 값을 반환함
@@ -69,12 +70,19 @@ struct ClassDetailView: View {
                                 ReviewModuleView(
                                     detail: detail,
                                     onShowAll: {
-                                        print("리뷰 전체보기 탭 - classId: \(detail.classId)")
+                                        showReviewList = true
                                     },
                                     onItemTap: { reviewId in
                                         print("리뷰 아이템 탭 - reviewId: \(reviewId)")
                                     }
                                 )
+                                .navigationDestination(isPresented: $showReviewList) {
+                                    ReviewListView(
+                                        classId: detail.classId,
+                                        initialRating: detail.rating,
+                                        initialReviewCount: detail.reviewCount
+                                    )
+                                }
                             }
                         }
                         .frame(width: screenWidth)
