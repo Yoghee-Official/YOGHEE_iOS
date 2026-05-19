@@ -15,8 +15,8 @@ struct MainBannerModuleView: View {
         Array(items.prefix(5))
     }
     
-    private let cardWidth: CGFloat = 338.ratio()
-    private let cardHeight: CGFloat = 250.ratio()
+    private let cardWidth: CGFloat = 343.ratio()
+    private let cardHeight: CGFloat = 257.ratio()
     
     var body: some View {
         if displayItems.isEmpty {
