@@ -119,13 +119,14 @@ struct ReviewModuleView: View {
 
 // MARK: - 리뷰 카드 (8c)
 
-private struct ReviewItemCard: View {
+struct ReviewItemCard: View {
     let review: YogaReviewDTO
     let onTap: () -> Void
+    var contentLineLimit: Int = 4
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 16) {
                 // 대표 이미지
                 reviewThumbnail
                     .frame(height: 134)
@@ -141,11 +142,12 @@ private struct ReviewItemCard: View {
                         contentRow
                     }
                 }
-                .padding(.top, 16)
                 .padding(.horizontal, 8)
-                .padding(.bottom, 8)
+                .padding(.bottom, 27)
             }
-            .frame(width: 255)
+            .padding(.horizontal, 8)
+            .padding(.top, 8)
+            .frame(width: 255, height: 323, alignment: .top)
             .background(Color.CleanWhite)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             .overlay(
@@ -189,7 +191,7 @@ private struct ReviewItemCard: View {
                     .pretendardFont(.medium, size: 12)
                     .foregroundColor(.DarkBlack)
                     .lineLimit(1)
-                Text("시작 Lv.\(review.userLevel ?? 0)")
+                Text("Lv.\(review.userLevel ?? 0)")
                     .pretendardFont(.regular, size: 10)
                     .foregroundColor(.DarkBlack)
             }
@@ -238,7 +240,7 @@ private struct ReviewItemCard: View {
             Text(review.content ?? "")
                 .pretendardFont(.medium, size: 12)
                 .foregroundColor(.DarkBlack)
-                .lineLimit(4)
+                .lineLimit(contentLineLimit)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if let content = review.content, !content.isEmpty {
