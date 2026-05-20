@@ -148,7 +148,7 @@ struct SectionView: View {
     let onItemTap: (String) -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             if !section.title.isEmpty {
                 HStack {
                     Text(section.title)
