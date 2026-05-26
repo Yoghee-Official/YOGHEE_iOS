@@ -15,15 +15,14 @@ struct SettingsView: View {
             Text("설정")
                 .pretendardFont(.bold, size: 34)
                 .foregroundColor(.primary)
-            
+
             Text("앱 설정 페이지입니다")
                 .pretendardFont(.regular, size: 17)
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.SandBeige)
-        .navigationTitle("설정")
-        .navigationBarTitleDisplayMode(.inline)
+        .customNavigationBar(title: "설정")
     }
 }
 
