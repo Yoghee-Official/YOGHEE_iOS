@@ -6,62 +6,90 @@
 //
 
 import SwiftUI
+import UIKit
+import UserNotifications
 
 // MARK: - Intent
 enum SettingsIntent {
     case loadSettings
-    case togglePushNotification(Bool)
-    case logout
-    case deleteAccount
-    // TODO: 추가 Intent
+    case toggleMarketingNotification(Bool)
+    case openMemberInfo
+    case tapAppPermissionSettings
+    case dismissNotificationPermissionAlert
+    case dismissAppPermissionAlert
+    case openSystemSettings
 }
 
 // MARK: - State
 struct SettingsState: Equatable {
-    var isLoading: Bool = false
-    var errorMessage: String? = nil
-    var isPushNotificationEnabled: Bool = true
-    // TODO: 설정 관련 상태 추가
+    var isMarketingNotificationEnabled: Bool = false
+    var showNotificationPermissionAlert: Bool = false
+    var showAppPermissionAlert: Bool = false
+    var appVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
+    var isLatestVersion: Bool = true
 }
 
 @MainActor
 class SettingsContainer: ObservableObject {
     @Published private(set) var state = SettingsState()
-    
+
     init() {
-        // TODO: 초기화 로직
         loadSettings()
     }
-    
+
     func handleIntent(_ intent: SettingsIntent) {
         switch intent {
         case .loadSettings:
             loadSettings()
-        case .togglePushNotification(let isEnabled):
-            togglePushNotification(isEnabled: isEnabled)
-        case .logout:
-            logout()
-        case .deleteAccount:
-            deleteAccount()
+        case .toggleMarketingNotification(let isEnabled):
+            handleMarketingToggle(isEnabled: isEnabled)
+        case .openMemberInfo:
+            print("👤 [Settings] 회원 정보 관리 클릭 - TODO: MI_MO_1 이동")
+        case .tapAppPermissionSettings:
+            state.showAppPermissionAlert = true
+        case .dismissNotificationPermissionAlert:
+            state.showNotificationPermissionAlert = false
+        case .dismissAppPermissionAlert:
+            state.showAppPermissionAlert = false
+        case .openSystemSettings:
+            openSystemSettings()
         }
     }
-    
-    // MARK: - Private Methods
-    
+
+    // MARK: - Private
+
     private func loadSettings() {
-        // TODO: 설정 로드
+        state.appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
+        // TODO: API로 최신 버전 체크
+        print("🔄 [Settings] loadSettings - 현재 버전: \(state.appVersion), TODO: API로 최신 버전 체크")
     }
-    
-    private func togglePushNotification(isEnabled: Bool) {
-        // TODO: 푸시 알림 설정 변경
-        state.isPushNotificationEnabled = isEnabled
+
+    private func handleMarketingToggle(isEnabled: Bool) {
+        guard isEnabled else {
+            state.isMarketingNotificationEnabled = false
+            return
+        }
+        Task {
+            let center = UNUserNotificationCenter.current()
+            let settings = await center.notificationSettings()
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                let granted = (try? await center.requestAuthorization(options: [.alert, .badge, .sound])) ?? false
+                state.isMarketingNotificationEnabled = granted
+                if !granted { state.showNotificationPermissionAlert = true }
+            case .authorized, .provisional, .ephemeral:
+                state.isMarketingNotificationEnabled = true
+            case .denied:
+                state.showNotificationPermissionAlert = true
+                state.isMarketingNotificationEnabled = false
+            @unknown default:
+                break
+            }
+        }
     }
-    
-    private func logout() {
-        // TODO: 로그아웃 처리
-    }
-    
-    private func deleteAccount() {
-        // TODO: 계정 삭제
+
+    private func openSystemSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
     }
 }
