@@ -234,3 +234,16 @@ enum HomeSection: Identifiable {
         }
     }
 }
+
+// MARK: - App Version Response
+struct AppVersionResponse: Codable {
+    let code: Int
+    let status: String
+    let data: AppVersionData
+}
+
+struct AppVersionData: Codable {
+    let platform: String
+    let latestVersion: String
+    let forceUpdateVersion: String?
+}

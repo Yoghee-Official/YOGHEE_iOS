@@ -79,6 +79,7 @@ class APIService {
         case feed
         case classDetail(classId: String)
         case reviews(classId: String)
+        case appVersion(platform: String)
 
         var path: String {
             switch self {
@@ -113,6 +114,8 @@ class APIService {
                 return "/api/class/\(classId)"
             case .reviews(let classId):
                 return "/api/review/\(classId)"
+            case .appVersion:
+                return "/api/app/version"
             }
         }
         
@@ -122,6 +125,8 @@ class APIService {
                 return ["type": type]
             case .categoryClasses(_, let type):
                 return ["type": type]
+            case .appVersion(let platform):
+                return ["platform": platform]
             case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
                 return nil
             }
@@ -170,6 +175,12 @@ class APIService {
     /// 카테고리 상세 조회 (추후 개발 예정)
     func getCategoryDetail(categoryId: String) async throws -> MainResponse {
         let endpoint = Endpoint.categoryDetail(categoryId: categoryId)
+        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+    }
+
+    /// 앱 버전 정보 조회
+    func getAppVersion(platform: String) async throws -> AppVersionResponse {
+        let endpoint = Endpoint.appVersion(platform: platform)
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     

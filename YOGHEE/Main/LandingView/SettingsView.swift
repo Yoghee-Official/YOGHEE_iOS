@@ -121,7 +121,7 @@ struct SettingsView: View {
                 .pretendardFont(.medium, size: 16)
                 .foregroundColor(.DarkBlack)
             Spacer()
-            if container.state.isLatestVersion {
+            if let latestVersion = container.state.latestVersion, isLatestVersion(container.state.appVersion, latestVersion) {
                 Text("최신 버전 입니다.")
                     .pretendardFont(.regular, size: 14)
                     .foregroundColor(.Info)
@@ -136,6 +136,17 @@ struct SettingsView: View {
         }
         .padding(.horizontal, 16)
         .frame(height: 56)
+    }
+
+    private func isLatestVersion(_ currentVersion: String, _ latestVersion: String) -> Bool {
+        let currentParts = currentVersion.split(separator: ".").compactMap { Int($0) }
+        let latestParts = latestVersion.split(separator: ".").compactMap { Int($0) }
+
+        for (current, latest) in zip(currentParts, latestParts) {
+            if current < latest { return false }
+            if current > latest { return true }
+        }
+        return currentParts.count >= latestParts.count
     }
 
     // MARK: - Common Components
