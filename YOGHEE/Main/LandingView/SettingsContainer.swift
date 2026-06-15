@@ -22,11 +22,12 @@ enum SettingsIntent {
 
 // MARK: - State
 struct SettingsState: Equatable {
+    var appVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
+    var latestVersion: String?
+    var forceUpdateVersion: String?
     var isMarketingNotificationEnabled: Bool = false
     var showNotificationPermissionAlert: Bool = false
     var showAppPermissionAlert: Bool = false
-    var appVersion: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
-    var isLatestVersion: Bool = true
 }
 
 @MainActor
@@ -60,8 +61,17 @@ class SettingsContainer: ObservableObject {
 
     private func loadSettings() {
         state.appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0"
-        // TODO: API로 최신 버전 체크
-        print("🔄 [Settings] loadSettings - 현재 버전: \(state.appVersion), TODO: API로 최신 버전 체크")
+
+        Task {
+            do {
+                let response = try await APIService.shared.getAppVersion(platform: "IOS")
+                state.latestVersion = response.data.latestVersion
+                state.forceUpdateVersion = response.data.forceUpdateVersion
+                print("✅ [Settings] 앱 버전 조회 완료 - 현재: \(state.appVersion), 최신: \(response.data.latestVersion)")
+            } catch {
+                print("❌ [Settings] 앱 버전 조회 실패: \(error)")
+            }
+        }
     }
 
     private func handleMarketingToggle(isEnabled: Bool) {
