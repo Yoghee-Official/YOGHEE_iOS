@@ -24,7 +24,7 @@ struct HomeTabView: View {
                 
                 GeometryReader { scrollGeometry in
                     ScrollView(.vertical, showsIndicators: false) {
-                        LazyVStack(spacing: 20) {
+                        LazyVStack(spacing: 0) {
                             if container.state.isLoading {
                                 ProgressView("데이터 로딩 중...")
                                     .frame(maxWidth: .infinity, minHeight: 200)
@@ -42,13 +42,15 @@ struct HomeTabView: View {
                                 }
                                 .frame(maxWidth: .infinity, minHeight: 200)
                             } else {
-                                ForEach(container.state.sections) { section in
+                                ForEach(Array(container.state.sections.enumerated()), id: \.element.id) { index, section in
                                     SectionView(
                                         section: section,
                                         selectedClassType: container.state.selectedClassType
                                     ) { itemId in
                                         container.handleIntent(.selectItem(itemId, section.id))
                                     }
+                                    .padding(.vertical, sectionInternalPadding(section))
+                                    .padding(.top, sectionTopSpacing(index: index, sections: container.state.sections))
                                 }
                             }
                         }
@@ -182,6 +184,30 @@ struct SectionView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Section Spacing Helpers
+extension HomeTabView {
+    private func sectionInternalPadding(_ section: HomeSection) -> CGFloat {
+        switch section {
+        case .todayClass, .imageBanner: return 8
+        default: return 0
+        }
+    }
+
+    private func sectionTopSpacing(index: Int, sections: [HomeSection]) -> CGFloat {
+        guard index > 0 else { return 0 }
+
+        let currentSection = sections[index]
+        let prevSection = sections[index - 1]
+
+        if case .imageBanner = currentSection { return 0 }
+        if case .imageBanner = prevSection { return 24 }
+
+        let bannerIdx = sections.firstIndex { if case .imageBanner = $0 { return true }; return false }
+        guard let bannerIdx, index > bannerIdx else { return 0 }
+        return 56
     }
 }
 
