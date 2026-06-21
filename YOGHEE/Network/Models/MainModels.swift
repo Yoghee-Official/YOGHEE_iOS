@@ -126,11 +126,11 @@ struct LayoutDTO: Codable {
 enum YogaCategoryHardcoded {
     /// 취향탐색(하루수련)용 카테고리
     static let oneDay: [CategoryDTO] = [
-        CategoryDTO(categoryId: "1", name: "릴렉스"),
-        CategoryDTO(categoryId: "2", name: "파워"),
-        CategoryDTO(categoryId: "3", name: "초심자"),
-        CategoryDTO(categoryId: "4", name: "이색요가"),
-        CategoryDTO(categoryId: "5", name: "전통 요가")
+        CategoryDTO(categoryId: "1", name: "이색요가"),
+        CategoryDTO(categoryId: "2", name: "릴렉스"),
+        CategoryDTO(categoryId: "3", name: "파워"),
+        CategoryDTO(categoryId: "4", name: "플로우"),
+        CategoryDTO(categoryId: "5", name: "전통요가")
     ]
     /// 위치탐색(정규수련)용 카테고리
     static let regular: [CategoryDTO] = [
