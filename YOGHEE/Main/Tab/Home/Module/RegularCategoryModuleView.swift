@@ -33,7 +33,7 @@ struct RegularCategoryModuleView: View {
                         CategoryItemView(
                             category: items[index],
                             isFirst: index == 0,
-                            isWide: false,
+                            size: .normal,
                             onTap: { onItemTap(items[index].categoryId) }
                         )
                     }

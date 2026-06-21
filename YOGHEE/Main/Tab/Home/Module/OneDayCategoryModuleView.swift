@@ -10,44 +10,44 @@ import SwiftUI
 struct OneDayCategoryModuleView: View {
     let items: [CategoryDTO]
     let onItemTap: (String) -> Void
-    
+
+    // items[0] → large 카드 (OnedayCategory1)
+    // items[1~4] → 2x2 그리드 (OnedayCategory2~5)
+    private var featuredItem: CategoryDTO? { items.first }
+    private var gridItems: [CategoryDTO] { Array(items.dropFirst()) }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                ForEach(0..<min(3, items.count), id: \.self) { index in
+        HStack(alignment: .center, spacing: 6) {
+            if let featured = featuredItem {
+                CategoryItemView(
+                    category: featured,
+                    isFirst: true,
+                    size: .large,
+                    backgroundImageName: "OnedayCategory1",
+                    onTap: { onItemTap(featured.categoryId) }
+                )
+            }
+
+            LazyVGrid(
+                columns: [
+                    GridItem(.fixed(93), spacing: 6),
+                    GridItem(.fixed(93))
+                ],
+                spacing: 4
+            ) {
+                ForEach(gridItems.indices, id: \.self) { index in
                     CategoryItemView(
-                        category: items[index],
+                        category: gridItems[index],
                         isFirst: false,
-                        isWide: false,
-                        onTap: { onItemTap(items[index].categoryId) }
+                        size: .small,
+                        backgroundImageName: "OnedayCategory\(index + 2)",
+                        onTap: { onItemTap(gridItems[index].categoryId) }
                     )
                 }
             }
-            
-            if items.count > 3 {
-                HStack(spacing: 8) {
-                    CategoryItemView(
-                        category: items[3],
-                        isFirst: false,
-                        isWide: true,
-                        onTap: { onItemTap(items[3].categoryId) }
-                    )
-                    
-                    if items.count > 4 {
-                        ForEach(4..<items.count, id: \.self) { index in
-                            CategoryItemView(
-                                category: items[index],
-                                isFirst: false,
-                                isWide: false,
-                                onTap: { onItemTap(items[index].categoryId) }
-                            )
-                        }
-                    }
-                }
-            }
+            .frame(width: 192)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
     }
 }
 
