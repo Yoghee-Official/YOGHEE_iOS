@@ -32,7 +32,6 @@ struct RegularCategoryModuleView: View {
                     ForEach(items.indices, id: \.self) { index in
                         CategoryItemView(
                             category: items[index],
-                            isFirst: index == 0,
                             size: .normal,
                             onTap: { onItemTap(items[index].categoryId) }
                         )

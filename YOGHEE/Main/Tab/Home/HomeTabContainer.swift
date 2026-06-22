@@ -19,7 +19,7 @@ enum HomeIntent {
 // MARK: - State
 struct HomeState: Equatable {
     var sections: [HomeSection] = []
-    var selectedClassType: ClassType = .regular
+    var selectedClassType: ClassType = .oneDay
     var isLoading: Bool = false
     var errorMessage: String?
     var navigationDestination: NavigationDestination?

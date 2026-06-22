@@ -33,7 +33,6 @@ enum CategoryItemSize: Equatable {
 
 struct CategoryItemView: View {
     let category: CategoryDTO
-    let isFirst: Bool
     let size: CategoryItemSize
     var backgroundImageName: String? = nil
     let onTap: () -> Void
@@ -53,12 +52,6 @@ struct CategoryItemView: View {
     private var backgroundLayer: some View {
         if let imageName = backgroundImageName {
             Image(imageName)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: size.width, height: size.height)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-        } else if isFirst {
-            Image(size == .large ? "OnedayCategory1" : "CategoryBackgroundFirst")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: size.width, height: size.height)
@@ -97,18 +90,18 @@ struct CategoryItemView: View {
     HStack {
         CategoryItemView(
             category: CategoryDTO(categoryId: "4", name: "이색요가"),
-            isFirst: true,
             size: .large,
+            backgroundImageName: "OnedayCategory1",
             onTap: {}
         )
         VStack(spacing: 4) {
             HStack(spacing: 6) {
-                CategoryItemView(category: CategoryDTO(categoryId: "1", name: "릴렉스"), isFirst: false, size: .small, onTap: {})
-                CategoryItemView(category: CategoryDTO(categoryId: "2", name: "파워"), isFirst: false, size: .small, onTap: {})
+                CategoryItemView(category: CategoryDTO(categoryId: "1", name: "릴렉스"), size: .small, backgroundImageName: "OnedayCategory2", onTap: {})
+                CategoryItemView(category: CategoryDTO(categoryId: "2", name: "파워"), size: .small, backgroundImageName: "OnedayCategory3", onTap: {})
             }
             HStack(spacing: 6) {
-                CategoryItemView(category: CategoryDTO(categoryId: "3", name: "초심자"), isFirst: false, size: .small, onTap: {})
-                CategoryItemView(category: CategoryDTO(categoryId: "5", name: "전통 요가"), isFirst: false, size: .small, onTap: {})
+                CategoryItemView(category: CategoryDTO(categoryId: "3", name: "초심자"), size: .small, backgroundImageName: "OnedayCategory4", onTap: {})
+                CategoryItemView(category: CategoryDTO(categoryId: "5", name: "전통 요가"), size: .small, backgroundImageName: "OnedayCategory5", onTap: {})
             }
         }
     }
