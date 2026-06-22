@@ -21,7 +21,6 @@ struct OneDayCategoryModuleView: View {
             if let featured = featuredItem {
                 CategoryItemView(
                     category: featured,
-                    isFirst: true,
                     size: .large,
                     backgroundImageName: "OnedayCategory1",
                     onTap: { onItemTap(featured.categoryId) }
@@ -38,7 +37,6 @@ struct OneDayCategoryModuleView: View {
                 ForEach(gridItems.indices, id: \.self) { index in
                     CategoryItemView(
                         category: gridItems[index],
-                        isFirst: false,
                         size: .small,
                         backgroundImageName: "OnedayCategory\(index + 2)",
                         onTap: { onItemTap(gridItems[index].categoryId) }
