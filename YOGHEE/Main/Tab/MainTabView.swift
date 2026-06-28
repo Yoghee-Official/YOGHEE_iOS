@@ -13,12 +13,13 @@ struct MainTabView: View {
     @State private var homeNavigationPath = NavigationPath()
     @State private var mypageNavigationPath = NavigationPath()
     @State private var isTabBarHiddenByScroll = false
-    
+    @AppStorage("homeToggleCoachMarkDismissed") private var coachMarkDismissed = false
+
     var body: some View {
         ZStack {
             // 현재 선택된 탭의 뷰 표시
             allTabViews
-            
+
             // Floating Tab Bar - 1뎁스에서만 표시
             VStack {
                 Spacer()
@@ -30,6 +31,16 @@ struct MainTabView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.25), value: shouldShowTabBar)
+        }
+        .overlayPreferenceValue(ToggleAnchorKey.self) { anchor in
+            if !coachMarkDismissed && selectedTab == .home, let anchor = anchor {
+                GeometryReader { proxy in
+                    HomeCoachMarkOverlay(
+                        toggleFrame: proxy[anchor],
+                        onDismiss: { coachMarkDismissed = true }
+                    )
+                }
+            }
         }
     }
     

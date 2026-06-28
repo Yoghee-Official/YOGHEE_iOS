@@ -31,6 +31,7 @@ struct HomeHeaderView: View {
             }
             .background(Color.white)
             .cornerRadius(16)
+            .anchorPreference(key: ToggleAnchorKey.self, value: .bounds) { $0 }
             
             Spacer()
             
