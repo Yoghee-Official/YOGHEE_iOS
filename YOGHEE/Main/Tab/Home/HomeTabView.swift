@@ -20,7 +20,7 @@ struct HomeTabView: View {
         NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
                 HomeHeaderView(container: container, navigationPath: $navigationPath)
-                    .frame(height: 60)
+                    .frame(height: 91)
                 
                 GeometryReader { scrollGeometry in
                     ScrollView(.vertical, showsIndicators: false) {

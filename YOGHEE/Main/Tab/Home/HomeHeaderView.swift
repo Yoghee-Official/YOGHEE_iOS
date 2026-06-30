@@ -12,43 +12,50 @@ struct HomeHeaderView: View {
     @Binding var navigationPath: NavigationPath
     
     var body: some View {
-        HStack(spacing: 15) {
-            Image("HeaderLogo")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 23, height: 28)
-            
-            HStack(spacing: 0) {
-                ForEach(ClassType.allCases, id: \.self) { type in
-                    ToggleButton(
-                        title: type.toggleTitle,
-                        isSelected: container.state.selectedClassType == type,
-                        action: {
-                            container.handleIntent(.toggleClassType(type))
-                        }
-                    )
-                }
-            }
-            .background(Color.white)
-            .cornerRadius(16)
-            .anchorPreference(key: ToggleAnchorKey.self, value: .bounds) { $0 }
-            
-            Spacer()
-            
-            // 알림 아이콘
-            Button(action: {
-                navigationPath.append(NavigationDestination.notifications)
-            }) {
-                Image("NotificationButton")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 34, height: 27)
-            }
-        }
-        .padding(.horizontal, 16)
-        .frame(height: 60)
-        .background(Color.SandBeige)
-    }
+          VStack(spacing: 0) {
+              // 1줄: 로고
+              HStack {
+                  Image("HeaderLogo")
+                      .resizable()
+                      .scaledToFit()
+                      .frame(width: 23, height: 28)
+                  Spacer()
+              }
+              .padding(.horizontal, 16)
+              .frame(height: 43)
+      
+              // 2줄: 토글 + 알림
+              HStack(spacing: 0) {
+                  HStack(spacing: 0) {
+                      ForEach(ClassType.allCases, id: \.self) { type in
+                          ToggleButton(
+                              title: type.toggleTitle,
+                              isSelected: container.state.selectedClassType == type,
+                              action: {
+                                  container.handleIntent(.toggleClassType(type))
+                              }
+                          )
+                      }
+                  }
+                  .background(Color.white)
+                  .cornerRadius(16)
+
+                  Spacer()
+      
+                  Button(action: {
+                      navigationPath.append(NavigationDestination.notifications)
+                  }) {
+                      Image("NotificationButton")
+                          .resizable()
+                          .scaledToFit()
+                          .frame(width: 34, height: 27)
+                  }
+              }
+              .padding(.horizontal, 16)
+              .frame(height: 48)
+          }
+          .background(Color.SandBeige)
+      }
 }
 
 // MARK: - Toggle Button
@@ -60,8 +67,9 @@ struct ToggleButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .pretendardFont(.semiBold, size: 14)
+                .pretendardFont(isSelected ? .bold : .regular, size: 14)
                 .foregroundColor(.black)
+                .opacity(isSelected ? 1.0 : 0.2)
                 .frame(width: 71.5, height: 32)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
