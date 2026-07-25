@@ -87,7 +87,7 @@ class CategoryMainContainer: ObservableObject {
         Task {
             do {
                 let response = try await APIService.shared.getCategoryClasses(
-                    categoryId: categoryId,
+                    categoryCode: categoryId,
                     type: type
                 )
                 

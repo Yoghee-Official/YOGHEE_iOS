@@ -124,13 +124,13 @@ struct LayoutDTO: Codable {
 
 // MARK: - Yoga Category 하드코딩 데이터 (layoutOrder에만 노출 제어, 모듈 데이터는 전부 하드코딩)
 enum YogaCategoryHardcoded {
-    /// 취향탐색(하루수련)용 카테고리
+    /// 취향탐색(하루수련)용 카테고리 (categoryId = API code)
     static let oneDay: [CategoryDTO] = [
-        CategoryDTO(categoryId: "1", name: "이색요가"),
-        CategoryDTO(categoryId: "2", name: "릴렉스"),
-        CategoryDTO(categoryId: "3", name: "파워"),
-        CategoryDTO(categoryId: "4", name: "플로우"),
-        CategoryDTO(categoryId: "5", name: "전통요가")
+        CategoryDTO(categoryId: "unique_yoga",      name: "이색요가"),
+        CategoryDTO(categoryId: "relax",            name: "릴렉스"),
+        CategoryDTO(categoryId: "power",            name: "파워"),
+        CategoryDTO(categoryId: "flow",             name: "플로우"),
+        CategoryDTO(categoryId: "traditional_yoga", name: "전통요가")
     ]
     /// 위치탐색(정규수련)용 카테고리
     static let regular: [CategoryDTO] = [

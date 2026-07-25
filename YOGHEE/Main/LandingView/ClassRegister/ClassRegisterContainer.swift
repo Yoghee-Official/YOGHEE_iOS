@@ -93,19 +93,19 @@ struct ClassRegisterState: Equatable {
     /// 선택된 특징 ID (API: featureIds, 최대 3개)
     var featureIds: Set<String> = []
     
-    /// 코드 목록 (features 등)
+    /// 특징 목록 (YogaCodeHardcoded.features)
     var features: [CodeInfoDTO] = []
     var isLoadingCodeList: Bool = false
     var codeListError: String?
-    
+
     // Step 2: 유형 선택
-    /// 전문 수련 유형 목록 (CodeListDto > categories > type)
+    /// 전문 수련 유형 목록 (YogaCodeHardcoded.types)
     var types: [CodeInfoDTO] = []
-    /// 수련 카테고리 목록 (CodeListDto > categories > category)
+    /// 수련 카테고리 목록 (YogaCodeHardcoded.categories)
     var categories: [CodeInfoDTO] = []
-    /// 이용 대상 목록 (CodeListDto > categories > target)
+    /// 이용 대상 목록 (YogaCodeHardcoded.targets)
     var targets: [CodeInfoDTO] = []
-    /// 편의시설 목록 (CodeListDto > amenities > amenity, facility)
+    /// 편의시설 목록 (YogaCodeHardcoded.amenities)
     var amenities: AmenityCodeListDTO?
     /// 선택된 전문 수련 유형 ID (최대 13개)
     var typeIds: Set<String> = []
@@ -343,29 +343,13 @@ class ClassRegisterContainer: ObservableObject {
         }
     }
     
-    /// 코드 목록 로드 (features)
+    /// 코드 목록을 하드코딩 데이터로 로드 (구 GET /api/main/code 대체)
     func loadCodeList() {
-        state.isLoadingCodeList = true
-        state.codeListError = nil
-        
-        Task {
-            do {
-                let response = try await APIService.shared.getCodeList()
-                await MainActor.run {
-                    self.state.features = response.data.features
-                    self.state.types = response.data.categories.type
-                    self.state.categories = response.data.categories.category
-                    self.state.targets = response.data.categories.target
-                    self.state.amenities = response.data.amenities
-                    self.state.isLoadingCodeList = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.state.codeListError = error.localizedDescription
-                    self.state.isLoadingCodeList = false
-                }
-            }
-        }
+        state.features   = YogaCodeHardcoded.features
+        state.types      = YogaCodeHardcoded.types
+        state.categories = YogaCodeHardcoded.categories
+        state.targets    = YogaCodeHardcoded.targets
+        state.amenities  = YogaCodeHardcoded.amenities
     }
     
     /// state 기준으로 클래스 등록 요청 DTO 생성 후 POST /api/class 호출
@@ -478,11 +462,11 @@ class ClassRegisterContainer: ObservableObject {
             name:          registerName,
             description:   s.description.nilIfEmpty,
             centerId:      s.selectedCenterId,
-            featureIds:    s.featureIds.isEmpty ? nil : Array(s.featureIds),
+            featureCodes:  s.featureIds.isEmpty ? nil : Array(s.featureIds),
             schedules:     schedules,
             images:        imageKeys.isEmpty ? nil : imageKeys,
             price:         isRegular ? regularPrice : onedayPrice,
-            categoryIds:   s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
+            categoryCodes: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
             policy:        ClassRegisterPolicyDto(
                 discountPrice:   isRegular ? nil : discountPrice,
                 discountRate:    isRegular ? nil : discountRate,

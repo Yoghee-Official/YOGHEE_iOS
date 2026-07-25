@@ -326,7 +326,7 @@ struct NewPlaceRegisterView: View {
             zonecode: zonecode.nilIfEmpty,
             addressDetail: detailAddress.nilIfEmpty,
             fullAddress: fullAddr.nilIfEmpty,
-            amenityIds: allAmenityIds.isEmpty ? nil : Array(allAmenityIds)
+            amenityCodes: allAmenityIds.isEmpty ? nil : Array(allAmenityIds)
         )
     }
 }

@@ -7,37 +7,110 @@
 
 import Foundation
 
-// MARK: - Code List API (GET /api/main/code)
+// MARK: - 코드 데이터 컨테이너
 
-struct CodeListResponse: Codable {
-    let code: Int
-    let status: String
-    let data: CodeListDto
-}
-
-struct CodeListDto: Codable {
-    /// 카테고리 목록 (type별 그룹핑)
-    let categories: CategoryCodeListDTO
-    /// 특징 목록 (수련 장점 - 어디에 도움되는 수업인지)
-    let features: [CodeInfoDTO]
-    /// 편의시설 목록 (type별 그룹핑)
-    let amenities: AmenityCodeListDTO
-}
-
-struct CategoryCodeListDTO: Codable {
-    let category: [CodeInfoDTO]
-    let type: [CodeInfoDTO]
-    let target: [CodeInfoDTO]
-}
-
-struct AmenityCodeListDTO: Codable, Equatable {
+struct AmenityCodeListDTO: Equatable {
     let amenity: [CodeInfoDTO]
     let facility: [CodeInfoDTO]
 }
 
-struct CodeInfoDTO: Codable, Identifiable, Hashable {
+struct CodeInfoDTO: Identifiable, Hashable {
     let id: String
     let name: String
+}
+
+// MARK: - 하드코딩 코드 목록 (구 GET /api/main/code 대체)
+
+enum YogaCodeHardcoded {
+    /// 전문 수련 유형 (ashtanga, hatha, vinyasa 등 요가 스타일)
+    static let types: [CodeInfoDTO] = [
+        CodeInfoDTO(id: "ashtanga",       name: "아쉬탕가"),
+        CodeInfoDTO(id: "bepros_flow",    name: "비프로스플로우"),
+        CodeInfoDTO(id: "flying_yoga",    name: "플라잉 요가"),
+        CodeInfoDTO(id: "hatha",          name: "하타"),
+        CodeInfoDTO(id: "inside_flow",    name: "인사이드플로우"),
+        CodeInfoDTO(id: "iyengar",        name: "아헹가"),
+        CodeInfoDTO(id: "meditation",     name: "명상"),
+        CodeInfoDTO(id: "partner_yoga",   name: "파트너 요가"),
+        CodeInfoDTO(id: "pet_yoga",       name: "펫요가"),
+        CodeInfoDTO(id: "props_yoga",     name: "소도구 요가"),
+        CodeInfoDTO(id: "sivananda",      name: "쉬바난다"),
+        CodeInfoDTO(id: "traditional_yoga", name: "전통 요가"),
+        CodeInfoDTO(id: "unique_yoga",    name: "이색 요가"),
+        CodeInfoDTO(id: "vinyasa",        name: "빈야사"),
+        CodeInfoDTO(id: "yin_yoga",       name: "인요가"),
+    ]
+
+    /// 수련 카테고리 (강도·스타일 분류)
+    static let categories: [CodeInfoDTO] = [
+        CodeInfoDTO(id: "advanced",  name: "숙련자"),
+        CodeInfoDTO(id: "beginner",  name: "초심자"),
+        CodeInfoDTO(id: "flow",      name: "플로우"),
+        CodeInfoDTO(id: "indoor",    name: "실내"),
+        CodeInfoDTO(id: "outdoor",   name: "야외"),
+        CodeInfoDTO(id: "power",     name: "파워"),
+        CodeInfoDTO(id: "relax",     name: "릴렉스"),
+        CodeInfoDTO(id: "therapy",   name: "테라피"),
+    ]
+
+    /// 이용 대상
+    static let targets: [CodeInfoDTO] = [
+        CodeInfoDTO(id: "kids_yoga",      name: "키즈 요가"),
+        CodeInfoDTO(id: "men_only",       name: "남성 전용"),
+        CodeInfoDTO(id: "others",         name: "기타"),
+        CodeInfoDTO(id: "prenatal_yoga",  name: "임산부 요가"),
+        CodeInfoDTO(id: "unisex",         name: "남녀 공용"),
+        CodeInfoDTO(id: "women_only",     name: "여성 전용"),
+    ]
+
+    /// 특징 (수련 장점 - 어디에 도움되는 수업인지)
+    static let features: [CodeInfoDTO] = [
+        CodeInfoDTO(id: "balance",   name: "밸런스"),
+        CodeInfoDTO(id: "beginner",  name: "입문자"),
+        CodeInfoDTO(id: "breath",    name: "호흡·이완"),
+        CodeInfoDTO(id: "flow",      name: "플로우"),
+        CodeInfoDTO(id: "relax",     name: "릴렉스"),
+        CodeInfoDTO(id: "stretch",   name: "스트레칭"),
+    ]
+
+    /// 편의시설 및 제공물품
+    static let amenities = AmenityCodeListDTO(
+        amenity: [
+            CodeInfoDTO(id: "air_purifier",     name: "공기청정기"),
+            CodeInfoDTO(id: "blanket",          name: "담요"),
+            CodeInfoDTO(id: "block",            name: "블럭"),
+            CodeInfoDTO(id: "bolster",          name: "볼스터"),
+            CodeInfoDTO(id: "cotton_swab",      name: "면봉"),
+            CodeInfoDTO(id: "dehumidifier",     name: "제습기"),
+            CodeInfoDTO(id: "foam_roller",      name: "폼롤러"),
+            CodeInfoDTO(id: "hair_dryer",       name: "드라이기"),
+            CodeInfoDTO(id: "hair_tie",         name: "머리끈"),
+            CodeInfoDTO(id: "incense",          name: "인센스"),
+            CodeInfoDTO(id: "massage_ball",     name: "마사지볼"),
+            CodeInfoDTO(id: "mat",              name: "매트"),
+            CodeInfoDTO(id: "mirror",           name: "거울"),
+            CodeInfoDTO(id: "sanitizer",        name: "소독액"),
+            CodeInfoDTO(id: "shower_supplies",  name: "사워용품"),
+            CodeInfoDTO(id: "singing_bowl",     name: "싱잉볼"),
+            CodeInfoDTO(id: "strap",            name: "스트랩"),
+            CodeInfoDTO(id: "towel",            name: "타올"),
+            CodeInfoDTO(id: "water_purifier",   name: "정수기"),
+            CodeInfoDTO(id: "wet_wipes",        name: "물티슈"),
+            CodeInfoDTO(id: "wifi",             name: "Wifi"),
+        ],
+        facility: [
+            CodeInfoDTO(id: "fitness_zone",       name: "피트니스존"),
+            CodeInfoDTO(id: "indoor_restroom",    name: "내부화장실"),
+            CodeInfoDTO(id: "men_changing_room",  name: "남자탈의실"),
+            CodeInfoDTO(id: "outdoor_restroom",   name: "외부화장실"),
+            CodeInfoDTO(id: "personal_locker",    name: "개인사물함"),
+            CodeInfoDTO(id: "powder_room",        name: "파우더룸"),
+            CodeInfoDTO(id: "shoe_rack",          name: "신발장"),
+            CodeInfoDTO(id: "shower_room",        name: "샤워실"),
+            CodeInfoDTO(id: "stretching_zone",    name: "스트레칭존"),
+            CodeInfoDTO(id: "women_changing_room", name: "여자탈의실"),
+        ]
+    )
 }
 
 // MARK: - 카카오 우편번호 서비스 선택 결과 (postcode.map.daum.net/guide oncomplete 데이터)
@@ -97,7 +170,7 @@ struct NewCenterDto: Codable {
     var zonecode: String?
     var addressDetail: String?
     var fullAddress: String?
-    var amenityIds: [String]?
+    var amenityCodes: [String]?
 }
 
 /// 요가원 등록 API 응답 (200 시 data: 메시지 문자열)
@@ -414,11 +487,11 @@ struct ClassRegisterRequestDto: Codable {
     let name: String
     let description: String?
     let centerId: String?
-    let featureIds: [String]?
+    let featureCodes: [String]?
     let schedules: [ClassRegisterScheduleItemDto]
     let images: [String]?
     let price: Int
-    let categoryIds: [String]?
+    let categoryCodes: [String]?
     let policy: ClassRegisterPolicyDto?
     let holidayPolicy: ClassRegisterHolidayPolicyDto?  // 정규 전용
     let tickets: [ClassRegisterTicketDto]?              // 정규 전용

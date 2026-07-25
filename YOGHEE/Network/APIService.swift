@@ -68,8 +68,7 @@ class APIService {
     private enum Endpoint {
         case login
         case main(type: String)
-        case codeList
-        case categoryClasses(categoryId: String, type: String)
+        case categoryClasses(categoryCode: String, type: String)
         case categoryDetail(categoryId: String)
         case notifications
         case myPage(role: UserRole)
@@ -87,10 +86,8 @@ class APIService {
                 return "/auth/login"
             case .main:
                 return "/api/main"
-            case .codeList:
-                return "/api/main/code"
-            case .categoryClasses(let categoryId, _):
-                return "/api/class/category/\(categoryId)"
+            case .categoryClasses:
+                return "/api/class/category"
             case .categoryDetail(let id):
                 return "/api/category/\(id)/"
             case .notifications:
@@ -123,11 +120,11 @@ class APIService {
             switch self {
             case .main(let type):
                 return ["type": type]
-            case .categoryClasses(_, let type):
-                return ["type": type]
+            case .categoryClasses(let categoryCode, let type):
+                return ["code": categoryCode, "type": type]
             case .appVersion(let platform):
                 return ["platform": platform]
-            case .login, .codeList, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
+            case .login, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
                 return nil
             }
         }
@@ -160,15 +157,9 @@ class APIService {
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     
-    /// 코드 목록 조회 (카테고리/특징/편의시설) - 인증 불필요
-    func getCodeList() async throws -> CodeListResponse {
-        let endpoint = Endpoint.codeList
-        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
-    }
-    
     /// 카테고리별 클래스 조회
-    func getCategoryClasses(categoryId: String, type: String) async throws -> CategoryClassResponse {
-        let endpoint = Endpoint.categoryClasses(categoryId: categoryId, type: type)
+    func getCategoryClasses(categoryCode: String, type: String) async throws -> CategoryClassResponse {
+        let endpoint = Endpoint.categoryClasses(categoryCode: categoryCode, type: type)
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     
