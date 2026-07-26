@@ -68,7 +68,8 @@ class APIService {
     private enum Endpoint {
         case login
         case main(type: String)
-        case categoryClasses(categoryCode: String, type: String)
+        case categoryClasses(categoryCode: String, sort: String?)
+        case addressClasses(regionCode: String, sort: String?)
         case categoryDetail(categoryId: String)
         case notifications
         case myPage(role: UserRole)
@@ -88,6 +89,8 @@ class APIService {
                 return "/api/main"
             case .categoryClasses:
                 return "/api/class/category"
+            case .addressClasses:
+                return "/api/class/address"
             case .categoryDetail(let id):
                 return "/api/category/\(id)/"
             case .notifications:
@@ -120,8 +123,14 @@ class APIService {
             switch self {
             case .main(let type):
                 return ["type": type]
-            case .categoryClasses(let categoryCode, let type):
-                return ["code": categoryCode, "type": type]
+            case .categoryClasses(let categoryCode, let sort):
+                var params: Parameters = ["code": categoryCode]
+                if let sort { params["sort"] = sort }
+                return params
+            case .addressClasses(let regionCode, let sort):
+                var params: Parameters = ["code": regionCode]
+                if let sort { params["sort"] = sort }
+                return params
             case .appVersion(let platform):
                 return ["platform": platform]
             case .login, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
@@ -157,10 +166,18 @@ class APIService {
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     
-    /// 카테고리별 클래스 조회
-    func getCategoryClasses(categoryCode: String, type: String) async throws -> CategoryClassResponse {
-        let endpoint = Endpoint.categoryClasses(categoryCode: categoryCode, type: type)
-        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+    /// 카테고리별 클래스 조회 (하루수련 - /api/class/category)
+    func getCategoryClasses(categoryCode: String, sort: String? = nil) async throws -> [CategoryClassDTO] {
+        let endpoint = Endpoint.categoryClasses(categoryCode: categoryCode, sort: sort)
+        let response: CategoryClassResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+        return response.data
+    }
+
+    /// 지역별 클래스 조회 (정규수련 - /api/class/address)
+    func getAddressClasses(regionCode: String, sort: String? = nil) async throws -> [CategoryClassDTO] {
+        let endpoint = Endpoint.addressClasses(regionCode: regionCode, sort: sort)
+        let response: CategoryClassResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+        return response.data
     }
     
     /// 카테고리 상세 조회 (추후 개발 예정)

@@ -102,7 +102,7 @@ struct CategoryMainView: View {
         }
         .customNavigationBar(title: navigationTitle)
         .onAppear {
-            container.handleIntent(.initialize(categoryId: categoryId, type: classType.rawValue))
+            container.handleIntent(.initialize(categoryId: categoryId, classType: classType))
         }
     }
     
@@ -133,7 +133,7 @@ struct CategoryMainView: View {
                         category: category,
                         isSelected: container.state.selectedCategoryId == category.categoryId
                     ) {
-                        container.handleIntent(.selectCategory(categoryId: category.categoryId, type: classType.rawValue))
+                        container.handleIntent(.selectCategory(categoryId: category.categoryId))
                     }
                 }
             }

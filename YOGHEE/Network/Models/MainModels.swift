@@ -132,16 +132,16 @@ enum YogaCategoryHardcoded {
         CategoryDTO(categoryId: "flow",             name: "플로우"),
         CategoryDTO(categoryId: "traditional_yoga", name: "전통요가")
     ]
-    /// 위치탐색(정규수련)용 카테고리
+    /// 위치탐색(정규수련)용 카테고리 (categoryId = API address code)
     static let regular: [CategoryDTO] = [
-        CategoryDTO(categoryId: "1", name: "서울"),
-        CategoryDTO(categoryId: "2", name: "경기도"),
-        CategoryDTO(categoryId: "3", name: "경상도"),
-        CategoryDTO(categoryId: "4", name: "강원도"),
-        CategoryDTO(categoryId: "5", name: "전라도"),
-        CategoryDTO(categoryId: "6", name: "충청도"),
-        CategoryDTO(categoryId: "7", name: "제주도"),
-        CategoryDTO(categoryId: "8", name: "기타")
+        CategoryDTO(categoryId: "seoul",       name: "서울"),
+        CategoryDTO(categoryId: "gyeonggi",    name: "경기도"),
+        CategoryDTO(categoryId: "gyeongsang",  name: "경상도"),
+        CategoryDTO(categoryId: "gangwon",     name: "강원도"),
+        CategoryDTO(categoryId: "jeolla",      name: "전라도"),
+        CategoryDTO(categoryId: "chungcheong", name: "충청도"),
+        CategoryDTO(categoryId: "jeju",        name: "제주도"),
+        CategoryDTO(categoryId: "etc",         name: "기타")
     ]
     
     static func items(for classType: ClassType) -> [CategoryDTO] {
@@ -153,7 +153,6 @@ enum YogaCategoryHardcoded {
 }
 
 // MARK: - Category Class Response
-// TODO: 추후 여러 Response가 추가되면 제네릭 APIResponse<T>로 리팩토링 고려
 struct CategoryClassResponse: Codable {
     let code: Int
     let status: String
