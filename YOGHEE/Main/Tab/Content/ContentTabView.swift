@@ -19,7 +19,6 @@ struct ContentTabView: View {
             VStack(spacing: 0) {
                 headerView
                 contentBody
-                    .padding(.top, 15)
             }
             .background(
                 LinearGradient(
@@ -49,39 +48,31 @@ struct ContentTabView: View {
     private var contentBody: some View {
         if container.state.isLoading {
             ProgressView()
-                .frame(maxWidth: .infinity, minHeight: 300)
-        } else if let error = container.state.errorMessage {
-            VStack(spacing: 16) {
-                Text("오류가 발생했습니다")
-                    .pretendardFont(.semiBold, size: 17)
-                Text(error)
-                    .pretendardFont(.regular, size: 12)
-                    .foregroundColor(.Info)
-                    .multilineTextAlignment(.center)
-                Button("다시 시도") {
-                    container.handleIntent(.loadFeed)
-                }
-                .buttonStyle(.bordered)
-            }
-            .padding(.horizontal, 20)
-            .frame(maxWidth: .infinity, minHeight: 300)
-        } else if container.state.isEmpty {
-            Text("이번 주 등록된 피드가 없습니다.")
-                .pretendardFont(.regular, size: 15)
-                .foregroundColor(.Info)
-                .frame(maxWidth: .infinity, minHeight: 300)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else if container.state.items.isEmpty {
-            Text("이번 주 등록된 피드가 없습니다.")
-                .pretendardFont(.regular, size: 15)
-                .foregroundColor(.Info)
-                .frame(maxWidth: .infinity, minHeight: 300)
+            emptyStateView
         } else {
             GeometryReader { proxy in
                 let imageWidth = min(proxy.size.width - (horizontalPadding * 2), 343)
                 feedCard(imageWidth: imageWidth)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
+            .padding(.top, 15)
         }
+    }
+
+    // MARK: - Empty State
+    private var emptyStateView: some View {
+        VStack(spacing: 8) {
+            Text("이번주 콘텐츠는 잠시 쉬어가요.")
+                .pretendardFont(.bold, size: 17)
+                .foregroundColor(.DarkBlack)
+            Text("다음주에 더 좋은 콘텐츠로 만나요.")
+                .pretendardFont(.medium, size: 14)
+                .foregroundColor(.DarkBlack)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .offset(y: -30) // 헤더 높이(60pt)의 절반만큼 올려 화면 정중앙 정렬
     }
 
     // MARK: - Feed Card
