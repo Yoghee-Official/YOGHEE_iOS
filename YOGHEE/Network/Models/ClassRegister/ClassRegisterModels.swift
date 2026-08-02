@@ -65,12 +65,12 @@ enum YogaCodeHardcoded {
 
     /// 특징 (수련 장점 - 어디에 도움되는 수업인지)
     static let features: [CodeInfoDTO] = [
-        CodeInfoDTO(id: "balance",   name: "밸런스"),
-        CodeInfoDTO(id: "beginner",  name: "입문자"),
-        CodeInfoDTO(id: "breath",    name: "호흡·이완"),
-        CodeInfoDTO(id: "flow",      name: "플로우"),
-        CodeInfoDTO(id: "relax",     name: "릴렉스"),
-        CodeInfoDTO(id: "stretch",   name: "스트레칭"),
+        CodeInfoDTO(id: "balance",   name: "중심 잡기, 안정성, 자세 정렬에 집중하는 수련"),
+        CodeInfoDTO(id: "beginner",  name: "요가 입문자, 기본 동작과 호흡 설명 중심"),
+        CodeInfoDTO(id: "breath",    name: "호흡·이완 중심, 심리적 안정"),
+        CodeInfoDTO(id: "flow",      name: "기본 수련 경험이 있고 흐름 있는 동작"),
+        CodeInfoDTO(id: "relax",     name: "허리·골반 주변 이완 및 안정"),
+        CodeInfoDTO(id: "stretch",   name: "몸이 뻣뻣하거나 스트레칭 위주 수련"),
     ]
 
     /// 편의시설 및 제공물품
