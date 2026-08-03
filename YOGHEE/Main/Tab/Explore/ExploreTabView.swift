@@ -13,8 +13,10 @@ struct ExploreTabView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            ExploreMapRepresentable()
-                .ignoresSafeArea()
+            ExploreMapRepresentable { bbox in
+                container.handleIntent(.searchClasses(bbox: bbox))
+            }
+            .ignoresSafeArea()
 
             VStack(alignment: .trailing, spacing: 8) {
                 HStack(spacing: 8) {
@@ -115,8 +117,10 @@ struct ExploreGpsButton: View {
 // MARK: - 전체화면 카카오맵 Representable
 
 private struct ExploreMapRepresentable: UIViewControllerRepresentable {
+    let onBoundingBoxChange: (MapBoundingBox) -> Void
+
     func makeUIViewController(context: Context) -> ExploreMapViewController {
-        ExploreMapViewController()
+        ExploreMapViewController(onBoundingBoxChange: onBoundingBoxChange)
     }
 
     func updateUIViewController(_ uiViewController: ExploreMapViewController, context: Context) {}
@@ -124,13 +128,22 @@ private struct ExploreMapRepresentable: UIViewControllerRepresentable {
 
 // MARK: - ExploreMapViewController
 
-private final class ExploreMapViewController: UIViewController, MapControllerDelegate {
+final class ExploreMapViewController: UIViewController, MapControllerDelegate {
     private var mapContainer: KMViewContainer?
     private var mapController: KMController?
+    private var debounceWork: DispatchWorkItem?
+    private let onBoundingBoxChange: (MapBoundingBox) -> Void
 
     private let defaultLatitude:  Double = 37.5666805
     private let defaultLongitude: Double = 126.9784147
     private let defaultZoomLevel: Int    = 9
+
+    init(onBoundingBoxChange: @escaping (MapBoundingBox) -> Void) {
+        self.onBoundingBoxChange = onBoundingBoxChange
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
         let container = KMViewContainer()
@@ -156,6 +169,8 @@ private final class ExploreMapViewController: UIViewController, MapControllerDel
         mapController?.resetEngine()
     }
 
+    // MARK: - MapControllerDelegate
+
     func addViews() {
         let mapviewInfo = MapviewInfo(
             viewName: "exploreMapView",
@@ -166,12 +181,54 @@ private final class ExploreMapViewController: UIViewController, MapControllerDel
         mapController?.addView(mapviewInfo)
     }
 
-    func addViewSucceeded(_ viewName: String, viewInfoName: String) {}
+    func addViewSucceeded(_ viewName: String, viewInfoName: String) {
+        guard let mapView = mapController?.getView("exploreMapView") as? KakaoMap else { return }
+        mapView.eventDelegate = self
+        triggerSearchAfterDelay(mapView: mapView)
+    }
+
     func addViewFailed(_ viewName: String, viewInfoName: String) {}
 
     func containerDidResized(_ size: CGSize) {
         guard let mapView = mapController?.getView("exploreMapView") as? KakaoMap else { return }
         mapView.viewRect = CGRect(origin: .zero, size: size)
+    }
+
+    // MARK: - 디바운스 검색
+
+    private func triggerSearchAfterDelay(mapView: KakaoMap) {
+        debounceWork?.cancel()
+        let work = DispatchWorkItem { [weak self, weak mapView] in
+            guard let self, let mapView else { return }
+            if let bbox = self.boundingBox(from: mapView) {
+                self.onBoundingBoxChange(bbox)
+            }
+        }
+        debounceWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: work)
+    }
+
+    // MARK: - BoundingBox 계산
+
+    private func boundingBox(from mapView: KakaoMap) -> MapBoundingBox? {
+        let size = mapView.viewRect.size
+        let sw = mapView.getPosition(CGPoint(x: 0, y: size.height))
+        let ne = mapView.getPosition(CGPoint(x: size.width, y: 0))
+
+        return MapBoundingBox(
+            swLat: sw.wgsCoord.latitude,
+            swLng: sw.wgsCoord.longitude,
+            neLat: ne.wgsCoord.latitude,
+            neLng: ne.wgsCoord.longitude
+        )
+    }
+}
+
+// MARK: - KakaoMapEventDelegate (지도 카메라 멈춤 감지)
+
+extension ExploreMapViewController: KakaoMapEventDelegate {
+    func cameraDidStopped(kakaoMap: KakaoMap, by: MoveBy) {
+        triggerSearchAfterDelay(mapView: kakaoMap)
     }
 }
 

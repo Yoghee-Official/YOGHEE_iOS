@@ -74,6 +74,7 @@ class APIService {
         case notifications
         case myPage(role: UserRole)
         case centerList
+        case centerSearch(bbox: MapBoundingBox, sort: String?)
         case imagePresign
         case classRegister
         case feed
@@ -104,6 +105,8 @@ class APIService {
                 }
             case .centerList:
                 return "/api/center"
+            case .centerSearch:
+                return "/api/center/search"
             case .imagePresign:
                 return "/api/image/presign"
             case .classRegister:
@@ -133,6 +136,15 @@ class APIService {
                 return params
             case .appVersion(let platform):
                 return ["platform": platform]
+            case .centerSearch(let bbox, let sort):
+                var params: Parameters = [
+                    "swLat": bbox.swLat,
+                    "swLng": bbox.swLng,
+                    "neLat": bbox.neLat,
+                    "neLng": bbox.neLng
+                ]
+                if let sort { params["sort"] = sort }
+                return params
             case .login, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
                 return nil
             }
@@ -170,6 +182,13 @@ class APIService {
     func getCategoryClasses(categoryCode: String, sort: String? = nil) async throws -> [CategoryClassDTO] {
         let endpoint = Endpoint.categoryClasses(categoryCode: categoryCode, sort: sort)
         let response: CategoryClassResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+        return response.data
+    }
+
+    /// 지도 영역 수련 검색 (/api/center/search)
+    func searchMapClasses(bbox: MapBoundingBox, sort: String? = nil) async throws -> [ClassMapSearchDTO] {
+        let endpoint = Endpoint.centerSearch(bbox: bbox, sort: sort)
+        let response: ClassMapSearchResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
         return response.data
     }
 
