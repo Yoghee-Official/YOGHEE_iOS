@@ -74,7 +74,7 @@ class APIService {
         case notifications
         case myPage(role: UserRole)
         case centerList
-        case centerSearch(bbox: MapBoundingBox, sort: String?)
+        case centerSearch(bbox: MapBoundingBox, keyword: String?, sort: String?)
         case imagePresign
         case classRegister
         case feed
@@ -136,14 +136,15 @@ class APIService {
                 return params
             case .appVersion(let platform):
                 return ["platform": platform]
-            case .centerSearch(let bbox, let sort):
+            case .centerSearch(let bbox, let keyword, let sort):
                 var params: Parameters = [
                     "swLat": bbox.swLat,
                     "swLng": bbox.swLng,
                     "neLat": bbox.neLat,
                     "neLng": bbox.neLng
                 ]
-                if let sort { params["sort"] = sort }
+                if let keyword { params["keyword"] = keyword }  // 키워드 검색 시만 포함
+                if let sort    { params["sort"]    = sort    }
                 return params
             case .login, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
                 return nil
@@ -186,8 +187,9 @@ class APIService {
     }
 
     /// 지도 영역 수련 검색 (/api/center/search)
-    func searchMapClasses(bbox: MapBoundingBox, sort: String? = nil) async throws -> [ClassMapSearchDTO] {
-        let endpoint = Endpoint.centerSearch(bbox: bbox, sort: sort)
+    /// - keyword: 검색창 입력 시 전달. nil이면 bbox 범위 내 기본 탐색
+    func searchMapClasses(bbox: MapBoundingBox, keyword: String? = nil, sort: String? = nil) async throws -> ClassMapSearchData {
+        let endpoint = Endpoint.centerSearch(bbox: bbox, keyword: keyword, sort: sort)
         let response: ClassMapSearchResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
         return response.data
     }
