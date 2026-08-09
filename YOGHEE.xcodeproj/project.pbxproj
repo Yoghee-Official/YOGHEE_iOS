@@ -81,6 +81,8 @@
 		522CE6182F12A6BF0063FDF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 522CE5D32F12A6BF0063FDF5 /* Assets.xcassets */; };
 		522CE6C52F152F980063FDF5 /* MyPageSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */; };
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
+		52735D21301F830B00515B0C /* ExploreModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52735D20301F830B00515B0C /* ExploreModels.swift */; };
+		52735D233020D1E800515B0C /* ExploreBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52735D223020D1E800515B0C /* ExploreBottomSheetView.swift */; };
 		529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */; };
 		529D09932F8260A10039C771 /* RegularClassManagementRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */; };
 		52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 52A174602EF7F11D00208298 /* SwiftUIIntrospect */; };
@@ -200,6 +202,8 @@
 		522CE5D62F12A6BF0063FDF5 /* YOGHEEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YOGHEEApp.swift; sourceTree = "<group>"; };
 		522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSectionHeaderView.swift; sourceTree = "<group>"; };
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
+		52735D20301F830B00515B0C /* ExploreModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreModels.swift; sourceTree = "<group>"; };
+		52735D223020D1E800515B0C /* ExploreBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreBottomSheetView.swift; sourceTree = "<group>"; };
 		529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassHolidayRegisterView.swift; sourceTree = "<group>"; };
 		529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassManagementRegisterView.swift; sourceTree = "<group>"; };
 		52A98C392FE9739100492465 /* HomeCoachMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoachMarkView.swift; sourceTree = "<group>"; };
@@ -360,6 +364,7 @@
 		522CE5972F12A6BF0063FDF5 /* Explore */ = {
 			isa = PBXGroup;
 			children = (
+				52735D223020D1E800515B0C /* ExploreBottomSheetView.swift */,
 				522CE5952F12A6BF0063FDF5 /* ExploreTabContainer.swift */,
 				522CE5962F12A6BF0063FDF5 /* ExploreTabView.swift */,
 			);
@@ -484,6 +489,7 @@
 				522CE5C92F12A6BF0063FDF5 /* CategoryModels.swift */,
 				522CE5CA2F12A6BF0063FDF5 /* MainModels.swift */,
 				52D6F3D82F9A61E800EC9BE8 /* ContentModels.swift */,
+				52735D20301F830B00515B0C /* ExploreModels.swift */,
 				522CE5CB2F12A6BF0063FDF5 /* MyPageModels.swift */,
 			);
 			path = Models;
@@ -848,6 +854,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */,
+				52735D21301F830B00515B0C /* ExploreModels.swift in Sources */,
 				522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */,
 				52F987B22F572F2D00C905D1 /* ScheduleCardView.swift in Sources */,
 				522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */,
@@ -936,6 +943,7 @@
 				522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */,
 				522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */,
 				52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */,
+				52735D233020D1E800515B0C /* ExploreBottomSheetView.swift in Sources */,
 				522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */,
 				522CE6112F12A6BF0063FDF5 /* SplashView.swift in Sources */,
 				522CE6122F12A6BF0063FDF5 /* ContentView.swift in Sources */,

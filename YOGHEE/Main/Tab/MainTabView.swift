@@ -10,10 +10,24 @@ import SwiftUI
 // MARK: - Main Tab Container
 struct MainTabView: View {
     @State private var selectedTab: TabItem = .home
+    @State private var previousTab: TabItem = .home
     @State private var homeNavigationPath = NavigationPath()
     @State private var mypageNavigationPath = NavigationPath()
     @State private var isTabBarHiddenByScroll = false
     @AppStorage("homeToggleCoachMarkDismissed") private var coachMarkDismissed = false
+
+    // Explore 탭 진입 시 이전 탭을 기억하기 위한 커스텀 바인딩
+    private var tabBinding: Binding<TabItem> {
+        Binding(
+            get: { selectedTab },
+            set: { newTab in
+                if newTab == .explore {
+                    previousTab = selectedTab
+                }
+                selectedTab = newTab
+            }
+        )
+    }
 
     var body: some View {
         ZStack {
@@ -24,7 +38,7 @@ struct MainTabView: View {
             VStack {
                 Spacer()
                 if shouldShowTabBar {
-                    FloatingTabBar(selectedTab: $selectedTab)
+                    FloatingTabBar(selectedTab: tabBinding)
                         .padding(.horizontal, 15)
                         .padding(.bottom, 40)
                         .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -56,8 +70,10 @@ struct MainTabView: View {
             return homeNavigationPath.count == 0
         case .mypage:
             return mypageNavigationPath.count == 0
-        case .content, .explore, .teatime:
-            return true // 다른 탭들은 현재 네비게이션이 없으므로 항상 표시
+        case .content, .teatime:
+            return true
+        case .explore:
+            return false // 지도 탭에서는 탭바 미노출
         }
     }
     
@@ -72,9 +88,11 @@ struct MainTabView: View {
             .opacity(selectedTab == .content ? 1 : 0)
             .allowsHitTesting(selectedTab == .content)
         
-        ExploreTabView()
-            .opacity(selectedTab == .explore ? 1 : 0)
-            .allowsHitTesting(selectedTab == .explore)
+        ExploreTabView(onBackTapped: {
+            selectedTab = previousTab
+        })
+        .opacity(selectedTab == .explore ? 1 : 0)
+        .allowsHitTesting(selectedTab == .explore)
         
         TeaTimeTabView()
             .opacity(selectedTab == .teatime ? 1 : 0)

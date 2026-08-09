@@ -9,17 +9,35 @@ import SwiftUI
 import KakaoMapsSDK
 
 struct ExploreTabView: View {
+    let onBackTapped: () -> Void
     @StateObject private var container = ExploreTabContainer()
+    @State private var keyword: String = ""
+    /// 지도가 제공하는 현재 bbox — 검색 버튼 탭 시에만 사용 (지도 이동으로는 검색 미실행)
+    @State private var currentBbox: MapBoundingBox? = nil
+    /// 키보드 표시 여부 — NotificationCenter로 감지, 바텀시트 숨김 여부 결정
+    @State private var isKeyboardVisible: Bool = false
 
     var body: some View {
         ZStack(alignment: .top) {
-            ExploreMapRepresentable()
-                .ignoresSafeArea()
+            ExploreMapRepresentable { bbox in
+                // bbox 저장만 — 자동 검색 없음, 검색 버튼 탭 시에만 API 호출
+                currentBbox = bbox
+            }
+            .ignoresSafeArea()
 
             VStack(alignment: .trailing, spacing: 8) {
                 HStack(spacing: 8) {
-                    ExploreBackButton()
-                    ExploreSearchBar()
+                    ExploreBackButton(onTap: onBackTapped)
+                    ExploreSearchBar(
+                        keyword: $keyword,
+                        onSearch: {
+                            dismissKeyboard()
+                            guard let bbox = currentBbox else { return }
+                            container.handleIntent(
+                                .searchClasses(bbox: bbox, keyword: keyword.isEmpty ? nil : keyword)
+                            )
+                        }
+                    )
                 }
 
                 ExploreGpsButton()
@@ -28,16 +46,34 @@ struct ExploreTabView: View {
             .padding(.top, 17)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .overlay(alignment: .bottom) {
+            ExploreBottomSheetView(
+                classes: container.state.classes,
+                isKeyboardVisible: isKeyboardVisible
+            )
+        }
+        // 키보드 표시/숨김 감지 → 바텀시트 z축 제어
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
+            isKeyboardVisible = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            isKeyboardVisible = false
+        }
+    }
+
+    private func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
 // MARK: - 뒤로가기 버튼 (2899:22072)
 
 struct ExploreBackButton: View {
+    let onTap: () -> Void
+
     var body: some View {
         Button {
-            // TODO: 기능 확인 후 개발 필요
-            print("뒤로가기 버튼 탭 - TODO: 기능 확인 후 개발 필요")
+            onTap()
         } label: {
             Image("BackArrow")
                 .resizable()
@@ -54,17 +90,21 @@ struct ExploreBackButton: View {
 // MARK: - 검색바 (2899:22052)
 
 struct ExploreSearchBar: View {
+    @Binding var keyword: String
+    let onSearch: () -> Void
+
     var body: some View {
         HStack(spacing: 0) {
-            Text("검색어를 입력하세요.")
+            TextField("검색어를 입력하세요.", text: $keyword)
                 .pretendardFont(.medium, size: 12)
-                .foregroundColor(.Info)
+                .foregroundColor(.DarkBlack)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.leading, 16)
+                .submitLabel(.search)
+                .onSubmit { onSearch() }  // 키보드 검색 버튼 탭 시
 
             Button {
-                // TODO: 기능 확인 후 개발 필요
-                print("검색 버튼 탭 - TODO: 기능 확인 후 개발 필요")
+                onSearch()
             } label: {
                 Text("검색")
                     .pretendardFont(.medium, size: 12)
@@ -115,8 +155,10 @@ struct ExploreGpsButton: View {
 // MARK: - 전체화면 카카오맵 Representable
 
 private struct ExploreMapRepresentable: UIViewControllerRepresentable {
+    let onBoundingBoxChange: (MapBoundingBox) -> Void
+
     func makeUIViewController(context: Context) -> ExploreMapViewController {
-        ExploreMapViewController()
+        ExploreMapViewController(onBoundingBoxChange: onBoundingBoxChange)
     }
 
     func updateUIViewController(_ uiViewController: ExploreMapViewController, context: Context) {}
@@ -124,13 +166,21 @@ private struct ExploreMapRepresentable: UIViewControllerRepresentable {
 
 // MARK: - ExploreMapViewController
 
-private final class ExploreMapViewController: UIViewController, MapControllerDelegate {
+final class ExploreMapViewController: UIViewController, MapControllerDelegate {
     private var mapContainer: KMViewContainer?
     private var mapController: KMController?
+    private let onBoundingBoxChange: (MapBoundingBox) -> Void
 
     private let defaultLatitude:  Double = 37.5666805
     private let defaultLongitude: Double = 126.9784147
     private let defaultZoomLevel: Int    = 9
+
+    init(onBoundingBoxChange: @escaping (MapBoundingBox) -> Void) {
+        self.onBoundingBoxChange = onBoundingBoxChange
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) { fatalError() }
 
     override func loadView() {
         let container = KMViewContainer()
@@ -156,6 +206,8 @@ private final class ExploreMapViewController: UIViewController, MapControllerDel
         mapController?.resetEngine()
     }
 
+    // MARK: - MapControllerDelegate
+
     func addViews() {
         let mapviewInfo = MapviewInfo(
             viewName: "exploreMapView",
@@ -166,15 +218,53 @@ private final class ExploreMapViewController: UIViewController, MapControllerDel
         mapController?.addView(mapviewInfo)
     }
 
-    func addViewSucceeded(_ viewName: String, viewInfoName: String) {}
+    func addViewSucceeded(_ viewName: String, viewInfoName: String) {
+        guard let mapView = mapController?.getView("exploreMapView") as? KakaoMap else { return }
+        mapView.eventDelegate = self
+        if let bbox = boundingBox(from: mapView) {
+            onBoundingBoxChange(bbox)
+        }
+    }
+
     func addViewFailed(_ viewName: String, viewInfoName: String) {}
 
     func containerDidResized(_ size: CGSize) {
         guard let mapView = mapController?.getView("exploreMapView") as? KakaoMap else { return }
         mapView.viewRect = CGRect(origin: .zero, size: size)
     }
+
+    // MARK: - BoundingBox 계산
+
+    private func boundingBox(from mapView: KakaoMap) -> MapBoundingBox? {
+        let size = mapView.viewRect.size
+        let sw = mapView.getPosition(CGPoint(x: 0, y: size.height))
+        let ne = mapView.getPosition(CGPoint(x: size.width, y: 0))
+
+        return MapBoundingBox(
+            swLat: sw.wgsCoord.latitude,
+            swLng: sw.wgsCoord.longitude,
+            neLat: ne.wgsCoord.latitude,
+            neLng: ne.wgsCoord.longitude
+        )
+    }
+}
+
+// MARK: - KakaoMapEventDelegate (지도 카메라 멈춤 감지)
+
+extension ExploreMapViewController: KakaoMapEventDelegate {
+    func cameraDidStopped(kakaoMap: KakaoMap, by: MoveBy) {
+        // bbox만 업데이트 — API 호출은 검색 버튼 탭 시에만
+        if let bbox = boundingBox(from: kakaoMap) {
+            onBoundingBoxChange(bbox)
+        }
+    }
 }
 
 #Preview {
-    ExploreTabView()
+    ExploreTabView(onBackTapped: {})
+}
+
+#Preview("SearchBar") {
+    ExploreSearchBar(keyword: .constant(""), onSearch: {})
+        .padding()
 }
