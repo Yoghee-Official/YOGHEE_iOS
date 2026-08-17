@@ -47,7 +47,7 @@ enum APIError: Error, Equatable {
 class APIService {
     static let shared = APIService()
     
-    private let baseURL = "https://www.yoghee.xyz"
+    private let baseURL = "https://www.dopidopi.xyz"
     
     private init() {}
     
