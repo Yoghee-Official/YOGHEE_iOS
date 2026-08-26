@@ -8,20 +8,14 @@
 import SwiftUI
 
 struct TodayClassModuleView: View {
-    let items: [TodayClassDTO]
-    let onItemTap: (String) -> Void
-
-    // TODO: [서버 협의 필요] TodayClassDTO.displayMessage 필드명이 확정되면 자동으로 반영됨
-    // 서버에서 표시 문구를 완성해서 내려주므로 클라이언트는 그대로 표시
-    // 방어 문구 처리(비로그인/수업없음/수업지남)도 서버에서 담당
-    private var displayText: String {
-        items.first?.displayMessage ?? ""
-    }
+    let item: TodayClassDTO
+    /// 영역 클릭 시 마이페이지 랜딩
+    let onTap: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text(displayText)
+                Text(item.message)
                     .pretendardFont(.bold, size: 12)
                     .foregroundColor(.black)
                     .lineLimit(1)
@@ -35,9 +29,7 @@ struct TodayClassModuleView: View {
         }
         .padding(.vertical, 7.5)
         .onTapGesture {
-            if let firstItem = items.first {
-                onItemTap(firstItem.classId)
-            }
+            onTap()
         }
     }
 }
