@@ -176,7 +176,9 @@ class APIService {
     /// 메인 데이터 조회
     func getMainData(type: String) async throws -> MainResponse {
         let endpoint = Endpoint.main(type: type)
-        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
     }
     
     /// 카테고리별 클래스 조회 (하루수련 - /api/class/category)

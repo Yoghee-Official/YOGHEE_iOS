@@ -8,23 +8,18 @@
 import SwiftUI
 
 struct TodayClassModuleView: View {
-    let items: [TodayClassDTO]
-    let onItemTap: (String) -> Void
-    
+    let item: TodayClassDTO
+    /// 영역 클릭 시 마이페이지 랜딩
+    let onTap: () -> Void
+
     var body: some View {
         VStack(spacing: 0) {
-            // 첫 번째 아이템의 텍스트를 표시
-            let displayText: String = "오늘 예약된 수련이 없습니다."
-//            if let firstItem = items.first {
-//                displayText = "\(firstItem.className) (\(firstItem.startTime) - \(firstItem.endTime))"
-//            } else {
-//                displayText = "오늘 예약된 수련이 없습니다."
-//            }
-            
             HStack {
-                Text(displayText)
+                Text(item.message)
                     .pretendardFont(.bold, size: 12)
                     .foregroundColor(.black)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 32)
@@ -33,5 +28,8 @@ struct TodayClassModuleView: View {
             .padding(.horizontal, 16)
         }
         .padding(.vertical, 7.5)
+        .onTapGesture {
+            onTap()
+        }
     }
 }

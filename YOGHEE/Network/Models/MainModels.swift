@@ -36,7 +36,7 @@ struct MainResponse: Codable {
 
 // MARK: - Main Data
 struct MainDataDTO: Codable {
-    let todayClass: [TodayClassDTO]
+    let todayClass: TodayClassDTO
     let imageBanner: [MainBannerClassDTO]
     let interestedClass: [ClassDTO]?
     let interestedCenter: [CenterDTO]?
@@ -49,13 +49,9 @@ struct MainDataDTO: Codable {
 }
 
 struct TodayClassDTO: Codable {
-    let classId: String
-    let className: String
-    let type: ClassType
-    let address: String
-    let scheduleId: String
-    let startTime: String
-    let endTime: String
+    let message: String
+    let classId: String?
+    let sessionId: String?
 }
 
 struct MainBannerClassDTO: Codable {
@@ -161,7 +157,7 @@ struct CategoryClassResponse: Codable {
 
 // MARK: - Home Section
 enum HomeSection: Identifiable {
-    case todayClass(title: String, items: [TodayClassDTO])
+    case todayClass(title: String, items: TodayClassDTO)
     case imageBanner(title: String, items: [MainBannerClassDTO])
     case interestedClass(title: String, items: [ClassDTO])
     case interestedCenter(title: String, items: [CenterDTO])

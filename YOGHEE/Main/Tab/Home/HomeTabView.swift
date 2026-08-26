@@ -12,6 +12,8 @@ struct HomeTabView: View {
     @StateObject private var container = HomeTabContainer()
     @Binding var navigationPath: NavigationPath
     @Binding var isTabBarHidden: Bool
+    /// 오늘의 수련 모듈 클릭 시 마이페이지 탭으로 이동
+    let onNavigateToMyPage: () -> Void
     @State private var initialOffset: CGFloat?
     @State private var contentHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
@@ -45,7 +47,8 @@ struct HomeTabView: View {
                                 ForEach(Array(container.state.sections.enumerated()), id: \.element.id) { index, section in
                                     SectionView(
                                         section: section,
-                                        selectedClassType: container.state.selectedClassType
+                                        selectedClassType: container.state.selectedClassType,
+                                        onTodayClassTap: onNavigateToMyPage
                                     ) { itemId in
                                         container.handleIntent(.selectItem(itemId, section.id))
                                     }
@@ -147,8 +150,10 @@ struct HomeTabView: View {
 struct SectionView: View {
     let section: HomeSection
     let selectedClassType: ClassType
+    /// 오늘의 수련 모듈 전용 탭 콜백 (마이페이지 랜딩)
+    let onTodayClassTap: () -> Void
     let onItemTap: (String) -> Void
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if !section.title.isEmpty {
@@ -159,10 +164,10 @@ struct SectionView: View {
                 }
                 .padding(.horizontal, 16) // TODO: 임의로 16 준 상태인데, 모듈 마다 위 아래 패딩(간격) 다르게 줄 수 있도록 고안해봐야할듯
             }
-            
+
             switch section {
-            case .todayClass(_, let items):
-                TodayClassModuleView(items: items, onItemTap: onItemTap)
+            case .todayClass(_, let item):
+                TodayClassModuleView(item: item, onTap: onTodayClassTap)
             case .imageBanner(_, let items):
                 MainBannerModuleView(items: items, onItemTap: onItemTap)
             case .interestedClass(_, let items):
@@ -212,5 +217,5 @@ extension HomeTabView {
 }
 
 #Preview {
-    HomeTabView(navigationPath: .constant(NavigationPath()), isTabBarHidden: .constant(false))
+    HomeTabView(navigationPath: .constant(NavigationPath()), isTabBarHidden: .constant(false), onNavigateToMyPage: {})
 }
