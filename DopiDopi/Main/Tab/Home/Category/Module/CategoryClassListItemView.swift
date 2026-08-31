@@ -204,24 +204,24 @@ private extension View {
 }
 
 // MARK: - Previews
-#Preview("정규수련") {
-    CategoryClassListItemView(
-        categoryClass: .mockData,
-        categoryType: .regular,
-        onTap: {},
-        onFavoriteToggle: {}
-    )
-    .padding()
-    .background(Color.SandBeige)
-}
-
-#Preview("하루수련") {
-    CategoryClassListItemView(
-        categoryClass: .mockData,
-        categoryType: .oneDay,
-        onTap: {},
-        onFavoriteToggle: {}
-    )
-    .padding()
-    .background(Color.SandBeige)
-}
+//#Preview("정규수련") {
+//    CategoryClassListItemView(
+//        categoryClass: .mockData,
+//        categoryType: .regular,
+//        onTap: {},
+//        onFavoriteToggle: {}
+//    )
+//    .padding()
+//    .background(Color.SandBeige)
+//}
+//
+//#Preview("하루수련") {
+//    CategoryClassListItemView(
+//        categoryClass: .mockData,
+//        categoryType: .oneDay,
+//        onTap: {},
+//        onFavoriteToggle: {}
+//    )
+//    .padding()
+//    .background(Color.SandBeige)
+//}

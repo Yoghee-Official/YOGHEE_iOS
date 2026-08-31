@@ -1,4 +1,4 @@
-# YOGHEE
+# DopiDopi
 
 A SwiftUI iOS application.
 
@@ -15,7 +15,7 @@ This is a SwiftUI project created for iOS development.
 ## Getting Started
 
 1. Clone the repository
-2. Open `YOGHEE.xcodeproj` in Xcode
+2. Open `DopiDopi.xcodeproj` in Xcode
 3. Build and run the project
 
 ## Features

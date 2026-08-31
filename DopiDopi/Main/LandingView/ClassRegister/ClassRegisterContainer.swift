@@ -53,12 +53,14 @@ enum ClassRegisterIntent {
     // Step 6: 가격 설정
     /// 1회 수업 금액 (원)
     case setPricePerSession(String)
-    /// 할인 방식: "rate" 정률 / "amount" 정액
-    case setDiscountMethod(String?)
+    /// 할인 적용 여부 (토글, default false)
+    case setDiscountEnabled(Bool)
     /// 할인률 (%)
     case setDiscountRate(String)
-    /// 할인액 (원)
-    case setDiscountAmount(String)
+    /// 할인 적용 기간 시작일 (TODO: 서버 DTO에 필드 추가되면 연동 필요, 현재는 로컬 상태만 저장)
+    case setDiscountStartDate(Date?)
+    /// 할인 적용 기간 종료일 (TODO: 서버 DTO에 필드 추가되면 연동 필요, 현재는 로컬 상태만 저장)
+    case setDiscountEndDate(Date?)
     /// 환불 기준 행 수정 (피그마 기준 3칸 고정, id로 구분)
     case updateRefundRule(id: String, hoursBefore: Int, percent: Int)
     /// 예약 시 안내사항 (최대 3000자)
@@ -133,17 +135,19 @@ struct ClassRegisterState: Equatable {
     // Step 6: 가격 설정
     /// 1회 수업 금액 (원) - 입력 문자열
     var pricePerSession: String = ""
-    /// 할인 방식: "rate" 정률 / "amount" 정액 / nil 미선택
-    var discountMethod: String? = nil
-    /// 할인률 (%) - 정률 선택 시
+    /// 할인 적용 여부 (토글, default false)
+    var isDiscountEnabled: Bool = false
+    /// 할인률 (%)
     var discountRate: String = ""
-    /// 할인액 (원) - 정액 선택 시
-    var discountAmount: String = ""
-    /// 환불 기준 3칸 고정 (수련 시작 N시간 전 N% 환불)
+    /// 할인 적용 기간 시작일 (TODO: 서버 DTO에 필드 추가되면 연동 필요, 현재는 로컬 상태만 저장)
+    var discountStartDate: Date? = nil
+    /// 할인 적용 기간 종료일 (TODO: 서버 DTO에 필드 추가되면 연동 필요, 현재는 로컬 상태만 저장)
+    var discountEndDate: Date? = nil
+    /// 환불 기준 3칸 고정 (수련 시작 N시간 전 N% 환불, 피그마 기준 default 24h/0%, 48h/50%, 72h/100%)
     var refundRules: [RefundRuleRow] = [
-        RefundRuleRow(id: "refund_0", hoursBefore: 0, percent: 0),
-        RefundRuleRow(id: "refund_1", hoursBefore: 0, percent: 0),
-        RefundRuleRow(id: "refund_2", hoursBefore: 0, percent: 0)
+        RefundRuleRow(id: "refund_0", hoursBefore: 24, percent: 0),
+        RefundRuleRow(id: "refund_1", hoursBefore: 48, percent: 50),
+        RefundRuleRow(id: "refund_2", hoursBefore: 72, percent: 100)
     ]
     /// 예약 시 안내사항 (최대 3000자)
     var reservationNotice: String = ""
@@ -241,15 +245,18 @@ class ClassRegisterContainer: ObservableObject {
         case .setPricePerSession(let value):
             objectWillChange.send()
             state.pricePerSession = value
-        case .setDiscountMethod(let value):
+        case .setDiscountEnabled(let value):
             objectWillChange.send()
-            state.discountMethod = value
+            state.isDiscountEnabled = value
         case .setDiscountRate(let value):
             objectWillChange.send()
             state.discountRate = value
-        case .setDiscountAmount(let value):
+        case .setDiscountStartDate(let date):
             objectWillChange.send()
-            state.discountAmount = value
+            state.discountStartDate = date
+        case .setDiscountEndDate(let date):
+            objectWillChange.send()
+            state.discountEndDate = date
         case .updateRefundRule(let id, let hoursBefore, let percent):
             if let idx = state.refundRules.firstIndex(where: { $0.id == id }) {
                 objectWillChange.send()
@@ -420,8 +427,8 @@ class ClassRegisterContainer: ObservableObject {
 
         // MARK: 원데이 전용 — 가격·할인
         let onedayPrice     = Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0
-        let discountPrice   = s.discountMethod == "amount" ? Int(s.discountAmount) : nil
-        let discountRate    = s.discountMethod == "rate"   ? Int(s.discountRate)   : nil
+        let discountRate    = s.isDiscountEnabled ? Int(s.discountRate) : nil
+        // TODO: s.discountStartDate / s.discountEndDate — 서버 DTO에 할인 적용 기간 필드 추가되면 함께 전송
 
         // MARK: 정규 전용 — 수강권(tickets)
         let tickets: [ClassRegisterTicketDto]? = isRegular ? s.regularPricePlans.map {
@@ -468,7 +475,7 @@ class ClassRegisterContainer: ObservableObject {
             price:         isRegular ? regularPrice : onedayPrice,
             categoryCodes: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
             policy:        ClassRegisterPolicyDto(
-                discountPrice:   isRegular ? nil : discountPrice,
+                discountPrice:   nil,
                 discountRate:    isRegular ? nil : discountRate,
                 reservationNote: s.reservationNotice.nilIfEmpty,
                 refundPolicies:  refundPolicies.isEmpty ? nil : refundPolicies

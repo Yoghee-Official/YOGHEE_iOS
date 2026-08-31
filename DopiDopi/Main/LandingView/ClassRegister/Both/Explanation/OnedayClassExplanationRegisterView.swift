@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import SwiftUIIntrospect
 
 struct OnedayClassExplanationRegisterView: View {
     @ObservedObject var container: ClassRegisterContainer
     @Environment(\.dismiss) private var dismiss
-    
+
+    /// "내용" TextEditor가 UITextView.sizeThatFits로 실측한 텍스트 컨텐츠 높이(줄바꿈 반영, 상하 여백 제외)
+    @State private var descriptionContentHeight: CGFloat = 0
+
     /// 원데이 6단계 / 정규 7단계
     private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
     private let currentStep = 1
@@ -42,7 +46,20 @@ struct OnedayClassExplanationRegisterView: View {
             ? "최대 3개까지 자유롭게 선택 가능합니다."
             : "최대 3개까지 선택 가능합니다."
     }
-    
+
+    // MARK: - "제목"/"내용" 입력 박스 공통 스펙 (피그마 COC_MO_1 Frame 2085674830/2085674831 기준)
+    /// 박스 좌우 여백
+    private var inputBoxHorizontalPadding: CGFloat { 20.ratio() }
+    /// 고정 라벨("대표 제목"/"내용") 상단 여백
+    private var inputBoxLabelTopPadding: CGFloat { 20.ratio() }
+    /// 본문(placeholder/입력값) 시작 top 여백 = 라벨 높이(14) + 라벨-본문 간격(12) + 상단 마진(20).
+    /// 아래쪽도 글자수 카운터를 온전히 담으려면 이와 대칭으로 같은 값이 필요함(46).
+    private var inputBoxContentTopPadding: CGFloat { 46.ratio() }
+    /// 글자수 카운터 하단 여백
+    private var inputBoxCounterBottomPadding: CGFloat { 20.ratio() }
+    /// 박스 기본(최소) 높이 = 상단(46) + 본문 1줄(14) + 하단(46)
+    private var inputBoxMinHeight: CGFloat { 106.ratio() }
+
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
@@ -93,7 +110,7 @@ struct OnedayClassExplanationRegisterView: View {
             }
             
             if !isRegularStudioFlow {
-                // 제목 입력 (원데이)
+                // 제목 입력 (원데이, 피그마 COC_MO_1 Frame 2085674830 기준: 좌측 20 / 라벨 top 20 / 입력 시작 top 46 / 박스 h 106)
                 TextField("", text: Binding(
                     get: { container.state.name },
                     set: {
@@ -103,8 +120,9 @@ struct OnedayClassExplanationRegisterView: View {
                 ))
                 .pretendardFont(.medium, size: 12)
                 .foregroundColor(.DarkBlack)
-                .padding(12.ratio())
-                .frame(minHeight: 112.ratio())
+                .padding(.horizontal, inputBoxHorizontalPadding)
+                .padding(.top, inputBoxContentTopPadding)
+                .frame(minHeight: inputBoxMinHeight, alignment: .top)
                 .background(Color.CleanWhite)
                 .cornerRadius(8)
                 .overlay(
@@ -112,11 +130,21 @@ struct OnedayClassExplanationRegisterView: View {
                         .stroke(Color.Background, lineWidth: 1)
                 )
                 .overlay(alignment: .topLeading) {
+                    // 고정 라벨: 입력해도 사라지지 않음
+                    Text("대표 제목 (상세페이지 최상단에 노출돼요!)")
+                        .pretendardFont(.medium, size: 12)
+                        .foregroundColor(.Info)
+                        .padding(.horizontal, inputBoxHorizontalPadding)
+                        .padding(.top, inputBoxLabelTopPadding)
+                        .allowsHitTesting(false)
+                }
+                .overlay(alignment: .topLeading) {
                     if container.state.name.isEmpty {
-                        Text("대표 제목 (상세페이지 최상단에 노출돼요!)\n\n수련 테마를 한줄로 표현해주세요.")
+                        Text("수련 테마를 한줄로 표현해주세요.")
                             .pretendardFont(.medium, size: 12)
                             .foregroundColor(.Info)
-                            .padding(12.ratio())
+                            .padding(.horizontal, inputBoxHorizontalPadding)
+                            .padding(.top, inputBoxContentTopPadding)
                             .allowsHitTesting(false)
                     }
                 }
@@ -124,24 +152,54 @@ struct OnedayClassExplanationRegisterView: View {
                     Text("\(container.state.name.count) / 22")
                         .pretendardFont(.regular, size: 12)
                         .foregroundColor(.Info)
-                        .padding(12.ratio())
+                        .padding(.horizontal, inputBoxHorizontalPadding)
+                        .padding(.bottom, inputBoxCounterBottomPadding)
                         .allowsHitTesting(false)
                 }
             }
-            
-            // 내용 입력
-            TextEditor(text: Binding(
-                get: { container.state.description },
-                set: {
-                    let description = String($0.prefix(3000))
-                    container.handleIntent(.updateExplanation(name: container.state.name, description: description))
+
+            // 내용 입력 (피그마 COC_MO_1 Frame 2085674831 기준: 좌측 20 / 라벨 top 20 / 입력 시작 top 46 / 박스 h 106, 개행 시 높이 자동 확장)
+            // GeometryReader로 실제 사용 가능한 폭을 먼저 확정한 뒤 그 폭 기준으로 sizeThatFits를 계산한다.
+            // (introspect 클로저 안에서 textView.bounds.width를 바로 쓰면, 최종 padding이 반영되기 전
+            //  더 넓은 임시 폭으로 측정되어 실제보다 한 줄 부족하게 계산되는 타이밍 문제가 있었음)
+            GeometryReader { geo in
+                let editorContentWidth = max(0, geo.size.width - inputBoxHorizontalPadding * 2)
+
+                TextEditor(text: Binding(
+                    get: { container.state.description },
+                    set: {
+                        let description = String($0.prefix(3000))
+                        container.handleIntent(.updateExplanation(name: container.state.name, description: description))
+                    }
+                ))
+                .pretendardFont(.medium, size: 12)
+                .foregroundColor(.DarkBlack)
+                // TextEditor 내부 UITextView의 기본 textContainerInset/lineFragmentPadding을 제거해
+                // 아래 가이드 텍스트(Text overlay)와 실제 입력 글자 시작 위치를 동일하게 맞춤 +
+                // UITextView 자신이 TextKit으로 계산한 실제 컨텐츠 높이(sizeThatFits)를 그대로 사용해 박스 높이 갱신
+                // (버전 매처는 배포 타깃이 아닌 "실행 중인 OS 버전" 기준이라, 지원 버전을 모두 나열해야 실기기/시뮬레이터 어디서든 적용됨)
+                .introspect(.textEditor, on: .iOS(.v14, .v15, .v16, .v17, .v18, .v26)) { textView in
+                    textView.textContainerInset = .zero
+                    textView.textContainer.lineFragmentPadding = 0
+                    let fittingHeight = textView.sizeThatFits(
+                        CGSize(width: editorContentWidth, height: .greatestFiniteMagnitude)
+                    ).height
+                    if fittingHeight > 0, abs(descriptionContentHeight - fittingHeight) > 0.5 {
+                        DispatchQueue.main.async {
+                            descriptionContentHeight = fittingHeight
+                        }
+                    }
                 }
-            ))
-            .pretendardFont(.medium, size: 12)
-            .foregroundColor(.DarkBlack)
-            .padding(12.ratio())
-            .frame(minHeight: 112.ratio())
-            .scrollContentBackground(.hidden)
+                .padding(.horizontal, inputBoxHorizontalPadding)
+                .padding(.top, inputBoxContentTopPadding)
+                // 하단도 상단(46 = 라벨 14 + 여백 12 + 상단 마진 20)과 대칭으로 46 확보해야 함.
+                // 20만 주면 "글자수 카운터 자신의 높이(14)"를 못 담아서, 내용이 길어질수록
+                // 정확히 그 차이(14)만큼 마지막 줄이 카운터 자리를 침범했음 — 이게 겹침의 진짜 원인.
+                .padding(.bottom, inputBoxContentTopPadding)
+                .scrollContentBackground(.hidden)
+            }
+            // 박스 전체 높이도 위와 동일하게 상하 대칭으로 확보 (46 + 내용 높이 + 46, 피그마 106 = 46+14+46과 일치)
+            .frame(height: max(inputBoxMinHeight, inputBoxContentTopPadding * 2 + descriptionContentHeight))
             .background(Color.CleanWhite)
             .cornerRadius(8)
             .overlay(
@@ -149,11 +207,21 @@ struct OnedayClassExplanationRegisterView: View {
                     .stroke(Color.Background, lineWidth: 1)
             )
             .overlay(alignment: .topLeading) {
+                // 고정 라벨: 입력해도 사라지지 않음
+                Text("내용")
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.Info)
+                    .padding(.horizontal, inputBoxHorizontalPadding)
+                    .padding(.top, inputBoxLabelTopPadding)
+                    .allowsHitTesting(false)
+            }
+            .overlay(alignment: .topLeading) {
                 if container.state.description.isEmpty {
-                    Text("내용\n\n수련 관련 내용을 작성해주세요.")
+                    Text("수련 관련 내용을 작성해주세요.")
                         .pretendardFont(.medium, size: 12)
                         .foregroundColor(.Info)
-                        .padding(12.ratio())
+                        .padding(.horizontal, inputBoxHorizontalPadding)
+                        .padding(.top, inputBoxContentTopPadding)
                         .allowsHitTesting(false)
                 }
             }
@@ -161,7 +229,8 @@ struct OnedayClassExplanationRegisterView: View {
                 Text("\(container.state.description.count) / 3000")
                     .pretendardFont(.regular, size: 12)
                     .foregroundColor(.Info)
-                    .padding(12.ratio())
+                    .padding(.horizontal, inputBoxHorizontalPadding)
+                    .padding(.bottom, inputBoxCounterBottomPadding)
                     .allowsHitTesting(false)
             }
         }

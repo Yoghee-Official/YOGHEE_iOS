@@ -514,7 +514,7 @@
 			path = Splash;
 			sourceTree = "<group>";
 		};
-		522CE5D72F12A6BF0063FDF5 /* YOGHEE */ = {
+		522CE5D72F12A6BF0063FDF5 /* DopiDopi */ = {
 			isa = PBXGroup;
 			children = (
 				522CE5822F12A6BF0063FDF5 /* .cursor */,
@@ -529,7 +529,7 @@
 				522CE5D52F12A6BF0063FDF5 /* Info.plist */,
 				522CE5D62F12A6BF0063FDF5 /* YOGHEEApp.swift */,
 			);
-			path = YOGHEE;
+			path = DopiDopi;
 			sourceTree = "<group>";
 		};
 		522CE61A2F12A7470063FDF5 /* Profile */ = {
@@ -668,7 +668,7 @@
 			isa = PBXGroup;
 			children = (
 				523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */,
-				522CE5D72F12A6BF0063FDF5 /* YOGHEE */,
+				522CE5D72F12A6BF0063FDF5 /* DopiDopi */,
 				52F308822E3F4CD10066ED1B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -769,9 +769,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		52F308802E3F4CD10066ED1B /* YOGHEE */ = {
+		52F308802E3F4CD10066ED1B /* DopiDopi */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 52F3088C2E3F4CD30066ED1B /* Build configuration list for PBXNativeTarget "YOGHEE" */;
+			buildConfigurationList = 52F3088C2E3F4CD30066ED1B /* Build configuration list for PBXNativeTarget "DopiDopi" */;
 			buildPhases = (
 				52F3087D2E3F4CD10066ED1B /* Sources */,
 				52F3087E2E3F4CD10066ED1B /* Frameworks */,
@@ -781,14 +781,14 @@
 			);
 			dependencies = (
 			);
-			name = YOGHEE;
+			name = DopiDopi;
 			packageProductDependencies = (
 				52D6B92B2E50DEBF00F60E39 /* KakaoSDK */,
 				52D6B92E2E50E27B00F60E39 /* Alamofire */,
 				52A174602EF7F11D00208298 /* SwiftUIIntrospect */,
 				52D6F3E72FAB768000EC9BE8 /* KakaoMapsSDK-SPM */,
 			);
-			productName = YOGHEE;
+			productName = DopiDopi;
 			productReference = 52F308812E3F4CD10066ED1B /* DopiDopi.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -807,7 +807,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 52F3087C2E3F4CD10066ED1B /* Build configuration list for PBXProject "YOGHEE" */;
+			buildConfigurationList = 52F3087C2E3F4CD10066ED1B /* Build configuration list for PBXProject "DopiDopi" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -827,7 +827,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				52F308802E3F4CD10066ED1B /* YOGHEE */,
+				52F308802E3F4CD10066ED1B /* DopiDopi */,
 			);
 		};
 /* End PBXProject section */
@@ -1088,13 +1088,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GA6DG5KFNA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = YOGHEE/Info.plist;
+				INFOPLIST_FILE = DopiDopi/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "프로필 사진을 촬영하기 위해 카메라 접근이 필요합니다";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "프로필 사진을 변경하기 위해 사진 라이브러리 접근이 필요합니다";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1108,7 +1109,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 0.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = Official.Dopi.Dopi;
 				PRODUCT_NAME = DopiDopi;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1123,13 +1124,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = GA6DG5KFNA;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = YOGHEE/Info.plist;
+				INFOPLIST_FILE = DopiDopi/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "프로필 사진을 촬영하기 위해 카메라 접근이 필요합니다";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "프로필 사진을 변경하기 위해 사진 라이브러리 접근이 필요합니다";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -1143,7 +1145,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.0;
+				MARKETING_VERSION = 0.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = Official.Dopi.Dopi;
 				PRODUCT_NAME = DopiDopi;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1156,7 +1158,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		52F3087C2E3F4CD10066ED1B /* Build configuration list for PBXProject "YOGHEE" */ = {
+		52F3087C2E3F4CD10066ED1B /* Build configuration list for PBXProject "DopiDopi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				52F3088A2E3F4CD30066ED1B /* Debug */,
@@ -1165,7 +1167,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		52F3088C2E3F4CD30066ED1B /* Build configuration list for PBXNativeTarget "YOGHEE" */ = {
+		52F3088C2E3F4CD30066ED1B /* Build configuration list for PBXNativeTarget "DopiDopi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				52F3088D2E3F4CD30066ED1B /* Debug */,
