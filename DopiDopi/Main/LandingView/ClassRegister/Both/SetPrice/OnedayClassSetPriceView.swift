@@ -3,7 +3,7 @@
 //  YOGHEE
 //
 //  클래스 생성_금액 설정 화면 (피그마 3578-12859 기준)
-//
+// 피그마 화면 ID: COC_MO_6
 
 import SwiftUI
 
@@ -20,6 +20,9 @@ struct OnedayClassSetPriceView: View {
     @State private var planSheetContext: RegularPlanSheetContext?
     @State private var planPendingDelete: RegularPricePlan?
     @State private var showDeletePlanConfirm = false
+
+    // 할인 적용 기간 선택 시트
+    @State private var showDiscountPeriodSheet = false
     
     private var isRegularStudioFlow: Bool {
         container.state.selectedClassTypeId == "regular"
@@ -95,6 +98,18 @@ struct OnedayClassSetPriceView: View {
             Button("확인", role: .cancel) { registerError = nil }
         } message: {
             if let msg = registerError { Text(msg) }
+        }
+        .sheet(isPresented: $showDiscountPeriodSheet) {
+            DiscountPeriodPickerSheet(
+                startDate: Binding(
+                    get: { container.state.discountStartDate },
+                    set: { container.handleIntent(.setDiscountStartDate($0)) }
+                ),
+                endDate: Binding(
+                    get: { container.state.discountEndDate },
+                    set: { container.handleIntent(.setDiscountEndDate($0)) }
+                )
+            )
         }
         .sheet(item: $planSheetContext) { ctx in
             RegularPlanInputSheet(context: ctx) { plan, replacingId in
@@ -232,20 +247,22 @@ struct OnedayClassSetPriceView: View {
         .padding(.vertical, 4.ratio())
     }
     
-    // MARK: - 할인방식 (피그마: 정률=Mind Orange+흰글자, 정액=Background+검정글자, h32 p12 gap8)
+    // MARK: - 할인 적용 (피그마: 토글 스위치 default 비활성화, ON 시 할인률 기준 + 할인 적용 기간 노출)
     private var discountSection: some View {
         VStack(alignment: .leading, spacing: 24.ratio()) {
             HStack {
-                Text("할인방식")
+                Text("할인 적용")
                     .pretendardFont(.bold, size: 16)
                     .foregroundColor(.DarkBlack)
                 Spacer()
-                HStack(spacing: 8.ratio()) {
-                    discountMethodButton(title: "정률", value: "rate")
-                    discountMethodButton(title: "정액", value: "amount")
-                }
+                Toggle("", isOn: Binding(
+                    get: { container.state.isDiscountEnabled },
+                    set: { container.handleIntent(.setDiscountEnabled($0)) }
+                ))
+                .labelsHidden()
+                .tint(.MindOrange)
             }
-            if container.state.discountMethod == "rate" {
+            if container.state.isDiscountEnabled {
                 HStack {
                     Text("할인률 기준")
                         .pretendardFont(.medium, size: 12)
@@ -269,49 +286,40 @@ struct OnedayClassSetPriceView: View {
                             .foregroundColor(.DarkBlack)
                     }
                 }
-            }
-            if container.state.discountMethod == "amount" {
-                HStack {
-                    Text("할인금액 기준")
-                        .pretendardFont(.medium, size: 12)
-                        .foregroundColor(.DarkBlack)
-                    Spacer()
-                    HStack(spacing: 20.ratio()) {
-                        TextField("0", text: Binding(
-                            get: { container.state.discountAmount },
-                            set: { container.handleIntent(.setDiscountAmount($0)) }
-                        ))
-                        .keyboardType(.numberPad)
-                        .pretendardFont(.bold, size: 14)
-                        .foregroundColor(.MindOrange)
-                        .multilineTextAlignment(.trailing)
-                        .frame(width: 72.ratio())
-                        Text("원 할인")
+                Button(action: { showDiscountPeriodSheet = true }) {
+                    HStack {
+                        Text("할인 적용 기간")
                             .pretendardFont(.medium, size: 12)
                             .foregroundColor(.DarkBlack)
+                        Spacer()
+                        if let start = container.state.discountStartDate,
+                           let end = container.state.discountEndDate {
+                            HStack(spacing: 4.ratio()) {
+                                Text("\(Self.discountDateFormatter.string(from: start)) ~ \(Self.discountDateFormatter.string(from: end))")
+                                    .pretendardFont(.bold, size: 14)
+                                    .foregroundColor(.MindOrange)
+                                Text("까지")
+                                    .pretendardFont(.medium, size: 12)
+                                    .foregroundColor(.DarkBlack)
+                            }
+                        } else {
+                            Text("기간 선택")
+                                .pretendardFont(.medium, size: 12)
+                                .foregroundColor(.Info)
+                        }
                     }
                 }
+                .buttonStyle(.plain)
             }
         }
         .padding(.vertical, 4.ratio())
     }
-    
-    private func discountMethodButton(title: String, value: String) -> some View {
-        let isSelected = container.state.discountMethod == value
-        return Button(action: {
-            container.handleIntent(.setDiscountMethod(isSelected ? nil : value))
-        }) {
-            Text(title)
-                .pretendardFont(.medium, size: 12)
-                .foregroundColor(isSelected ? .CleanWhite : .DarkBlack)
-                .padding(.horizontal, 12.ratio())
-                .padding(.vertical, 12.ratio())
-                .frame(height: 32.ratio())
-                .background(isSelected ? Color.MindOrange : Color.Background)
-                .cornerRadius(8)
-        }
-        .buttonStyle(.plain)
-    }
+
+    private static let discountDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter
+    }()
     
     // MARK: - 환불기준 (피그마: 예약 취소 안내 (환급금액) + 3행, 숫자 Mind Orange Bold 14)
     private var refundSection: some View {
@@ -479,7 +487,7 @@ struct OnedayClassSetPriceView: View {
                 }
                 .buttonStyle(.plain)
                 Button(action: completeRegistration) {
-                    Text("계속")
+                    Text("등록")
                         .pretendardFont(.semiBold, size: 15)
                         .foregroundColor(canComplete ? .DarkBlack : .Info)
                         .frame(maxWidth: .infinity)
@@ -734,6 +742,96 @@ private struct RegularPlanInputSheet: View {
             totalSessions: totalSessions
         )
         onApply(plan, replacingId)
+    }
+}
+
+// MARK: - 할인 적용 기간 선택 바텀시트 (네이티브 DatePicker 2개: 시작일/종료일)
+private struct DiscountPeriodPickerSheet: View {
+    @Binding var startDate: Date?
+    @Binding var endDate: Date?
+
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var tempStart: Date
+    @State private var tempEnd: Date
+
+    init(startDate: Binding<Date?>, endDate: Binding<Date?>) {
+        self._startDate = startDate
+        self._endDate = endDate
+        let now = Date()
+        self._tempStart = State(initialValue: startDate.wrappedValue ?? now)
+        self._tempEnd = State(initialValue: endDate.wrappedValue ?? now)
+    }
+
+    private var canApply: Bool { tempEnd >= tempStart }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            RoundedRectangle(cornerRadius: 100)
+                .fill(Color.Info)
+                .frame(width: 80.ratio(), height: 4.ratio())
+                .padding(.top, 16.ratio())
+                .padding(.bottom, 12.ratio())
+
+            Text("할인 적용 기간")
+                .pretendardFont(.bold, size: 16)
+                .foregroundColor(.DarkBlack)
+                .padding(.bottom, 12.ratio())
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20.ratio()) {
+                    VStack(alignment: .leading, spacing: 8.ratio()) {
+                        Text("시작일")
+                            .pretendardFont(.medium, size: 12)
+                            .foregroundColor(.DarkBlack)
+                        DatePicker("", selection: $tempStart, displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                            .tint(.MindOrange)
+                            .labelsHidden()
+                    }
+                    VStack(alignment: .leading, spacing: 8.ratio()) {
+                        Text("종료일")
+                            .pretendardFont(.medium, size: 12)
+                            .foregroundColor(.DarkBlack)
+                        DatePicker("", selection: $tempEnd, in: tempStart..., displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                            .tint(.MindOrange)
+                            .labelsHidden()
+                    }
+                }
+                .padding(.horizontal, 16.ratio())
+                .padding(.bottom, 120.ratio())
+            }
+            .scrollDismissesKeyboard(.immediately)
+
+            VStack(spacing: 0) {
+                Rectangle()
+                    .fill(Color.Background)
+                    .frame(height: 1)
+                Button(action: {
+                    startDate = tempStart
+                    endDate = tempEnd
+                    dismiss()
+                }) {
+                    Text("적용")
+                        .pretendardFont(.semiBold, size: 15)
+                        .foregroundColor(canApply ? .DarkBlack : .Info)
+                        .frame(width: 208.ratio(), height: 48.ratio())
+                        .background(
+                            RoundedRectangle(cornerRadius: 79)
+                                .fill(canApply ? Color.GheeYellow : Color.Background)
+                        )
+                }
+                .buttonStyle(.plain)
+                .disabled(!canApply)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .padding(16.ratio())
+            }
+            .background(Color.CleanWhite)
+        }
+        .background(Color.CleanWhite)
+        .presentationDetents([.large])
+        .presentationDragIndicator(.hidden)
     }
 }
 
