@@ -28,8 +28,9 @@ struct HomeTabView: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVStack(spacing: 0) {
                             if container.state.isLoading {
-                                ProgressView("데이터 로딩 중...")
-                                    .frame(maxWidth: .infinity, minHeight: 200)
+                                // 헤더를 제외한 스크롤 영역 전체(뷰포트 높이)를 채우는 로딩 화면
+                                LoadingView()
+                                    .frame(width: scrollGeometry.size.width, height: scrollGeometry.size.height)
                             } else if let errorMessage = container.state.errorMessage {
                                 VStack(spacing: 16) {
                                     Text("오류가 발생했습니다")

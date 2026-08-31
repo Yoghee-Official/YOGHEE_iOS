@@ -152,7 +152,7 @@ struct ReviewListView: View {
     private var reviewList: some View {
         Group {
             if container.state.isLoading {
-                ProgressView()
+                LoadingView()
                     .frame(maxWidth: .infinity)
                     .padding(.top, 60)
             } else if container.state.reviews.isEmpty {
