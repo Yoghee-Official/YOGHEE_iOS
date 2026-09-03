@@ -61,8 +61,7 @@ struct CategoryMainView: View {
                 // 수련원 목록 리스트
                 if container.state.isLoading {
                     Spacer()
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
+                    LoadingView()
                     Spacer()
                 } else if let errorMessage = container.state.errorMessage {
                     Spacer()

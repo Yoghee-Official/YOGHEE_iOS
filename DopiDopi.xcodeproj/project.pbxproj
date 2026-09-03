@@ -72,6 +72,7 @@
 		522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CE2F12A6BF0063FDF5 /* APIService+Auth.swift */; };
 		522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CF2F12A6BF0063FDF5 /* AuthManager.swift */; };
 		522CE6112F12A6BF0063FDF5 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5D12F12A6BF0063FDF5 /* SplashView.swift */; };
+		AEDE08A47FB14997B7125CF6 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB34BC78EC14B1D977C281B /* LoadingView.swift */; };
 		522CE6122F12A6BF0063FDF5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5D42F12A6BF0063FDF5 /* ContentView.swift */; };
 		522CE6132F12A6BF0063FDF5 /* YOGHEEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5D62F12A6BF0063FDF5 /* YOGHEEApp.swift */; };
 		522CE6142F12A6BF0063FDF5 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 522CE58A2F12A6BF0063FDF5 /* Pretendard-Bold.otf */; };
@@ -196,6 +197,7 @@
 		522CE5CE2F12A6BF0063FDF5 /* APIService+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIService+Auth.swift"; sourceTree = "<group>"; };
 		522CE5CF2F12A6BF0063FDF5 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		522CE5D12F12A6BF0063FDF5 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		9EB34BC78EC14B1D977C281B /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		522CE5D32F12A6BF0063FDF5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		522CE5D42F12A6BF0063FDF5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		522CE5D52F12A6BF0063FDF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -475,6 +477,7 @@
 				52295B2E2F49F81400E615E1 /* CustomView */,
 				52295B1F2F2F947000E615E1 /* LandingView */,
 				52295B112F23DE6600E615E1 /* CommonView */,
+				22DA650E3D414FA88956A419 /* LoadingView */,
 				522CE5C62F12A6BF0063FDF5 /* OnboardingView.swift */,
 			);
 			path = Main;
@@ -512,6 +515,14 @@
 				522CE5D12F12A6BF0063FDF5 /* SplashView.swift */,
 			);
 			path = Splash;
+			sourceTree = "<group>";
+		};
+		22DA650E3D414FA88956A419 /* LoadingView */ = {
+			isa = PBXGroup;
+			children = (
+				9EB34BC78EC14B1D977C281B /* LoadingView.swift */,
+			);
+			path = LoadingView;
 			sourceTree = "<group>";
 		};
 		522CE5D72F12A6BF0063FDF5 /* DopiDopi */ = {
@@ -946,6 +957,7 @@
 				52735D233020D1E800515B0C /* ExploreBottomSheetView.swift in Sources */,
 				522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */,
 				522CE6112F12A6BF0063FDF5 /* SplashView.swift in Sources */,
+				AEDE08A47FB14997B7125CF6 /* LoadingView.swift in Sources */,
 				522CE6122F12A6BF0063FDF5 /* ContentView.swift in Sources */,
 				52295B232F324D5900E615E1 /* MyPageEmptyView.swift in Sources */,
 				52F987A02F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift in Sources */,

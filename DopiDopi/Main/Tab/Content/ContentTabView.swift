@@ -47,8 +47,8 @@ struct ContentTabView: View {
     @ViewBuilder
     private var contentBody: some View {
         if container.state.isLoading {
-            ProgressView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // 헤더를 제외한 나머지 영역 전체를 채우는 로딩 화면 (LoadingView 자체가 꽉 채움)
+            LoadingView()
         } else if container.state.items.isEmpty {
             emptyStateView
         } else {
