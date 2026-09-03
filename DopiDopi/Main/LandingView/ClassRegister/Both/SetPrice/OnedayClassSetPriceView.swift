@@ -38,7 +38,15 @@ struct OnedayClassSetPriceView: View {
             return !container.state.regularPricePlans.isEmpty
         }
         let price = container.state.pricePerSession.trimmingCharacters(in: .whitespacesAndNewlines)
-        return !price.isEmpty && (Int(price.replacingOccurrences(of: ",", with: "")) ?? 0) >= 0
+        guard !price.isEmpty, (Int(price.replacingOccurrences(of: ",", with: "")) ?? 0) >= 0 else { return false }
+        // 할인 적용 시 서버 정책상 할인율 + 적용 기간(시작일/종료일)이 모두 필수
+        if container.state.isDiscountEnabled {
+            let rate = Int(container.state.discountRate) ?? 0
+            guard (1...100).contains(rate),
+                  container.state.discountStartDate != nil,
+                  container.state.discountEndDate != nil else { return false }
+        }
+        return true
     }
     
     var body: some View {
@@ -347,18 +355,12 @@ struct OnedayClassSetPriceView: View {
                 Text("수련 시작")
                     .pretendardFont(.medium, size: 12)
                     .foregroundColor(.DarkBlack)
-                TextField("0", value: Binding(
-                    get: { rule.hoursBefore },
-                    set: { newVal in
-                        let current = container.state.refundRules.first(where: { $0.id == rule.id })
-                        container.handleIntent(.updateRefundRule(id: rule.id, hoursBefore: newVal, percent: current?.percent ?? 0))
-                    }
-                ), format: .number)
-                .keyboardType(.numberPad)
-                .pretendardFont(.bold, size: 14)
-                .foregroundColor(.MindOrange)
-                .multilineTextAlignment(.center)
-                .frame(width: 44.ratio())
+                // 24/48/72시간 기준은 고정값이라 수정 불가 (표시만)
+                Text("\(rule.hoursBefore)")
+                    .pretendardFont(.bold, size: 14)
+                    .foregroundColor(.MindOrange)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 44.ratio())
                 Text("시간 전")
                     .pretendardFont(.medium, size: 12)
                     .foregroundColor(.DarkBlack)
