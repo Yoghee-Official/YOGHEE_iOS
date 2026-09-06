@@ -2,15 +2,20 @@ import Foundation
 import Alamofire
 
 // MARK: - API Error
-enum APIError: Error, Equatable {
+// LocalizedError를 채택해야 `error.localizedDescription`(Error 익시스텐셜로 호출 시)이
+// 아래 errorDescription을 실제로 반환한다. 그냥 이름이 같은 프로퍼티(예전엔 localizedDescription)만
+// 정의하면 Foundation의 제네릭 NSError 브릿징 메시지가 대신 나가서 이 메시지들이 무시됐었음.
+enum APIError: LocalizedError, Equatable {
     case unauthorized
     case tokenExpired
     case networkError(Error)
     case decodingError(Error)
     case invalidResponse
     case notFound
-    
-    var localizedDescription: String {
+    /// 서버가 4xx/5xx 응답 바디에 담아 내려준 errorMessage (예: "종료 시간은 시작 시간보다 늦어야 합니다.")
+    case serverError(statusCode: Int, errorCode: String?, message: String)
+
+    var errorDescription: String? {
         switch self {
         case .unauthorized:
             return "로그인이 필요합니다"
@@ -24,9 +29,11 @@ enum APIError: Error, Equatable {
             return "잘못된 응답입니다"
         case .notFound:
             return "요청한 데이터를 찾을 수 없습니다"
+        case .serverError(_, _, let message):
+            return message
         }
     }
-    
+
     static func == (lhs: APIError, rhs: APIError) -> Bool {
         switch (lhs, rhs) {
         case (.unauthorized, .unauthorized),
@@ -38,10 +45,18 @@ enum APIError: Error, Equatable {
             (.decodingError, .decodingError):
             // Error 타입은 Equatable이 아니므로 케이스만 비교
             return true
+        case (.serverError(let lCode, _, let lMsg), .serverError(let rCode, _, let rMsg)):
+            return lCode == rCode && lMsg == rMsg
         default:
             return false
         }
     }
+}
+
+/// 서버 에러 응답 바디 (예: {"code":400,"status":"fail","errorCode":"INVALID_REQUEST","errorMessage":"..."})
+private struct APIErrorBody: Codable {
+    let errorCode: String?
+    let errorMessage: String?
 }
 
 class APIService {
@@ -368,6 +383,11 @@ class APIService {
                             } else if statusCode == 404 {
                                 self?.log("⚠️ 404 Not Found")
                                 continuation.resume(throwing: APIError.notFound)
+                            } else if let data = response.data,
+                                      let body = try? JSONDecoder().decode(APIErrorBody.self, from: data),
+                                      let message = body.errorMessage {
+                                self?.log("⚠️ 서버 에러 메시지: \(message)")
+                                continuation.resume(throwing: APIError.serverError(statusCode: statusCode, errorCode: body.errorCode, message: message))
                             } else {
                                 continuation.resume(throwing: APIError.networkError(error))
                             }
