@@ -359,6 +359,14 @@ class ClassRegisterContainer: ObservableObject {
         state.amenities  = YogaCodeHardcoded.amenities
     }
     
+    /// 할인 적용 기간 등 서버 전송용 날짜 포맷 (yyyy-MM-dd, /api/class PolicyDto.discountStartDate/discountEndDate 기준)
+    private static let apiDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
+
     /// state 기준으로 클래스 등록 요청 DTO 생성 후 POST /api/class 호출
     func registerClass() async throws -> ClassRegisterResponse {
         let s = state
@@ -424,11 +432,12 @@ class ClassRegisterContainer: ObservableObject {
             }
             return s.name
         }()
-
         // MARK: 원데이 전용 — 가격·할인
         let onedayPrice     = Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0
         let discountRate    = s.isDiscountEnabled ? Int(s.discountRate) : nil
-        // TODO: s.discountStartDate / s.discountEndDate — 서버 DTO에 할인 적용 기간 필드 추가되면 함께 전송
+        // 할인율 입력 시 서버에서 시작일/종료일 필수
+        let discountStartDate = discountRate != nil ? s.discountStartDate.map(Self.apiDateFormatter.string(from:)) : nil
+        let discountEndDate   = discountRate != nil ? s.discountEndDate.map(Self.apiDateFormatter.string(from:)) : nil
 
         // MARK: 정규 전용 — 수강권(tickets)
         let tickets: [ClassRegisterTicketDto]? = isRegular ? s.regularPricePlans.map {
@@ -475,10 +484,11 @@ class ClassRegisterContainer: ObservableObject {
             price:         isRegular ? regularPrice : onedayPrice,
             categoryCodes: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
             policy:        ClassRegisterPolicyDto(
-                discountPrice:   nil,
-                discountRate:    isRegular ? nil : discountRate,
-                reservationNote: s.reservationNotice.nilIfEmpty,
-                refundPolicies:  refundPolicies.isEmpty ? nil : refundPolicies
+                discountRate:      isRegular ? nil : discountRate,
+                discountStartDate: isRegular ? nil : discountStartDate,
+                discountEndDate:   isRegular ? nil : discountEndDate,
+                reservationNote:   s.reservationNotice.nilIfEmpty,
+                refundPolicies:    refundPolicies.isEmpty ? nil : refundPolicies
             ),
             holidayPolicy: holidayPolicy,
             tickets:       tickets

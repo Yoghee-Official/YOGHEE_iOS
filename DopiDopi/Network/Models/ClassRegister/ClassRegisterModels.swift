@@ -456,8 +456,12 @@ struct ClassRegisterRefundPolicyDto: Codable {
 
 /// 정책 (할인·안내·환불)
 struct ClassRegisterPolicyDto: Codable {
-    let discountPrice: Int?
+    /// 할인율(%), 1~100. 할인 사용 시 필수
     let discountRate: Int?
+    /// 할인 적용 시작일(포함), yyyy-MM-dd. 할인율 입력 시 필수
+    let discountStartDate: String?
+    /// 할인 적용 종료일(포함), yyyy-MM-dd. 할인율 입력 시 필수
+    let discountEndDate: String?
     let reservationNote: String?
     let refundPolicies: [ClassRegisterRefundPolicyDto]?
 }
