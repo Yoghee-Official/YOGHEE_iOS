@@ -8,18 +8,22 @@ import SwiftUI
 /// 4a 지도자/수련원 소개(앞/뒷면) / 4b 수련 설명 / 4c 요가 타입·수련 방식·수련 대상 모듈
 struct InstructorClassModuleView: View {
     let detail: YogaClassDetailDTO
+    /// 등록 중 미리보기 등 아직 프로필/수련원 카드용 이미지·소개가 확정되지 않은 상황에서 카드 자체를 숨길 때 false
+    var showsCard: Bool = true
 
     @State private var isFlipped: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 32) {
             // 4a: 하루수련 → 지도자 카드 / 정규수련 → 수련원 카드
-            if detail.masterInfo != nil {
-                instructorCard
-                    .padding(.horizontal, 16)
-            } else if let center = detail.center {
-                centerCard(center: center)
-                    .padding(.horizontal, 16)
+            if showsCard {
+                if detail.masterInfo != nil {
+                    instructorCard
+                        .padding(.horizontal, 16)
+                } else if let center = detail.center {
+                    centerCard(center: center)
+                        .padding(.horizontal, 16)
+                }
             }
 
             // 4b 수련 설명 + 4c 영역들

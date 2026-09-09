@@ -89,6 +89,7 @@ class APIService {
         case notifications
         case myPage(role: UserRole)
         case centerList
+        case centerDetail(centerId: String)
         case centerSearch(bbox: MapBoundingBox, keyword: String?, sort: String?)
         case imagePresign
         case classRegister
@@ -120,6 +121,8 @@ class APIService {
                 }
             case .centerList:
                 return "/api/center"
+            case .centerDetail(let centerId):
+                return "/api/center/\(centerId)"
             case .centerSearch:
                 return "/api/center/search"
             case .imagePresign:
@@ -161,7 +164,7 @@ class APIService {
                 if let keyword { params["keyword"] = keyword }  // 키워드 검색 시만 포함
                 if let sort    { params["sort"]    = sort    }
                 return params
-            case .login, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
+            case .login, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
                 return nil
             }
         }
@@ -263,6 +266,17 @@ class APIService {
         return response.data
     }
     
+    /// 요가원 상세 조회 (GET /api/center/{centerId}). 위경도·amenityCodes 포함.
+    /// 스웨거 문서상 성공 응답 스키마가 다른 엔드포인트와 달리 {code,status,data} 래핑 없이
+    /// CenterDetailDto를 바로 반환하는 것으로 보이나, 이 앱의 다른 API는 전부 래핑돼 있어
+    /// 실제 운영 응답이 어느 쪽이든 안전하게 디코딩되도록 CenterDetailResponse가 두 형태 모두 시도한다.
+    func getCenterDetail(centerId: String) async throws -> CenterDetailDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: CenterDetailResponse = try await get(endPoint: Endpoint.centerDetail(centerId: centerId).path, parameters: nil, headers: headers)
+        return response.data
+    }
+
     /// 요가원 정보 신규 등록 (POST /api/center). 도로명/지번은 둘 중 하나만 있어도 됨.
     func registerCenter(body: NewCenterDto) async throws -> NewCenterResponse {
         guard let token = await getAccessToken() else {

@@ -11,27 +11,47 @@ struct FacilitiesModuleView: View {
 
     var body: some View {
         VStack(spacing: 32) {
-            sectionDivider
+            if !displayAmenityItems.isEmpty {
+                sectionDivider
 
-            facilitiesSection(
-                title: "수련원 보유 물품",
-                items: Array(FacilitiesDummy.amenities.prefix(21))
-            )
+                facilitiesSection(
+                    title: "수련원 보유 물품",
+                    items: displayAmenityItems
+                )
+            }
 
-            if !displayAmenities.isEmpty {
+            if !displayFacilityItems.isEmpty {
                 sectionDivider
 
                 facilitiesSection(
                     title: "편의시설",
-                    items: displayAmenities
+                    items: displayFacilityItems
                 )
             }
         }
         .padding(.horizontal, 16)
     }
 
-    private var displayAmenities: [String] {
-        Array((detail.center?.amenities ?? []).prefix(10))
+    /// 요가원의 amenities 코드 목록을 "제공물품"/"편의시설" 코드북(YogaCodeHardcoded.amenities) 기준으로 분리해 한글명으로 변환.
+    /// 코드북에 없는 값은 표시라도 되도록 원문 그대로 편의시설 쪽에 노출한다.
+    private var displayAmenityItems: [String] {
+        let codes = detail.center?.amenities ?? []
+        let amenityIds = Set(YogaCodeHardcoded.amenities.amenity.map(\.id))
+        let nameById = Dictionary(uniqueKeysWithValues: YogaCodeHardcoded.amenities.amenity.map { ($0.id, $0.name) })
+        return codes.filter { amenityIds.contains($0) }.compactMap { nameById[$0] }
+    }
+
+    private var displayFacilityItems: [String] {
+        let codes = detail.center?.amenities ?? []
+        let amenityIds = Set(YogaCodeHardcoded.amenities.amenity.map(\.id))
+        let facilityIds = Set(YogaCodeHardcoded.amenities.facility.map(\.id))
+        let nameById = Dictionary(uniqueKeysWithValues: YogaCodeHardcoded.amenities.facility.map { ($0.id, $0.name) })
+        return codes.compactMap { code in
+            if let name = nameById[code] { return name }
+            // 코드북 어디에도 없는 값은 편의시설 쪽에 원문 그대로 노출 (물품 코드북에 있는 값은 위에서 이미 처리했으니 제외)
+            if !amenityIds.contains(code) && !facilityIds.contains(code) { return code }
+            return nil
+        }
     }
 
     private var sectionDivider: some View {
@@ -85,15 +105,4 @@ private struct FacilitiesGridView: View {
             }
         }
     }
-}
-
-// MARK: - 더미 데이터 (5a 수련원 보유 물품, 서버 필드 확정 후 교체)
-
-private enum FacilitiesDummy {
-    static let amenities: [String] = [
-        "Wifi 🚧", "소독액 🚧", "물티슈 🚧",
-        "싱잉볼 🚧", "블럭 🚧", "볼스터 🚧",
-        "매트 🚧", "폼롤러 🚧", "담요 🚧",
-        "타올 🚧", "스트랩 🚧"
-    ]
 }
