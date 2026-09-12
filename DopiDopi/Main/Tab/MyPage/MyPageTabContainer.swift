@@ -271,36 +271,15 @@ class MyPageTabContainer: ObservableObject {
                     self.state.isLoading = false
                 }
             } catch {
-                // 401 에러 (만료된 토큰)인 경우 자동 로그인 시도
+                // 토큰 만료(401)에 대한 갱신+재시도는 APIService 내부에서 이미 처리되고 온 뒤이므로,
+                // 여기서 401을 받았다는 것은 리프레시 토큰까지 만료되어 갱신이 실패했다는 뜻이다.
+                // → 재시도하지 않고 바로 로그인 화면을 띄운다.
                 switch error {
                 case APIError.unauthorized, APIError.tokenExpired:
-                    log("🔄 토큰 만료 감지 - 자동 로그인 시도")
-                    
-                    // 토큰 갱신 시도
-                    await AuthManager.shared.checkAutoLogin()
-                    
-                    // 갱신 성공 시 재시도
-                    if AuthManager.shared.isAuthenticated {
-                        log("✅ 토큰 갱신 성공 - 데이터 재요청")
-                        do {
-                            let response = try await APIService.shared.getMyPageData(for: state.currentRole)
-                            await MainActor.run {
-                                self.state.myPageData = response.data
-                                self.state.sections = self.createSections(from: response.data)
-                                self.state.isLoading = false
-                            }
-                        } catch {
-                            await MainActor.run {
-                                self.handleError(error, context: "MyPage 데이터 로딩")
-                            }
-                        }
-                    } else {
-                        // 갱신 실패 시 로그인 화면 표시
-                        log("❌ 토큰 갱신 실패 - 로그인 화면 표시")
-                        await MainActor.run {
-                            self.showLoginSheet = true
-                            self.state.isLoading = false
-                        }
+                    log("❌ 토큰 갱신 실패 - 로그인 화면 표시")
+                    await MainActor.run {
+                        self.showLoginSheet = true
+                        self.state.isLoading = false
                     }
                 default:
                     // 다른 에러인 경우 일반 에러 처리

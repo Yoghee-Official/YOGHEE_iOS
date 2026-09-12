@@ -326,7 +326,50 @@ class APIService {
     // MARK: - Internal Methods
     
     /// 공통 요청 처리 메서드
+    /// 인증이 필요한 요청(Authorization 헤더 포함)이 401(토큰 만료)을 받으면
+    /// 토큰을 갱신한 뒤 새 토큰으로 같은 요청을 1회 재시도한다.
+    /// 재시도 후에도 실패하면 그대로 에러를 던진다(무한 재시도 방지).
     private func request<T: Codable>(
+        method: HTTPMethod,
+        endPoint: String,
+        parameters: Parameters? = nil,
+        encoding: ParameterEncoding = URLEncoding.default,
+        headers: HTTPHeaders? = nil,
+        isRetryAfterRefresh: Bool = false
+    ) async throws -> T {
+        do {
+            return try await performRequest(
+                method: method,
+                endPoint: endPoint,
+                parameters: parameters,
+                encoding: encoding,
+                headers: headers
+            )
+        } catch APIError.tokenExpired where !isRetryAfterRefresh && headers?["Authorization"] != nil {
+            log("🔄 401 감지 - 토큰 갱신 후 재시도합니다")
+
+            guard await AuthManager.shared.ensureValidToken(),
+                  let newToken = await getAccessToken() else {
+                log("❌ 토큰 갱신 실패 - 재시도하지 않습니다")
+                throw APIError.tokenExpired
+            }
+
+            var refreshedHeaders = headers ?? HTTPHeaders()
+            refreshedHeaders["Authorization"] = "Bearer \(newToken)"
+
+            return try await request(
+                method: method,
+                endPoint: endPoint,
+                parameters: parameters,
+                encoding: encoding,
+                headers: refreshedHeaders,
+                isRetryAfterRefresh: true
+            )
+        }
+    }
+
+    /// 실제 네트워크 요청을 수행하는 메서드 (Alamofire 호출부)
+    private func performRequest<T: Codable>(
         method: HTTPMethod,
         endPoint: String,
         parameters: Parameters? = nil,

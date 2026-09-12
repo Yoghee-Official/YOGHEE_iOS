@@ -15,7 +15,12 @@ class AuthManager: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var isAuthenticated: Bool = false
-    private var isProcessingLogin = false // 중복 호출 방지
+    private var isProcessingLogin = false // SSO 로그인 중복 호출 방지
+
+    // MARK: - Token Refresh (single-flight)
+    /// 진행 중인 토큰 갱신 작업. 여러 곳에서 동시에 401을 맞아도
+    /// 실제 갱신 API는 1번만 호출되고, 나머지는 이 작업의 결과를 기다린다.
+    private var refreshTask: Task<Bool, Never>?
     
     // MARK: - Token Storage (단일 소스)
     private let accessTokenKey = "accessToken"
@@ -90,58 +95,75 @@ class AuthManager: ObservableObject {
     
     func checkAutoLogin() async {
         // 저장된 토큰이 없으면 종료
-        guard let accessToken = accessToken,
-              let refreshToken = refreshToken else {
+        guard accessToken != nil, refreshToken != nil else {
             print("ℹ️ 저장된 토큰이 없습니다.")
             return
         }
-        
-        // 이미 처리 중이면 중복 호출 방지
-        guard !isProcessingLogin else {
-            print("⚠️ 이미 로그인 처리 중입니다.")
-            return
-        }
-        
-        isProcessingLogin = true
+
+        print("🔄 자동 로그인 체크 시작")
         isLoading = true
         errorMessage = nil
-        
-        print("🔄 자동 로그인 체크 시작")
-        
-        do {
-            print("📞 토큰 갱신 API 호출 중...")
-            let response = try await APIService.shared.refreshLoginToken(
-                accessToken: accessToken,
-                refreshToken: refreshToken
-            )
-            
-            print("📥 토큰 갱신 응답 받음")
-            print("SSOLoginResponse: \(response)")
-            
-            if let loginData = response.data {
+
+        let success = await ensureValidToken()
+
+        if success {
+            print("✅ 자동 로그인 성공!")
+        } else {
+            print("❌ 자동 로그인 실패")
+            errorMessage = "자동 로그인에 실패했습니다."
+        }
+
+        isLoading = false
+        print("🏁 자동 로그인 체크 완료")
+    }
+
+    /// 토큰 갱신을 보장한다.
+    /// - 이미 진행 중인 갱신 작업이 있으면 새로 호출하지 않고 그 결과를 기다린다(single-flight).
+    ///   → 여러 API 호출이 동시에 401을 받아도 `/auth/refresh`는 1번만 호출된다.
+    /// - 갱신에 성공하면 accessToken/refreshToken을 갱신하고 true를 반환한다.
+    /// - 갱신에 실패하면(리프레시 토큰 만료 등) 로그아웃 처리 후 false를 반환한다.
+    @discardableResult
+    func ensureValidToken() async -> Bool {
+        if let refreshTask {
+            print("⏳ 이미 진행 중인 토큰 갱신을 대기합니다.")
+            return await refreshTask.value
+        }
+
+        guard let currentAccessToken = accessToken,
+              let currentRefreshToken = refreshToken else {
+            return false
+        }
+
+        let task = Task<Bool, Never> { [weak self] in
+            guard let self else { return false }
+            do {
+                print("📞 토큰 갱신 API 호출 중...")
+                let response = try await APIService.shared.refreshLoginToken(
+                    accessToken: currentAccessToken,
+                    refreshToken: currentRefreshToken
+                )
+
+                guard let loginData = response.data else {
+                    print("❌ 토큰 갱신 실패: 응답 데이터가 nil입니다")
+                    self.logout()
+                    return false
+                }
+
                 print("✅ 토큰 갱신 성공")
-                // 새로운 토큰 저장
                 self.accessToken = loginData.accessToken
                 self.refreshToken = loginData.refreshToken
-                print("✅ 자동 로그인 성공!")
-                print("New Access Token: \(loginData.accessToken)")
-                print("New Refresh Token: \(loginData.refreshToken)")
-            } else {
-                print("❌ 토큰 갱신 실패: 응답 데이터가 nil입니다")
-                // 토큰 갱신 실패 시 로그아웃 처리
-                logout()
-                errorMessage = "자동 로그인에 실패했습니다."
+                return true
+            } catch {
+                print("❌ 토큰 갱신 에러 발생: \(error)")
+                self.logout()
+                return false
             }
-        } catch {
-            print("❌ 토큰 갱신 에러 발생: \(error)")
-            // 토큰 갱신 실패 시 로그아웃 처리
-            logout()
-            errorMessage = "자동 로그인에 실패했습니다: \(error.localizedDescription)"
         }
-        
-        isLoading = false
-        isProcessingLogin = false
-        print("🏁 자동 로그인 체크 완료")
+
+        refreshTask = task
+        let result = await task.value
+        refreshTask = nil
+        return result
     }
     
     /// 로그아웃
