@@ -2,15 +2,20 @@ import Foundation
 import Alamofire
 
 // MARK: - API Error
-enum APIError: Error, Equatable {
+// LocalizedError를 채택해야 `error.localizedDescription`(Error 익시스텐셜로 호출 시)이
+// 아래 errorDescription을 실제로 반환한다. 그냥 이름이 같은 프로퍼티(예전엔 localizedDescription)만
+// 정의하면 Foundation의 제네릭 NSError 브릿징 메시지가 대신 나가서 이 메시지들이 무시됐었음.
+enum APIError: LocalizedError, Equatable {
     case unauthorized
     case tokenExpired
     case networkError(Error)
     case decodingError(Error)
     case invalidResponse
     case notFound
-    
-    var localizedDescription: String {
+    /// 서버가 4xx/5xx 응답 바디에 담아 내려준 errorMessage (예: "종료 시간은 시작 시간보다 늦어야 합니다.")
+    case serverError(statusCode: Int, errorCode: String?, message: String)
+
+    var errorDescription: String? {
         switch self {
         case .unauthorized:
             return "로그인이 필요합니다"
@@ -24,9 +29,11 @@ enum APIError: Error, Equatable {
             return "잘못된 응답입니다"
         case .notFound:
             return "요청한 데이터를 찾을 수 없습니다"
+        case .serverError(_, _, let message):
+            return message
         }
     }
-    
+
     static func == (lhs: APIError, rhs: APIError) -> Bool {
         switch (lhs, rhs) {
         case (.unauthorized, .unauthorized),
@@ -38,10 +45,18 @@ enum APIError: Error, Equatable {
             (.decodingError, .decodingError):
             // Error 타입은 Equatable이 아니므로 케이스만 비교
             return true
+        case (.serverError(let lCode, _, let lMsg), .serverError(let rCode, _, let rMsg)):
+            return lCode == rCode && lMsg == rMsg
         default:
             return false
         }
     }
+}
+
+/// 서버 에러 응답 바디 (예: {"code":400,"status":"fail","errorCode":"INVALID_REQUEST","errorMessage":"..."})
+private struct APIErrorBody: Codable {
+    let errorCode: String?
+    let errorMessage: String?
 }
 
 class APIService {
@@ -74,6 +89,7 @@ class APIService {
         case notifications
         case myPage(role: UserRole)
         case centerList
+        case centerDetail(centerId: String)
         case centerSearch(bbox: MapBoundingBox, keyword: String?, sort: String?)
         case imagePresign
         case classRegister
@@ -105,6 +121,8 @@ class APIService {
                 }
             case .centerList:
                 return "/api/center"
+            case .centerDetail(let centerId):
+                return "/api/center/\(centerId)"
             case .centerSearch:
                 return "/api/center/search"
             case .imagePresign:
@@ -146,7 +164,7 @@ class APIService {
                 if let keyword { params["keyword"] = keyword }  // 키워드 검색 시만 포함
                 if let sort    { params["sort"]    = sort    }
                 return params
-            case .login, .categoryDetail, .notifications, .myPage, .centerList, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
+            case .login, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
                 return nil
             }
         }
@@ -248,6 +266,17 @@ class APIService {
         return response.data
     }
     
+    /// 요가원 상세 조회 (GET /api/center/{centerId}). 위경도·amenityCodes 포함.
+    /// 스웨거 문서상 성공 응답 스키마가 다른 엔드포인트와 달리 {code,status,data} 래핑 없이
+    /// CenterDetailDto를 바로 반환하는 것으로 보이나, 이 앱의 다른 API는 전부 래핑돼 있어
+    /// 실제 운영 응답이 어느 쪽이든 안전하게 디코딩되도록 CenterDetailResponse가 두 형태 모두 시도한다.
+    func getCenterDetail(centerId: String) async throws -> CenterDetailDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: CenterDetailResponse = try await get(endPoint: Endpoint.centerDetail(centerId: centerId).path, parameters: nil, headers: headers)
+        return response.data
+    }
+
     /// 요가원 정보 신규 등록 (POST /api/center). 도로명/지번은 둘 중 하나만 있어도 됨.
     func registerCenter(body: NewCenterDto) async throws -> NewCenterResponse {
         guard let token = await getAccessToken() else {
@@ -368,6 +397,11 @@ class APIService {
                             } else if statusCode == 404 {
                                 self?.log("⚠️ 404 Not Found")
                                 continuation.resume(throwing: APIError.notFound)
+                            } else if let data = response.data,
+                                      let body = try? JSONDecoder().decode(APIErrorBody.self, from: data),
+                                      let message = body.errorMessage {
+                                self?.log("⚠️ 서버 에러 메시지: \(message)")
+                                continuation.resume(throwing: APIError.serverError(statusCode: statusCode, errorCode: body.errorCode, message: message))
                             } else {
                                 continuation.resume(throwing: APIError.networkError(error))
                             }

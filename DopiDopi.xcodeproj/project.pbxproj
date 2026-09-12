@@ -93,6 +93,7 @@
 		52D6F3D92F9A61E800EC9BE8 /* ContentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3D82F9A61E800EC9BE8 /* ContentModels.swift */; };
 		52D6F3DD2FA79A0D00EC9BE8 /* ClassDetailModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3DC2FA79A0D00EC9BE8 /* ClassDetailModels.swift */; };
 		52D6F3E12FA79B5D00EC9BE8 /* ClassDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E02FA79B5D00EC9BE8 /* ClassDetailView.swift */; };
+		EFB48EF52F4340B4B524AC76 /* ClassRegisterPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB74641DDFE94F0C932942BB /* ClassRegisterPreviewView.swift */; };
 		52D6F3E22FA79B5D00EC9BE8 /* ClassDetailContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3DF2FA79B5D00EC9BE8 /* ClassDetailContainer.swift */; };
 		52D6F3E52FA9886600EC9BE8 /* ClassInfoModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E42FA9886600EC9BE8 /* ClassInfoModuleView.swift */; };
 		52D6F3E72FA9886600EC9BE8 /* InstructorClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */; };
@@ -213,6 +214,7 @@
 		52D6F3DC2FA79A0D00EC9BE8 /* ClassDetailModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassDetailModels.swift; sourceTree = "<group>"; };
 		52D6F3DF2FA79B5D00EC9BE8 /* ClassDetailContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassDetailContainer.swift; sourceTree = "<group>"; };
 		52D6F3E02FA79B5D00EC9BE8 /* ClassDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassDetailView.swift; sourceTree = "<group>"; };
+		FB74641DDFE94F0C932942BB /* ClassRegisterPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterPreviewView.swift; sourceTree = "<group>"; };
 		52D6F3E42FA9886600EC9BE8 /* ClassInfoModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassInfoModuleView.swift; sourceTree = "<group>"; };
 		52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructorClassModuleView.swift; sourceTree = "<group>"; };
 		52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacilitiesModuleView.swift; sourceTree = "<group>"; };
@@ -637,6 +639,7 @@
 				52D6F3DF2FA79B5D00EC9BE8 /* ClassDetailContainer.swift */,
 				52D6F3E02FA79B5D00EC9BE8 /* ClassDetailView.swift */,
 				52D6F3F12FA9886600EC9BE8 /* PriceReservationBarView.swift */,
+				FB74641DDFE94F0C932942BB /* ClassRegisterPreviewView.swift */,
 			);
 			path = ClassDetail;
 			sourceTree = "<group>";
@@ -944,6 +947,7 @@
 				52F987AC2F4D07EC00C905D1 /* ClassRegisterModels.swift in Sources */,
 				52F987A72F559C9000C905D1 /* OnedayClassSelectTypeRegisterView.swift in Sources */,
 				52D6F3E12FA79B5D00EC9BE8 /* ClassDetailView.swift in Sources */,
+				EFB48EF52F4340B4B524AC76 /* ClassRegisterPreviewView.swift in Sources */,
 				52D6F3E22FA79B5D00EC9BE8 /* ClassDetailContainer.swift in Sources */,
 				52D6F3F02FA9886600EC9BE8 /* PriceReservationBarView.swift in Sources */,
 				522CE60B2F12A6BF0063FDF5 /* CategoryModels.swift in Sources */,

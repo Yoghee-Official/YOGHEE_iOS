@@ -495,4 +495,131 @@ class ClassRegisterContainer: ObservableObject {
         )
         return try await APIService.shared.postRegisterClass(body: body)
     }
+
+    /// "결과보기" 버튼용: 아직 서버에 등록하지 않은 현재 입력 state를 그대로
+    /// 수련 상세 화면(YogaClassDetailDTO) 모양으로 조립한다. 실제 등록 API는 호출하지 않음.
+    /// 선택된 요가원이 있으면 GET /api/center/{centerId}로 위경도·보유물품을 함께 채운다
+    /// (place 등록 화면에서 고른 물품/편의시설은 그 화면에만 남아있고 state에 저장되지 않으므로,
+    /// 미리보기 시점에 서버에서 다시 조회해 정확한 값을 가져온다).
+    func buildPreviewDetail() async -> YogaClassDetailDTO {
+        let s = state
+        let isRegular = s.selectedClassTypeId == "regular"
+        let classType: String = isRegular ? "R" : "O"
+
+        // MARK: 이름/설명
+        let previewName: String = {
+            if isRegular {
+                if let centerId = s.selectedCenterId,
+                   let centerName = s.centers.first(where: { $0.centerId == centerId })?.name {
+                    let trimmed = centerName.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmed.isEmpty { return trimmed }
+                }
+            }
+            return s.name.isEmpty ? "제목 미입력" : s.name
+        }()
+
+        // MARK: 스케줄 → ScheduleInfo (dates 배열을 날짜별 1개 항목으로 펼침)
+        let dateFmt = DateFormatter(); dateFmt.dateFormat = "yyyy-MM-dd"
+        let cal = Calendar.current
+        let schedules: [ScheduleInfo] = s.schedules.flatMap { sched -> [ScheduleInfo] in
+            sched.dates.map { dateStr in
+                let dayOfWeek: Int? = {
+                    guard isRegular, let date = dateFmt.date(from: dateStr) else { return nil }
+                    let calWd = cal.component(.weekday, from: date)
+                    return ((calWd - 2 + 7) % 7) + 1
+                }()
+                return ScheduleInfo(
+                    scheduleId: sched.id,
+                    dayOfWeek: dayOfWeek,
+                    specificDate: isRegular ? nil : dateStr,
+                    startTime: sched.startTime.timeString,
+                    endTime: sched.endTime.timeString,
+                    minCapacity: sched.minCapacity,
+                    maxCapacity: sched.maxCapacity,
+                    content: sched.name.nilIfEmpty
+                )
+            }
+        }
+
+        // MARK: 요가원 → CenterInfo (선택된 요가원이 있으면 상세 재조회로 위경도·물품 확보)
+        let center: CenterInfo? = await {
+            guard let centerId = s.selectedCenterId else { return nil }
+            let base = s.centers.first(where: { $0.centerId == centerId })
+            guard let detail = try? await APIService.shared.getCenterDetail(centerId: centerId) else {
+                // 상세 조회 실패 시에도 목록에 있던 기본 정보로 최대한 표시
+                guard let base else { return nil }
+                return CenterInfo(
+                    centerId: base.centerId, name: base.name, description: nil, thumbnail: nil,
+                    fullAddress: base.address, roadAddress: nil, depth1: nil, depth2: nil, depth3: nil,
+                    addressDetail: nil, latitude: base.latitude, longitude: base.longitude, amenities: []
+                )
+            }
+            return CenterInfo(
+                centerId: detail.centerId ?? centerId,
+                name: detail.name ?? base?.name ?? "",
+                description: detail.detailAddress,
+                thumbnail: nil,
+                fullAddress: detail.roadAddress ?? detail.jibunAddress ?? base?.address,
+                roadAddress: detail.roadAddress,
+                depth1: detail.sido,
+                depth2: detail.sigungu,
+                depth3: nil,
+                addressDetail: detail.detailAddress,
+                latitude: detail.latitude ?? base?.latitude,
+                longitude: detail.longitude ?? base?.longitude,
+                amenities: detail.amenityCodes ?? []
+            )
+        }()
+
+        // MARK: 수강권 (미리보기 화면에는 표시되지 않지만 DTO 완결성을 위해 채움)
+        let tickets: [TicketInfo] = isRegular
+            ? s.regularPricePlans.map {
+                TicketInfo(
+                    ticketId: $0.id,
+                    ticketType: $0.planType.rawValue,
+                    price: $0.price,
+                    validMonths: $0.planType == .period ? $0.validMonths : nil,
+                    weeklyCount: $0.planType == .period ? $0.weeklyCount : nil,
+                    totalSessions: $0.planType == .session ? $0.totalSessions : nil
+                )
+            }
+            : [TicketInfo(
+                ticketId: "preview-one-day",
+                ticketType: "ONE_DAY",
+                price: Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0,
+                validMonths: nil, weeklyCount: nil, totalSessions: nil
+            )]
+
+        func codeInfos(ids: Set<String>, in list: [CodeInfoDTO]) -> [CategoryInfo] {
+            list.filter { ids.contains($0.id) }.map { CategoryInfo(categoryId: $0.id, name: $0.name) }
+        }
+        let features: [FeatureInfo] = s.features.enumerated().compactMap { index, code in
+            guard s.featureIds.contains(code.id) else { return nil }
+            return FeatureInfo(featureId: index, code: code.id, description: code.name)
+        }
+
+        return YogaClassDetailDTO(
+            classId: "preview",
+            type: classType,
+            name: previewName,
+            description: s.description.nilIfEmpty,
+            price: isRegular ? (s.regularPricePlans.map(\.price).min() ?? 0) : (Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0),
+            images: [],
+            thumbnail: nil,
+            categories: codeInfos(ids: s.categoryIds, in: s.categories),
+            features: features,
+            favoriteCount: 0,
+            isFavorite: false,
+            reviewCount: 0,
+            rating: 0,
+            recentReviews: [],
+            policy: nil,
+            schedules: schedules,
+            tickets: tickets,
+            center: center,
+            trainingTypes: codeInfos(ids: s.typeIds, in: s.types),
+            trainingTargets: codeInfos(ids: s.targetIds, in: s.targets),
+            masterInfo: nil
+        )
+    }
 }

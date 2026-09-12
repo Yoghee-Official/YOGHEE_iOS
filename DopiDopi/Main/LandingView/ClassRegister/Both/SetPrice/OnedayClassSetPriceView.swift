@@ -16,6 +16,10 @@ struct OnedayClassSetPriceView: View {
     @State private var isRegistering = false
     @State private var registerError: String?
 
+    // 결과보기(미리보기) 모달
+    @State private var previewDetail: YogaClassDetailDTO?
+    @State private var isBuildingPreview = false
+
     // 정규 수련 금액 플랜 시트
     @State private var planSheetContext: RegularPlanSheetContext?
     @State private var planPendingDelete: RegularPricePlan?
@@ -70,7 +74,7 @@ struct OnedayClassSetPriceView: View {
                     // 예약 시 안내사항 (내용 + placeholder + 0/3000)
                     reservationNoticeSection
                     divider
-                    // 미리보기: 그라데이션 버튼 (FlowBlue → NatureGreen)
+                    // 결과보기: 그라데이션 버튼 (FlowBlue → NatureGreen)
                     previewButtonSection
                     Spacer(minLength: 120)
                 }
@@ -90,8 +94,19 @@ struct OnedayClassSetPriceView: View {
             })
             .environment(\.classRegisterPopToRoot, popToRoot)
         }
+        .fullScreenCover(isPresented: Binding(
+            get: { previewDetail != nil },
+            set: { if !$0 { previewDetail = nil } }
+        )) {
+            if let previewDetail {
+                ClassRegisterPreviewView(
+                    detail: previewDetail,
+                    localImages: container.state.classImages.map(\.imageData)
+                )
+            }
+        }
         .overlay {
-            if isRegistering {
+            if isRegistering || isBuildingPreview {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
                 ProgressView()
@@ -445,12 +460,10 @@ struct OnedayClassSetPriceView: View {
         .padding(.vertical, 4.ratio())
     }
     
-    // MARK: - 미리보기 (피그마: FlowBlue → NatureGreen 그라데이션, 48px, rounded 8)
+    // MARK: - 결과보기 (피그마: FlowBlue → NatureGreen 그라데이션, 48px, rounded 8)
     private var previewButtonSection: some View {
-        Button(action: {
-            print("[가격설정] 미리보기 버튼 탭 - 추후 상세 화면 데이터 연동 후 미리보기 팝업 구현 예정")
-        }) {
-            Text("미리보기")
+        Button(action: showPreview) {
+            Text("결과보기")
                 .pretendardFont(.semiBold, size: 15)
                 .foregroundColor(.DarkBlack)
                 .frame(maxWidth: .infinity)
@@ -506,6 +519,18 @@ struct OnedayClassSetPriceView: View {
         .background(Color.SandBeige)
     }
     
+    private func showPreview() {
+        guard !isBuildingPreview else { return }
+        isBuildingPreview = true
+        Task {
+            let detail = await container.buildPreviewDetail()
+            await MainActor.run {
+                isBuildingPreview = false
+                previewDetail = detail
+            }
+        }
+    }
+
     private func completeRegistration() {
         guard !isRegistering else { return }
         isRegistering = true

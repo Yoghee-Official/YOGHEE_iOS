@@ -149,9 +149,56 @@ struct CenterBaseDTO: Codable, Identifiable, Equatable {
     let centerId: String
     let name: String
     let address: String
+    let latitude: Double?
+    let longitude: Double?
     let createdAt: String
-    
+
     var id: String { centerId }
+}
+
+/// 요가원 상세 조회 응답 (GET /api/center/{centerId})
+/// 수정 화면을 다시 채우거나(주소 필드), 미리보기에서 위경도·보유물품 표시에 사용
+struct CenterDetailDto: Codable {
+    let centerId: String?
+    let name: String?
+    let description: String?
+    let sido: String?
+    let sigungu: String?
+    let roadAddress: String?
+    let jibunAddress: String?
+    let zonecode: String?
+    let detailAddress: String?
+    let latitude: Double?
+    let longitude: Double?
+    /// 현재 선택된 제공물품·편의시설 코드 (전체 선택지는 YogaCodeHardcoded.amenities 참고)
+    let amenityCodes: [String]?
+}
+
+/// GET /api/center/{centerId} 응답 파싱용 래퍼.
+/// 스웨거 스키마는 {code,status,data} 래핑 없이 CenterDetailDto를 바로 내려주는 것처럼 보이지만,
+/// 이 앱의 다른 API는 전부 래핑돼 있어 실제 운영 응답이 어느 쪽이든 안전하게 디코딩한다.
+struct CenterDetailResponse: Codable {
+    let data: CenterDetailDto
+
+    private enum CodingKeys: String, CodingKey { case data }
+
+    init(from decoder: Decoder) throws {
+        // 1) 래핑 형태: {code, status, data: {...}}
+        if let container = try? decoder.container(keyedBy: CodingKeys.self),
+           let wrapped = try? container.decode(CenterDetailDto.self, forKey: .data) {
+            self.data = wrapped
+            return
+        }
+        // 2) 언래핑 형태: 최상위가 바로 CenterDetailDto
+        let single = try decoder.singleValueContainer()
+        self.data = try single.decode(CenterDetailDto.self)
+    }
+
+    // get<T: Codable>의 제네릭 제약을 만족시키기 위한 형식적 인코딩 (실제로 인코딩해서 보낼 일은 없음)
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(data, forKey: .data)
+    }
 }
 
 // MARK: - 요가원 정보 등록 API (POST /api/center)
