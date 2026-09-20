@@ -31,5 +31,6 @@ struct TodayClassModuleView: View {
         .onTapGesture {
             onTap()
         }
+        .debugViewName()
     }
 }

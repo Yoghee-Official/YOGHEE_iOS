@@ -30,6 +30,7 @@ struct FacilitiesModuleView: View {
             }
         }
         .padding(.horizontal, 16)
+        .debugViewName()
     }
 
     /// 요가원의 amenities 코드 목록을 "제공물품"/"편의시설" 코드북(YogaCodeHardcoded.amenities) 기준으로 분리해 한글명으로 변환.

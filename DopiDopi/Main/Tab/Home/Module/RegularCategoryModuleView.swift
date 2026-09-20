@@ -67,6 +67,7 @@ struct RegularCategoryModuleView: View {
             }
         }
         .padding(.vertical, 10)
+        .debugViewName()
     }
 }
 

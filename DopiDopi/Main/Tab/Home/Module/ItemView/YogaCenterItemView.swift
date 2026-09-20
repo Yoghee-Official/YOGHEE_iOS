@@ -65,5 +65,6 @@ struct YogaCenterItemView: View {
             }
         }
         .buttonStyle(.plain)
+        .debugViewName(kind: .item)
     }
 }

@@ -38,6 +38,7 @@ struct MyPageSectionHeaderView: View {
         }
         .frame(height: 32)
         .padding(.horizontal, 24.ratio())
+        .debugViewName()
     }
 }
 

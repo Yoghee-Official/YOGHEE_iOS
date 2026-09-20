@@ -26,6 +26,7 @@
 		522CE5DB2F12A6BF0063FDF5 /* Extension+Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5862F12A6BF0063FDF5 /* Extension+Int.swift */; };
 		522CE5DC2F12A6BF0063FDF5 /* Extension+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5872F12A6BF0063FDF5 /* Extension+UIViewController.swift */; };
 		522CE5DD2F12A6BF0063FDF5 /* Extension+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5882F12A6BF0063FDF5 /* Extension+View.swift */; };
+		52DEB0012F12A6BF0063FDF5 /* Extension+DebugViewName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DEB0022F12A6BF0063FDF5 /* Extension+DebugViewName.swift */; };
 		522CE5DE2F12A6BF0063FDF5 /* LoginContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE58F2F12A6BF0063FDF5 /* LoginContainer.swift */; };
 		522CE5DF2F12A6BF0063FDF5 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5902F12A6BF0063FDF5 /* LoginView.swift */; };
 		522CE5E02F12A6BF0063FDF5 /* ContentTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5922F12A6BF0063FDF5 /* ContentTabContainer.swift */; };
@@ -148,6 +149,7 @@
 		522CE5862F12A6BF0063FDF5 /* Extension+Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Int.swift"; sourceTree = "<group>"; };
 		522CE5872F12A6BF0063FDF5 /* Extension+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UIViewController.swift"; sourceTree = "<group>"; };
 		522CE5882F12A6BF0063FDF5 /* Extension+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+View.swift"; sourceTree = "<group>"; };
+		52DEB0022F12A6BF0063FDF5 /* Extension+DebugViewName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+DebugViewName.swift"; sourceTree = "<group>"; };
 		522CE58A2F12A6BF0063FDF5 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
 		522CE58B2F12A6BF0063FDF5 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
 		522CE58C2F12A6BF0063FDF5 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 				522CE5872F12A6BF0063FDF5 /* Extension+UIViewController.swift */,
 				52F987C32F5A0C0200C905D1 /* Extension+String.swift */,
 				522CE5882F12A6BF0063FDF5 /* Extension+View.swift */,
+				52DEB0022F12A6BF0063FDF5 /* Extension+DebugViewName.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -888,6 +891,7 @@
 				52A98C3A2FE9739100492465 /* HomeCoachMarkView.swift in Sources */,
 				52F987C92F64EEB200C905D1 /* OnedayClassSetPriceView.swift in Sources */,
 				522CE5DD2F12A6BF0063FDF5 /* Extension+View.swift in Sources */,
+				52DEB0012F12A6BF0063FDF5 /* Extension+DebugViewName.swift in Sources */,
 				522CE5DE2F12A6BF0063FDF5 /* LoginContainer.swift in Sources */,
 				522CE5DF2F12A6BF0063FDF5 /* LoginView.swift in Sources */,
 				522CE5E02F12A6BF0063FDF5 /* ContentTabContainer.swift in Sources */,

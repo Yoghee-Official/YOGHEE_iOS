@@ -50,6 +50,7 @@ struct ReservedClassesModuleView: View {
             .padding(.horizontal, 16.ratio())
             .animation(.easeOut(duration: 0.4), value: filteredClasses.map { $0.classId })
         }
+        .debugViewName()
     }
 }
 
