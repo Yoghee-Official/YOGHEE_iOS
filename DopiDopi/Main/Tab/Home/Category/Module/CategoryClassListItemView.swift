@@ -20,6 +20,7 @@ struct CategoryClassListItemView: View {
             imageSection
             infoSection
         }
+        .debugViewName(kind: .item)
     }
     
     // MARK: - Image Section

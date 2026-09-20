@@ -55,6 +55,7 @@ struct ReviewModuleView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 40)
         }
+        .debugViewName()
     }
 
     // MARK: - 8a 헤더 pill: "리뷰 ★4.0"

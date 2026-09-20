@@ -16,22 +16,25 @@ struct NewReviewModuleView: View {
     private let cardSpacing: CGFloat = 12.0
 
     var body: some View {
-        if items.isEmpty {
-            EmptyView()
-        } else {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: cardSpacing) {
-                    ForEach(items, id: \.reviewId) { review in
-                        ReviewItemCard(
-                            review: review,
-                            onTap: { onItemTap(review.reviewId) },
-                            contentLineLimit: 5
-                        )
-                        .frame(width: cardWidth)
+        Group {
+            if items.isEmpty {
+                EmptyView()
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: cardSpacing) {
+                        ForEach(items, id: \.reviewId) { review in
+                            ReviewItemCard(
+                                review: review,
+                                onTap: { onItemTap(review.reviewId) },
+                                contentLineLimit: 5
+                            )
+                            .frame(width: cardWidth)
+                        }
                     }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
             }
         }
+        .debugViewName()
     }
 }

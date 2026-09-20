@@ -46,6 +46,7 @@ struct CategoryItemView: View {
             .frame(width: size.width, height: size.height)
         }
         .buttonStyle(.plain)
+        .debugViewName(kind: .item)
     }
 
     @ViewBuilder

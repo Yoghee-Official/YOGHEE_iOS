@@ -45,6 +45,7 @@ struct InstructorClassModuleView: View {
             .padding(.horizontal, 16)
         }
         .frame(maxWidth: .infinity)
+        .debugViewName()
     }
 
     // MARK: - 4a 지도자 카드

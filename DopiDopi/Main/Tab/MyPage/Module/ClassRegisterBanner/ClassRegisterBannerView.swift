@@ -31,6 +31,7 @@ struct ClassRegisterBannerView: View {
             )
         }
         .padding(.horizontal, 16.ratio())
+        .debugViewName()
     }
 }
 

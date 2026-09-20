@@ -67,6 +67,7 @@ struct YogaClassItemView: View {
             }
         }
         .buttonStyle(.plain)
+        .debugViewName(kind: .item)
     }
 }
 

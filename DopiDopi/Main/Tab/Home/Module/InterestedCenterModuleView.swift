@@ -15,23 +15,26 @@ struct InterestedCenterModuleView: View {
     private let cardHeight: CGFloat = 225
     
     var body: some View {
-        if items.isEmpty {
-            EmptyView()
-        } else {
-            // 수평 스크롤 카드 리스트
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(items.indices, id: \.self) { index in
-                        YogaCenterItemView(
-                            yogaCenter: items[index],
-                            onTap: { onItemTap(items[index].classId) }
-                        )
-                        .frame(width: cardWidth, height: cardHeight)
+        Group {
+            if items.isEmpty {
+                EmptyView()
+            } else {
+                // 수평 스크롤 카드 리스트
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(items.indices, id: \.self) { index in
+                            YogaCenterItemView(
+                                yogaCenter: items[index],
+                                onTap: { onItemTap(items[index].classId) }
+                            )
+                            .frame(width: cardWidth, height: cardHeight)
+                        }
                     }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
+                .frame(height: cardHeight)
             }
-            .frame(height: cardHeight)
         }
+        .debugViewName()
     }
 }

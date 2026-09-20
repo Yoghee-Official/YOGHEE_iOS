@@ -19,23 +19,26 @@ struct MainBannerModuleView: View {
     private let cardHeight: CGFloat = 257.ratio()
     
     var body: some View {
-        if displayItems.isEmpty {
-            EmptyView()
-        } else {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(displayItems.indices, id: \.self) { index in
-                        RecommendRankingCardView(
-                            item: displayItems[index],
-                            onTap: { onItemTap(displayItems[index].classId) }
-                        )
-                        .frame(width: cardWidth, height: cardHeight)
+        Group {
+            if displayItems.isEmpty {
+                EmptyView()
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(displayItems.indices, id: \.self) { index in
+                            RecommendRankingCardView(
+                                item: displayItems[index],
+                                onTap: { onItemTap(displayItems[index].classId) }
+                            )
+                            .frame(width: cardWidth, height: cardHeight)
+                        }
                     }
+                    .padding(.horizontal, 16)
                 }
-                .padding(.horizontal, 16)
+                .frame(height: cardHeight)
             }
-            .frame(height: cardHeight)
         }
+        .debugViewName()
     }
 }
 

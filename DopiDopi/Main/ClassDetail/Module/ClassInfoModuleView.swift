@@ -68,6 +68,7 @@ struct ClassInfoModuleView: View {
                 }
             }
         }
+        .debugViewName()
     }
 
     // MARK: - Computed Properties

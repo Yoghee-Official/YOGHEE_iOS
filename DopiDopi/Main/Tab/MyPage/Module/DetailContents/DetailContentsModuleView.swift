@@ -56,6 +56,7 @@ struct DetailContentsModuleView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 16)
+        .debugViewName()
     }
 }
 
