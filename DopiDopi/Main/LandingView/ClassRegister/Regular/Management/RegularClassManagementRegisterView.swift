@@ -12,14 +12,29 @@ import SwiftUI
 struct RegularClassManagementRegisterView: View {
     @ObservedObject var container: ClassRegisterContainer
     @Environment(\.dismiss) private var dismiss
-    
-    private let totalSteps = 7
+    @Environment(\.classRegisterPopToRoot) private var popToRoot
+
+    // 정규: 금액정보 화면 폐지 → 운영정보(6)가 마지막 단계, 총 6단계로 축소
+    private let totalSteps = 6
     private let currentStep = 6
-    
+
     @State private var sheetContext: RegularOperationSheetContext?
     @State private var schedulePendingDelete: NewScheduleDTO?
     @State private var showDeleteConfirm = false
-    
+
+    /// 2b: 수련 달 — 선택된 달에 맞춰 "그 달에만 적용되는 수업"으로 실제 등록된다 (서버 전송됨).
+    /// 기본값 = 이번 달, 최대 이번 달로부터 +6개월까지만 선택 가능
+    @State private var selectedPracticeMonth = Date()
+
+    // 3c/3d: 등록 + 결과보기
+    @State private var isRegistering = false
+    @State private var isBuildingPreview = false
+    @State private var registerError: String?
+    @State private var showResultPopup = false
+    @State private var previewDetail: YogaClassDetailDTO?
+    /// 결과보기 안에서 달을 넘겨가며 볼 수 있도록, 이번 달~+6개월 각 달의 스케줄을 미리 다 담아둠
+    @State private var previewScheduleMonths: [(month: Date, schedules: [ScheduleInfo])] = []
+
     private var canProceed: Bool {
         !container.state.schedules.isEmpty
     }
@@ -41,15 +56,55 @@ struct RegularClassManagementRegisterView: View {
             bottomNavigation
         }
         .background(Color.SandBeige)
+        .overlay(alignment: .bottomTrailing) {
+            resultPreviewButton
+                .padding(.trailing, 16.ratio())
+                .padding(.bottom, 100.ratio())
+        }
         .customNavigationBar(
             title: "운영 정보",
             trailingTitle: "문의하기",
             onTrailingTap: { handleInquiryTap() }
         )
+        .fullScreenCover(isPresented: $showResultPopup) {
+            ClassRegisterResultPopupView(onDismiss: { showResultPopup = false })
+        }
+        .fullScreenCover(isPresented: Binding(
+            get: { previewDetail != nil },
+            set: { if !$0 { previewDetail = nil } }
+        )) {
+            if let previewDetail {
+                ClassRegisterPreviewView(
+                    detail: previewDetail,
+                    localImages: container.state.classImages.map(\.imageData),
+                    scheduleMonths: previewScheduleMonths,
+                    initialMonthKey: selectedMonthKey
+                )
+            }
+        }
+        .overlay {
+            if isRegistering || isBuildingPreview {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+                ProgressView()
+                    .scaleEffect(1.2)
+                    .tint(.white)
+            }
+        }
+        .alert("등록 실패", isPresented: Binding(
+            get: { registerError != nil },
+            set: { if !$0 { registerError = nil } }
+        )) {
+            Button("확인") { registerError = nil }
+        } message: {
+            Text(registerError ?? "")
+        }
         .sheet(item: $sheetContext) { context in
             RegularOperationBottomSheet(
                 context: context,
-                existingSchedules: container.state.schedules,
+                // 중복 시간 체크는 같은 달 안에서만 의미가 있음 (달마다 독립된 수업 세트)
+                existingSchedules: schedulesForSelectedMonth,
+                practiceMonth: selectedMonthKey,
                 onApply: { schedule, replacingId in
                     if let id = replacingId {
                         container.handleIntent(.removeSchedule(id))
@@ -82,12 +137,53 @@ struct RegularClassManagementRegisterView: View {
             Text("한 타임 기준")
                 .pretendardFont(.bold, size: 10)
                 .foregroundColor(.Info)
+            Spacer()
+            practiceMonthDropdown
         }
     }
-    
+
+    /// 2b: 수련 달 — 이번 달 기본값, 이번 달부터 최대 +6개월까지만 선택 가능한 드롭다운.
+    /// 단순 화면 표시용이 아니라, 선택된 달에 맞춰 "그 달에만 적용되는 수업"으로 등록된다.
+    /// 여기서 태그한 `practiceMonth`("yyyy-MM")는 등록 시 연/월로 분리되어
+    /// `ClassRegisterContainer.registerClass()`에서 서버 스펙(2026-09-20 배포된 monthlySchedules)에 맞게 묶인다.
+    private var practiceMonthDropdown: some View {
+        Menu {
+            ForEach(PracticeMonthOption.selectableMonths(), id: \.self) { month in
+                Button(PracticeMonthOption.displayFormatter.string(from: month)) {
+                    selectedPracticeMonth = month
+                }
+            }
+        } label: {
+            HStack(spacing: 4.ratio()) {
+                Text(PracticeMonthOption.displayFormatter.string(from: selectedPracticeMonth))
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.DarkBlack)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundColor(.DarkBlack)
+            }
+            .padding(.horizontal, 12.ratio())
+            .padding(.vertical, 6.ratio())
+            .background(Color.CleanWhite)
+            .cornerRadius(32)
+            .overlay(RoundedRectangle(cornerRadius: 32).stroke(Color.Background, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// 현재 드롭다운에서 선택된 달의 키 ("yyyy-MM")
+    private var selectedMonthKey: String {
+        PracticeMonthOption.keyFormatter.string(from: selectedPracticeMonth)
+    }
+
+    /// 선택된 달에 속한 스케줄만 (달마다 다른 수업 세트를 구성하기 위해 타임라인도 달별로 필터링)
+    private var schedulesForSelectedMonth: [NewScheduleDTO] {
+        container.state.schedules.filter { $0.practiceMonth == selectedMonthKey }
+    }
+
     private var scheduleTimeline: some View {
         RegularScheduleTimelineView(
-            schedules: container.state.schedules,
+            schedules: schedulesForSelectedMonth,
             weeklyOffDays: container.state.regularWeeklyOffWeekdays,
             onAdd: { weekday in
                 sheetContext = .add(preselectedWeekday: weekday)
@@ -127,11 +223,24 @@ struct RegularClassManagementRegisterView: View {
                         .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
-                
-                NavigationLink {
-                    OnedayClassSetPriceView(container: container)
-                } label: {
-                    Text("계속")
+
+                // 금액정보(OnedayClassSetPriceView) 화면 폐지 — 이제 운영 정보(CRC_MO_6)가 정규 등록의 마지막 단계.
+                // 기획 변경: "계속" → NavigationLink 대신 "등록" 버튼으로 여기서 바로 등록을 완료한다.
+                // NavigationLink {
+                //     OnedayClassSetPriceView(container: container)
+                // } label: {
+                //     Text("계속")
+                //         .pretendardFont(.medium, size: 15)
+                //         .foregroundColor(canProceed ? .DarkBlack : .Info)
+                //         .frame(maxWidth: .infinity)
+                //         .frame(height: 48.ratio())
+                //         .background(canProceed ? Color.GheeYellow : Color.Background)
+                //         .cornerRadius(8)
+                // }
+                // .buttonStyle(.plain)
+                // .disabled(!canProceed)
+                Button(action: completeRegistration) {
+                    Text("등록")
                         .pretendardFont(.medium, size: 15)
                         .foregroundColor(canProceed ? .DarkBlack : .Info)
                         .frame(maxWidth: .infinity)
@@ -147,7 +256,55 @@ struct RegularClassManagementRegisterView: View {
         }
         .background(Color.SandBeige)
     }
-    
+
+    // MARK: - 3d 결과보기 (플로팅 버튼)
+    private var resultPreviewButton: some View {
+        Button(action: showPreview) {
+            Text("결과보기")
+                .pretendardFont(.semiBold, size: 12)
+                .foregroundColor(.DarkBlack)
+                .multilineTextAlignment(.center)
+                .frame(width: 56.ratio(), height: 56.ratio())
+                .background(Color.GheeYellow)
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func completeRegistration() {
+        guard !isRegistering else { return }
+        isRegistering = true
+        registerError = nil
+        Task {
+            do {
+                _ = try await container.registerClass()
+                await MainActor.run {
+                    isRegistering = false
+                    showResultPopup = true
+                }
+            } catch {
+                await MainActor.run {
+                    isRegistering = false
+                    registerError = error.localizedDescription
+                }
+            }
+        }
+    }
+
+    private func showPreview() {
+        guard !isBuildingPreview else { return }
+        isBuildingPreview = true
+        Task {
+            let result = await container.buildPreviewDetail()
+            await MainActor.run {
+                isBuildingPreview = false
+                previewDetail = result.detail
+                previewScheduleMonths = result.scheduleMonths
+            }
+        }
+    }
+
     private func handleInquiryTap() {
         // TODO: 문의하기 채널 연결
     }
@@ -474,6 +631,8 @@ private enum RegularScheduleDateHelper {
 private struct RegularOperationBottomSheet: View {
     let context: RegularOperationSheetContext
     let existingSchedules: [NewScheduleDTO]
+    /// 이 시트에서 적용/수정하는 스케줄이 속하게 될 달 ("yyyy-MM") — 현재 선택된 "수련 달" 드롭다운 값
+    let practiceMonth: String
     let onApply: (NewScheduleDTO, String?) -> Void
     
     @State private var selectedWeekdays: Set<Int> = []
@@ -568,7 +727,7 @@ private struct RegularOperationBottomSheet: View {
                     capacityRow(label: "최대 수련 가능 인원", value: $maxCapacity, isMinSide: false)
                     
                     if hasDuplicate {
-                        Text("* 동일한 시간에 중복된 내용 있습니다. 시간을 조정해주세요!")
+                        Text("* 동일한 시간에 중복된 수련이 있습니다. 시간을 조정해주세요!")
                             .pretendardFont(.regular, size: 10)
                             .foregroundColor(.MindOrange)
                             .padding(.top, 8.ratio())
@@ -807,7 +966,8 @@ private struct RegularOperationBottomSheet: View {
             minCapacity: minCapacity,
             maxCapacity: maxCapacity,
             name: trimmedName,
-            instructorNote: instructorNote.trimmingCharacters(in: .whitespacesAndNewlines)
+            instructorNote: instructorNote.trimmingCharacters(in: .whitespacesAndNewlines),
+            practiceMonth: practiceMonth
         )
         onApply(dto, replacingId)
     }

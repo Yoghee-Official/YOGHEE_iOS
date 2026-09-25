@@ -15,8 +15,8 @@ struct OnedayClassExplanationRegisterView: View {
     /// "내용" TextEditor가 UITextView.sizeThatFits로 실측한 텍스트 컨텐츠 높이(줄바꿈 반영, 상하 여백 제외)
     @State private var descriptionContentHeight: CGFloat = 0
 
-    /// 원데이 6단계 / 정규 7단계
-    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
+    /// 원데이/정규 공통 6단계 (정규: 금액정보 화면 폐지 → 운영정보가 마지막 6단계)
+    private let totalSteps = 6
     private let currentStep = 1
     
     private var isRegularStudioFlow: Bool {

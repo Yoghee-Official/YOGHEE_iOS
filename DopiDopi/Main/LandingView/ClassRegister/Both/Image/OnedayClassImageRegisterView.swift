@@ -22,8 +22,8 @@ struct OnedayClassImageRegisterView: View {
         container.state.selectedClassTypeId == "regular"
     }
     
-    /// 원데이 6단계 / 정규 7단계
-    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
+    /// 원데이/정규 공통 6단계 (정규: 금액정보 화면 폐지 → 운영정보가 마지막 6단계)
+    private let totalSteps = 6
     /// 원데이: 이미지=5 / 정규: 이미지=3
     private var currentStep: Int { isRegularStudioFlow ? 3 : 5 }
     private let maxImages = 20

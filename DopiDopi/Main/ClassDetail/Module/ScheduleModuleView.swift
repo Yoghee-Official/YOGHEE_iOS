@@ -9,6 +9,13 @@ import SwiftUI
 struct ScheduleModuleView: View {
     let detail: YogaClassDetailDTO
     let onScheduleTap: (String) -> Void
+    /// [정규 전용, 결과보기 등 외부에서 달을 관리하는 경우에만 사용] 선택 가능한 달 후보 목록.
+    /// nil이면 기존처럼 RegularScheduleSectionView가 자체적으로 표시 월을 관리한다 (실제 클래스 상세화면 등은 그대로 유지).
+    var monthOptions: [Date]? = nil
+    /// 위 monthOptions 중 현재 선택된 달
+    var selectedMonth: Date? = nil
+    /// 사용자가 이전/다음 달 버튼을 눌렀을 때 호출 — 실제 표시할 스케줄을 그 달에 맞게 바꿔주는 건 호출한 쪽의 책임
+    var onMonthChange: ((Date) -> Void)? = nil
 
     @State private var selectedDate: String = Self.todayString()
 
@@ -23,7 +30,13 @@ struct ScheduleModuleView: View {
     var body: some View {
         Group {
             if detail.type == "R" {
-                RegularScheduleSectionView(schedules: detail.schedules, className: detail.name)
+                RegularScheduleSectionView(
+                    schedules: detail.schedules,
+                    className: detail.name,
+                    externalMonths: monthOptions,
+                    selectedMonth: selectedMonth,
+                    onMonthChange: onMonthChange
+                )
             } else {
                 VStack(alignment: .leading, spacing: 16) {
                     scheduleHeaderLabel
@@ -86,6 +99,12 @@ struct ScheduleModuleView: View {
 private struct RegularScheduleSectionView: View {
     let schedules: [ScheduleInfo]
     let className: String
+    /// [결과보기 등 외부에서 달을 관리하는 경우에만 사용] 선택 가능한 달 후보 목록 — 있으면 이전/다음 버튼이
+    /// 이 목록 안에서만 움직이고, 실제 이동은 onMonthChange로 상위에 위임한다 (이 뷰는 표시만 담당).
+    /// nil이면 기존처럼 이 뷰가 표시 월을 자체적으로 관리한다 (실제 클래스 상세화면 등은 그대로 유지).
+    let externalMonths: [Date]?
+    let selectedMonth: Date?
+    let onMonthChange: ((Date) -> Void)?
 
     private let hourHeight: CGFloat = 70
     private let dayLabels = ["월", "화", "수", "목", "금", "토", "일"]
@@ -94,13 +113,22 @@ private struct RegularScheduleSectionView: View {
     @State private var displayMonth: Int
     @State private var isExpanded: Bool = false
 
-    init(schedules: [ScheduleInfo], className: String) {
+    init(
+        schedules: [ScheduleInfo],
+        className: String,
+        externalMonths: [Date]? = nil,
+        selectedMonth: Date? = nil,
+        onMonthChange: ((Date) -> Void)? = nil
+    ) {
         self.schedules = schedules
         self.className = className
+        self.externalMonths = externalMonths
+        self.selectedMonth = selectedMonth
+        self.onMonthChange = onMonthChange
         let cal = Calendar.current
-        let now = Date()
-        _displayYear = State(initialValue: cal.component(.year, from: now))
-        _displayMonth = State(initialValue: cal.component(.month, from: now))
+        let base = selectedMonth ?? Date()
+        _displayYear = State(initialValue: cal.component(.year, from: base))
+        _displayMonth = State(initialValue: cal.component(.month, from: base))
     }
 
     private var weeklySchedules: [ScheduleInfo] {
@@ -136,6 +164,12 @@ private struct RegularScheduleSectionView: View {
             }
         }
         .padding(.horizontal, 16)
+        .onChange(of: selectedMonth) { _, newValue in
+            guard let newValue else { return }
+            let cal = Calendar.current
+            displayYear = cal.component(.year, from: newValue)
+            displayMonth = cal.component(.month, from: newValue)
+        }
     }
 
     // MARK: - Header views
@@ -301,7 +335,20 @@ private struct RegularScheduleSectionView: View {
 
     // MARK: - Month navigation
 
+    /// externalMonths가 있을 때, 그 목록 안에서 지금 표시 중인 달의 인덱스
+    private var externalIndex: Int? {
+        guard let externalMonths else { return nil }
+        let cal = Calendar.current
+        return externalMonths.firstIndex {
+            cal.component(.year, from: $0) == displayYear && cal.component(.month, from: $0) == displayMonth
+        }
+    }
+
     private var canGoBack: Bool {
+        if let externalMonths {
+            guard let idx = externalIndex else { return false }
+            return idx > 0 && !externalMonths.isEmpty
+        }
         let cal = Calendar.current
         let now = Date()
         let y = cal.component(.year, from: now)
@@ -310,6 +357,10 @@ private struct RegularScheduleSectionView: View {
     }
 
     private var canGoForward: Bool {
+        if let externalMonths {
+            guard let idx = externalIndex else { return false }
+            return idx < externalMonths.count - 1
+        }
         let cal = Calendar.current
         guard let maxDate = cal.date(byAdding: .month, value: 12, to: Date()) else { return false }
         let maxY = cal.component(.year, from: maxDate)
@@ -319,12 +370,20 @@ private struct RegularScheduleSectionView: View {
 
     private func goBack() {
         guard canGoBack else { return }
+        if let externalMonths, let idx = externalIndex {
+            onMonthChange?(externalMonths[idx - 1])
+            return
+        }
         if displayMonth == 1 { displayMonth = 12; displayYear -= 1 }
         else { displayMonth -= 1 }
     }
 
     private func goForward() {
         guard canGoForward else { return }
+        if let externalMonths, let idx = externalIndex {
+            onMonthChange?(externalMonths[idx + 1])
+            return
+        }
         if displayMonth == 12 { displayMonth = 1; displayYear += 1 }
         else { displayMonth += 1 }
     }

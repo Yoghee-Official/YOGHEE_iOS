@@ -17,8 +17,27 @@ struct ClassRegisterPreviewView: View {
     let detail: YogaClassDetailDTO
     /// 아직 업로드/서버 반영 전이라 로컬 이미지 Data를 직접 사용 (URL 아님)
     let localImages: [Data]
+    /// [정규 전용] 정규수련은 달마다 다른 시간표(monthlySchedules)로 등록되므로,
+    /// 등록 화면(2b)과 동일하게 이번 달~+6개월 각 달의 스케줄을 미리 담아 여기서 달을 넘겨가며 볼 수 있게 한다.
+    /// 비어있으면(하루수련) 달 선택 UI 없이 `detail.schedules`를 그대로 보여준다.
+    var scheduleMonths: [(month: Date, schedules: [ScheduleInfo])] = []
+    /// 처음 열었을 때 보여줄 달의 키("yyyy-MM"). scheduleMonths가 비어있지 않을 때만 의미가 있음
+    var initialMonthKey: String? = nil
 
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedMonthKey: String = ""
+
+    private var hasMonthSelector: Bool { !scheduleMonths.isEmpty }
+
+    private var selectedMonthEntry: (month: Date, schedules: [ScheduleInfo])? {
+        scheduleMonths.first { PracticeMonthOption.keyFormatter.string(from: $0.month) == selectedMonthKey }
+    }
+
+    /// 지금 선택된 달의 스케줄로 교체한 detail (달 선택 UI가 없으면 원본 그대로)
+    private var effectiveDetail: YogaClassDetailDTO {
+        guard let entry = selectedMonthEntry else { return detail }
+        return detail.withSchedules(entry.schedules)
+    }
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -26,18 +45,26 @@ struct ClassRegisterPreviewView: View {
                 headerImageCarousel
 
                 ClassInfoModuleView(
-                    detail: detail,
+                    detail: effectiveDetail,
                     onReviewTap: {},
                     onFeatureTap: { _ in }
                 )
 
-                InstructorClassModuleView(detail: detail, showsCard: false)
+                InstructorClassModuleView(detail: effectiveDetail, showsCard: false)
 
-                FacilitiesModuleView(detail: detail)
+                FacilitiesModuleView(detail: effectiveDetail)
 
-                ScheduleModuleView(detail: detail, onScheduleTap: { _ in })
+                ScheduleModuleView(
+                    detail: effectiveDetail,
+                    onScheduleTap: { _ in },
+                    monthOptions: hasMonthSelector ? scheduleMonths.map(\.month) : nil,
+                    selectedMonth: selectedMonthEntry?.month,
+                    onMonthChange: hasMonthSelector ? { newMonth in
+                        selectedMonthKey = PracticeMonthOption.keyFormatter.string(from: newMonth)
+                    } : nil
+                )
 
-                LocationModuleView(detail: detail)
+                LocationModuleView(detail: effectiveDetail)
 
                 Spacer(minLength: 40)
             }
@@ -46,6 +73,12 @@ struct ClassRegisterPreviewView: View {
         .ignoresSafeArea(edges: .top)
         .overlay(alignment: .topTrailing) {
             closeButton
+        }
+        .onAppear {
+            guard selectedMonthKey.isEmpty else { return }
+            selectedMonthKey = initialMonthKey ?? scheduleMonths.first.map {
+                PracticeMonthOption.keyFormatter.string(from: $0.month)
+            } ?? ""
         }
     }
 
@@ -89,5 +122,22 @@ struct ClassRegisterPreviewView: View {
             .tabViewStyle(.page)
             .frame(height: 375)
         }
+    }
+}
+
+private extension YogaClassDetailDTO {
+    /// schedules만 다른 값으로 바꾼 복사본 (달 선택에 따라 스케줄만 교체해서 다시 보여주기 위함)
+    func withSchedules(_ schedules: [ScheduleInfo]) -> YogaClassDetailDTO {
+        YogaClassDetailDTO(
+            classId: classId, type: type, name: name, description: description,
+            price: price, images: images, thumbnail: thumbnail,
+            categories: categories, features: features,
+            favoriteCount: favoriteCount, isFavorite: isFavorite,
+            reviewCount: reviewCount, rating: rating,
+            recentReviews: recentReviews, policy: policy,
+            schedules: schedules, tickets: tickets, center: center,
+            trainingTypes: trainingTypes, trainingTargets: trainingTargets,
+            masterInfo: masterInfo
+        )
     }
 }
