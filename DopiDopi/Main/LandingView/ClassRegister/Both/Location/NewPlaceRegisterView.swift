@@ -326,7 +326,7 @@ struct NewPlaceRegisterView: View {
             zonecode: zonecode.nilIfEmpty,
             addressDetail: detailAddress.nilIfEmpty,
             fullAddress: fullAddr.nilIfEmpty,
-            // 선택된 게 없어도 nil이 아니라 빈 배열로 전송 (서버가 "선택 안 함"과 "필드 미전달"을 구분)
+            // 선택된 게 없어도 nil이 아니라 빈 배열로 전송 (스웨거: "선택한 편의시설이 없으면 amenityCodes에 빈 배열을 전달합니다")
             amenityCodes: Array(allAmenityIds)
         )
     }

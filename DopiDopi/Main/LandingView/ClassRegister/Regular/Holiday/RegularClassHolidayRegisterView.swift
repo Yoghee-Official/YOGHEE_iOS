@@ -11,7 +11,8 @@ struct RegularClassHolidayRegisterView: View {
     @ObservedObject var container: ClassRegisterContainer
     @Environment(\.dismiss) private var dismiss
     
-    private let totalSteps = 7
+    // 정규: 금액정보 화면 폐지 → 운영정보(6)가 마지막 단계, 총 6단계로 축소
+    private let totalSteps = 6
     private let currentStep = 5
     
     /// 1=월 … 7=일

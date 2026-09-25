@@ -298,57 +298,6 @@ struct RefundRuleRow: Identifiable, Equatable {
     var percent: Int
 }
 
-// MARK: - 정규 수련 금액 플랜 (기간권 / 회차권)
-
-struct RegularPricePlan: Identifiable, Equatable {
-    /// API ticketType 값과 일치
-    enum PlanType: String, Equatable {
-        case period  = "PERIOD"   // 기간권
-        case session = "SESSION"  // 회차권
-    }
-
-    let id: String              // 로컬 식별용 UUID
-    var planType: PlanType      // ticketType
-    var ticketName: String      // 수강권 이름 (앱에서 자동 생성)
-    var price: Int              // 수강권 가격(원) — 필수
-    /// PERIOD 전용: 유효 개월 수 (validMonths)
-    var validMonths: Int
-    /// PERIOD 전용: 주 횟수(회) (weeklyCount)
-    var weeklyCount: Int
-    /// SESSION 전용: 총 수강 가능 횟수 (totalSessions)
-    var totalSessions: Int
-
-    init(
-        id: String = UUID().uuidString,
-        planType: PlanType,
-        ticketName: String = "",
-        price: Int = 0,
-        validMonths: Int = 1,
-        weeklyCount: Int = 1,
-        totalSessions: Int = 10
-    ) {
-        self.id = id
-        self.planType = planType
-        self.ticketName = ticketName
-        self.price = price
-        self.validMonths = validMonths
-        self.weeklyCount = weeklyCount
-        self.totalSessions = totalSessions
-    }
-
-    var formattedPrice: String {
-        let fmt = NumberFormatter(); fmt.numberStyle = .decimal
-        return (fmt.string(from: NSNumber(value: price)) ?? "0") + "원"
-    }
-
-    var displayLabel: String {
-        switch planType {
-        case .period:  return "기간권"
-        case .session: return "회차권"
-        }
-    }
-}
-
 // MARK: - 정규 수련 휴무 (공휴일 칩)
 
 /// 공휴일 휴무 선택용 고정 목록. rawValue = 상태 추적 키 (API 전송 시 apiValues로 변환)
@@ -401,6 +350,34 @@ enum RegularPublicHoliday: String, CaseIterable, Identifiable, Hashable {
     }
 }
 
+// MARK: - 정규수련 "수련 달" 선택 규칙 (등록 화면 2b 드롭다운 · 결과보기 미리보기 공용)
+
+/// 이번 달부터 +6개월까지만 선택 가능, 과거 달 제외 (단일 선택) — 등록 화면과 결과보기 미리보기가 동일한 규칙을 쓰도록 공용화
+enum PracticeMonthOption {
+    /// 이번 달부터 +6개월까지의 각 달 1일 Date 목록
+    static func selectableMonths(from now: Date = Date()) -> [Date] {
+        let cal = Calendar.current
+        let startOfThisMonth = cal.date(from: cal.dateComponents([.year, .month], from: now)) ?? now
+        return (0...6).compactMap { cal.date(byAdding: .month, value: $0, to: startOfThisMonth) }
+    }
+
+    /// 화면 표시용, 예: "2026년 9월"
+    static let displayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "yyyy년 M월"
+        return f
+    }()
+
+    /// 스케줄 태그·서버 전송용 키, 예: "2026-09"
+    static let keyFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "yyyy-MM"
+        return f
+    }()
+}
+
 // MARK: - NewScheduleDTO (클래스 등록 시 schedules 배열 요소)
 
 /// API LocalTime (hour, minute, second, nano)
@@ -436,14 +413,18 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
     let name: String
     /// 지도자(메모) — UI 전용, Codable/API에는 포함하지 않음
     var instructorNote: String
-    
+    /// [Regular 전용] 이 스케줄이 적용되는 달 ("yyyy-MM"). UI 전용, Codable/API에는 포함하지 않음.
+    /// 등록 시 `ClassRegisterContainer.registerClass()`에서 연/월로 분리되어
+    /// `ClassRegisterMonthlyScheduleDto`(서버 스펙: MonthlyScheduleDto, 2026-09-20 배포)로 변환·전송된다.
+    var practiceMonth: String?
+
     var id: String { scheduleId ?? localId ?? "\(name)-\(dates.joined())-\(startTime.timeString)" }
-    
+
     enum CodingKeys: String, CodingKey {
         case scheduleId, dates, startTime, endTime, minCapacity, maxCapacity, name
     }
-    
-    init(scheduleId: String?, localId: String? = nil, dates: [String], startTime: LocalTimeDTO, endTime: LocalTimeDTO, minCapacity: Int, maxCapacity: Int, name: String, instructorNote: String = "") {
+
+    init(scheduleId: String?, localId: String? = nil, dates: [String], startTime: LocalTimeDTO, endTime: LocalTimeDTO, minCapacity: Int, maxCapacity: Int, name: String, instructorNote: String = "", practiceMonth: String? = nil) {
         self.scheduleId = scheduleId
         self.localId = localId
         self.dates = dates
@@ -453,6 +434,7 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
         self.maxCapacity = maxCapacity
         self.name = name
         self.instructorNote = instructorNote
+        self.practiceMonth = practiceMonth
     }
     
     init(from decoder: Decoder) throws {
@@ -466,6 +448,7 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
         maxCapacity = try container.decode(Int.self, forKey: .maxCapacity)
         name = try container.decode(String.self, forKey: .name)
         instructorNote = ""
+        practiceMonth = nil
     }
     
     func encode(to encoder: Encoder) throws {
@@ -485,6 +468,7 @@ struct NewScheduleDTO: Codable, Equatable, Identifiable {
 /// 스케줄 항목 (API는 startTime/endTime 문자열 "HH:mm")
 struct ClassRegisterScheduleItemDto: Codable {
     let scheduleId: String?
+    /// [하루수련 전용] 신규 일정은 하나 이상, 기존 scheduleId 수정은 최대 한 날짜
     let dates: [String]?
     /// [Regular 전용] 수업 요일 (1=월, 2=화, 3=수, 4=목, 5=금, 6=토, 7=일)
     let dayOfWeek: Int?
@@ -493,6 +477,16 @@ struct ClassRegisterScheduleItemDto: Codable {
     let minCapacity: Int
     let maxCapacity: Int
     let name: String
+    /// 해당 스케줄을 진행하는 강사명 (기존 instructorNote 요청 키도 서버가 입력 호환하지만, 신규 스펙은 이 키를 사용)
+    let instructorName: String?
+}
+
+/// [정규수련 전용] 월별 시간표 한 묶음 (연/월 + 그 달의 전체 스케줄).
+/// 2026-09-20 배포된 스웨거 스펙(MonthlyScheduleDto) 반영 — 수정 시 schedules가 빈 배열이면 해당 월 시간표 전체 삭제.
+struct ClassRegisterMonthlyScheduleDto: Codable {
+    let year: Int
+    let month: Int
+    let schedules: [ClassRegisterScheduleItemDto]
 }
 
 /// 환불 정책 한 줄
@@ -513,17 +507,6 @@ struct ClassRegisterPolicyDto: Codable {
     let refundPolicies: [ClassRegisterRefundPolicyDto]?
 }
 
-/// 수강권 항목 (정규 전용)
-struct ClassRegisterTicketDto: Codable {
-    let ticketId: String?       // 신규 시 nil
-    let ticketType: String      // "PERIOD" | "SESSION"
-    let ticketName: String
-    let price: Int
-    let validMonths: Int?       // PERIOD 전용: 유효 개월 수
-    let weeklyCount: Int?       // PERIOD 전용: 주 횟수
-    let totalSessions: Int?     // SESSION 전용: 총 수강 횟수
-}
-
 /// 휴무 정책 (정규 전용)
 struct ClassRegisterHolidayPolicyDto: Codable {
     let weeklyOffDays: [Int]?
@@ -539,18 +522,45 @@ struct ClassRegisterRequestDto: Codable {
     let description: String?
     let centerId: String?
     let featureCodes: [String]?
-    let schedules: [ClassRegisterScheduleItemDto]
+    /// [하루수련 전용] 날짜별 일정
+    let schedules: [ClassRegisterScheduleItemDto]?
+    /// [정규수련 전용] 월별 시간표 목록. 여러 연월을 한 요청에 등록 가능
+    let monthlySchedules: [ClassRegisterMonthlyScheduleDto]?
     let images: [String]?
     let price: Int
     let categoryCodes: [String]?
     let policy: ClassRegisterPolicyDto?
     let holidayPolicy: ClassRegisterHolidayPolicyDto?  // 정규 전용
-    let tickets: [ClassRegisterTicketDto]?              // 정규 전용
+    // tickets(수강권) 필드 없음: 2026-09 스웨거 기준 정규수련 MVP는 등록 요청에서 가격/수강권 개념 자체를 제외함
 }
 
 /// 클래스 등록 API 응답 (code, status, data)
 struct ClassRegisterResponse: Codable {
     let code: Int
     let status: String
-    let data: String?
+    let data: ClassRegisterResultDto?
+}
+
+/// 클래스 등록 결과 (생성/수정된 클래스 ID)
+/// 스웨거(2026-09 기준)는 data가 classId 문자열 자체라고 명시하지만, 과거엔 {"classId": "..."} 객체였으므로 두 형태 모두 허용
+struct ClassRegisterResultDto: Codable {
+    let classId: String
+
+    private enum CodingKeys: String, CodingKey { case classId }
+
+    init(classId: String) { self.classId = classId }
+
+    init(from decoder: Decoder) throws {
+        if let single = try? decoder.singleValueContainer(), let id = try? single.decode(String.self) {
+            classId = id
+            return
+        }
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        classId = try c.decode(String.self, forKey: .classId)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(classId, forKey: .classId)
+    }
 }

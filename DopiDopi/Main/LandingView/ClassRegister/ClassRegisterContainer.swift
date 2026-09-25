@@ -66,10 +66,6 @@ enum ClassRegisterIntent {
     /// 예약 시 안내사항 (최대 3000자)
     case setReservationNotice(String)
     
-    // 정규 수련: 금액 플랜
-    case addRegularPricePlan(RegularPricePlan)
-    case removeRegularPricePlan(String)
-
     // 정규 수련: 휴무 정보
     /// 고정 휴무 있음 / 없음 (없으면 주간·공휴일 UI 숨김)
     case setRegularHasFixedHolidays(Bool)
@@ -152,9 +148,6 @@ struct ClassRegisterState: Equatable {
     /// 예약 시 안내사항 (최대 3000자)
     var reservationNotice: String = ""
     
-    // MARK: 정규 수련 — 금액 플랜 목록 (기간권/회차권)
-    var regularPricePlans: [RegularPricePlan] = []
-
     // MARK: 정규 수련 — 휴무 정보
     /// true: 휴무일 있음(상세 선택 표시), false: 없음
     var regularHasFixedHolidays: Bool = true
@@ -267,12 +260,6 @@ class ClassRegisterContainer: ObservableObject {
             objectWillChange.send()
             state.reservationNotice = String(value.prefix(3000))
             
-        case .addRegularPricePlan(let plan):
-            state.regularPricePlans.append(plan)
-
-        case .removeRegularPricePlan(let id):
-            state.regularPricePlans.removeAll { $0.id == id }
-
         case .setRegularHasFixedHolidays(let value):
             objectWillChange.send()
             state.regularHasFixedHolidays = value
@@ -373,45 +360,61 @@ class ClassRegisterContainer: ObservableObject {
         let isRegular = s.selectedClassTypeId == "regular"
         let classType: String = isRegular ? "R" : "O"
 
-        // MARK: 스케줄
-        // 정규: dates 배열 내 날짜별로 dayOfWeek를 역산하여 요일당 1개 아이템으로 분리
-        // 하루: dates 그대로, dayOfWeek 없음
-        let schedules: [ClassRegisterScheduleItemDto]
-        if isRegular {
+        // MARK: 스케줄 (2026-09-20 배포된 스웨거 스펙 반영)
+        // 하루: 최상위 schedules에 dates 그대로 전송 (monthlySchedules는 nil)
+        // 정규: 최상위 schedules는 보내지 않고, monthlySchedules([{year, month, schedules:[dayOfWeek...]}])로 전송
+        //       (로컬에서는 여전히 "요일별 임시 날짜"로 dates에 저장해두고, 여기서 역산만 해서 dayOfWeek로 변환 — 화면 표시/중복 체크용 로컬 표현일 뿐 서버로는 안 나감.
+        //        실제 월 구분은 각 스케줄의 practiceMonth("yyyy-MM", 2b 수련 달 드롭다운에서 태그됨)를 그대로 연/월로 묶어서 사용)
+        let onedaySchedules: [ClassRegisterScheduleItemDto]? = isRegular ? nil : s.schedules.map {
+            ClassRegisterScheduleItemDto(
+                scheduleId: $0.scheduleId,
+                dates: $0.dates,
+                dayOfWeek: nil,
+                startTime: $0.startTime.timeString,
+                endTime: $0.endTime.timeString,
+                minCapacity: $0.minCapacity,
+                maxCapacity: $0.maxCapacity,
+                name: $0.name,
+                instructorName: $0.instructorNote.nilIfEmpty
+            )
+        }
+
+        let monthlySchedules: [ClassRegisterMonthlyScheduleDto]? = {
+            guard isRegular else { return nil }
             let cal = Calendar.current
             let dateFmt = DateFormatter(); dateFmt.dateFormat = "yyyy-MM-dd"
-            schedules = s.schedules.flatMap { sched -> [ClassRegisterScheduleItemDto] in
-                sched.dates.compactMap { dateStr -> ClassRegisterScheduleItemDto? in
-                    guard let date = dateFmt.date(from: dateStr) else { return nil }
-                    // Calendar weekday: 1=일,2=월...7=토 → App weekday: 1=월...7=일
-                    let calWd = cal.component(.weekday, from: date)
-                    let appWd = ((calWd - 2 + 7) % 7) + 1
-                    return ClassRegisterScheduleItemDto(
-                        scheduleId: sched.scheduleId,
-                        dates: [dateStr],
-                        dayOfWeek: appWd,
-                        startTime: sched.startTime.timeString,
-                        endTime: sched.endTime.timeString,
-                        minCapacity: sched.minCapacity,
-                        maxCapacity: sched.maxCapacity,
-                        name: sched.name
-                    )
+            let monthKeyFmt = DateFormatter()
+            monthKeyFmt.locale = Locale(identifier: "en_US_POSIX")
+            monthKeyFmt.dateFormat = "yyyy-MM"
+            // practiceMonth가 비어있는 스케줄(이론상 없어야 함)은 방어적으로 이번 달로 취급
+            let fallbackMonthKey = monthKeyFmt.string(from: Date())
+
+            let grouped = Dictionary(grouping: s.schedules) { $0.practiceMonth ?? fallbackMonthKey }
+            return grouped.compactMap { monthKey, scheds -> ClassRegisterMonthlyScheduleDto? in
+                let comps = monthKey.split(separator: "-")
+                guard comps.count == 2, let year = Int(comps[0]), let month = Int(comps[1]) else { return nil }
+                let items = scheds.flatMap { sched -> [ClassRegisterScheduleItemDto] in
+                    sched.dates.compactMap { dateStr -> ClassRegisterScheduleItemDto? in
+                        guard let date = dateFmt.date(from: dateStr) else { return nil }
+                        // Calendar weekday: 1=일,2=월...7=토 → App weekday: 1=월...7=일
+                        let calWd = cal.component(.weekday, from: date)
+                        let appWd = ((calWd - 2 + 7) % 7) + 1
+                        return ClassRegisterScheduleItemDto(
+                            scheduleId: sched.scheduleId,
+                            dates: nil,
+                            dayOfWeek: appWd,
+                            startTime: sched.startTime.timeString,
+                            endTime: sched.endTime.timeString,
+                            minCapacity: sched.minCapacity,
+                            maxCapacity: sched.maxCapacity,
+                            name: sched.name,
+                            instructorName: sched.instructorNote.nilIfEmpty
+                        )
+                    }
                 }
-            }
-        } else {
-            schedules = s.schedules.map {
-                ClassRegisterScheduleItemDto(
-                    scheduleId: $0.scheduleId,
-                    dates: $0.dates,
-                    dayOfWeek: nil,
-                    startTime: $0.startTime.timeString,
-                    endTime: $0.endTime.timeString,
-                    minCapacity: $0.minCapacity,
-                    maxCapacity: $0.maxCapacity,
-                    name: $0.name
-                )
-            }
-        }
+                return ClassRegisterMonthlyScheduleDto(year: year, month: month, schedules: items)
+            }.sorted { ($0.year, $0.month) < ($1.year, $1.month) }
+        }()
 
         // MARK: 공통 — 이미지·환불
         let imageKeys = s.classImages.compactMap(\.imageKey)
@@ -439,19 +442,6 @@ class ClassRegisterContainer: ObservableObject {
         let discountStartDate = discountRate != nil ? s.discountStartDate.map(Self.apiDateFormatter.string(from:)) : nil
         let discountEndDate   = discountRate != nil ? s.discountEndDate.map(Self.apiDateFormatter.string(from:)) : nil
 
-        // MARK: 정규 전용 — 수강권(tickets)
-        let tickets: [ClassRegisterTicketDto]? = isRegular ? s.regularPricePlans.map {
-            ClassRegisterTicketDto(
-                ticketId:      nil,
-                ticketType:    $0.planType.rawValue,
-                ticketName:    $0.ticketName,
-                price:         $0.price,
-                validMonths:   $0.planType == .period  ? $0.validMonths    : nil,
-                weeklyCount:   $0.planType == .period  ? $0.weeklyCount    : nil,
-                totalSessions: $0.planType == .session ? $0.totalSessions  : nil
-            )
-        } : nil
-
         // MARK: 정규 전용 — 휴무 정책
         let holidayPolicy: ClassRegisterHolidayPolicyDto? = {
             guard isRegular, s.regularHasFixedHolidays else { return nil }
@@ -469,8 +459,8 @@ class ClassRegisterContainer: ObservableObject {
             return ClassRegisterHolidayPolicyDto(weeklyOffDays: weeklyOffDays, publicHolidays: publicHolidays)
         }()
 
-        // MARK: 정규 top-level price: 최소 수강권 금액 (없으면 0)
-        let regularPrice = s.regularPricePlans.map(\.price).min() ?? 0
+        // MARK: 정규 top-level price: 스웨거상 "[하루수련 전용]. MVP 정규수련 요청에서는 무시"이므로 의미 없는 값이지만 필드 자체는 채워서 보냄
+        let regularPrice = 0
 
         let body = ClassRegisterRequestDto(
             type:          classType,
@@ -479,7 +469,8 @@ class ClassRegisterContainer: ObservableObject {
             description:   s.description.nilIfEmpty,
             centerId:      s.selectedCenterId,
             featureCodes:  s.featureIds.isEmpty ? nil : Array(s.featureIds),
-            schedules:     schedules,
+            schedules:     onedaySchedules,
+            monthlySchedules: monthlySchedules,
             images:        imageKeys.isEmpty ? nil : imageKeys,
             price:         isRegular ? regularPrice : onedayPrice,
             categoryCodes: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
@@ -490,8 +481,7 @@ class ClassRegisterContainer: ObservableObject {
                 reservationNote:   s.reservationNotice.nilIfEmpty,
                 refundPolicies:    refundPolicies.isEmpty ? nil : refundPolicies
             ),
-            holidayPolicy: holidayPolicy,
-            tickets:       tickets
+            holidayPolicy: holidayPolicy
         )
         return try await APIService.shared.postRegisterClass(body: body)
     }
@@ -501,7 +491,13 @@ class ClassRegisterContainer: ObservableObject {
     /// 선택된 요가원이 있으면 GET /api/center/{centerId}로 위경도·보유물품을 함께 채운다
     /// (place 등록 화면에서 고른 물품/편의시설은 그 화면에만 남아있고 state에 저장되지 않으므로,
     /// 미리보기 시점에 서버에서 다시 조회해 정확한 값을 가져온다).
-    func buildPreviewDetail() async -> YogaClassDetailDTO {
+    ///
+    /// 반환값의 `detail.schedules`는 (정규수련일 때) 참고용 기본값일 뿐이고, 실제로 미리보기 화면에서
+    /// 달을 넘겨가며 보려면 `scheduleMonths`를 사용해야 한다 — 등록 화면(2b)과 동일하게 이번 달부터 +6개월까지
+    /// 각 달의 스케줄을 미리 다 계산해뒀다 (데이터가 없는 달은 빈 배열). 실제 등록도 monthlySchedules로
+    /// 달마다 분리 전송되므로(`registerClass()` 참고), 미리보기도 달별로 나눠서 보여줘야 등록 결과와 일치한다.
+    /// 하루수련은 월 개념이 없어 `scheduleMonths`가 빈 배열로 온다.
+    func buildPreviewDetail() async -> (detail: YogaClassDetailDTO, scheduleMonths: [(month: Date, schedules: [ScheduleInfo])]) {
         let s = state
         let isRegular = s.selectedClassTypeId == "regular"
         let classType: String = isRegular ? "R" : "O"
@@ -521,25 +517,37 @@ class ClassRegisterContainer: ObservableObject {
         // MARK: 스케줄 → ScheduleInfo (dates 배열을 날짜별 1개 항목으로 펼침)
         let dateFmt = DateFormatter(); dateFmt.dateFormat = "yyyy-MM-dd"
         let cal = Calendar.current
-        let schedules: [ScheduleInfo] = s.schedules.flatMap { sched -> [ScheduleInfo] in
-            sched.dates.map { dateStr in
-                let dayOfWeek: Int? = {
-                    guard isRegular, let date = dateFmt.date(from: dateStr) else { return nil }
-                    let calWd = cal.component(.weekday, from: date)
-                    return ((calWd - 2 + 7) % 7) + 1
-                }()
-                return ScheduleInfo(
-                    scheduleId: sched.id,
-                    dayOfWeek: dayOfWeek,
-                    specificDate: isRegular ? nil : dateStr,
-                    startTime: sched.startTime.timeString,
-                    endTime: sched.endTime.timeString,
-                    minCapacity: sched.minCapacity,
-                    maxCapacity: sched.maxCapacity,
-                    content: sched.name.nilIfEmpty
-                )
+        func scheduleInfos(from source: [NewScheduleDTO]) -> [ScheduleInfo] {
+            source.flatMap { sched -> [ScheduleInfo] in
+                sched.dates.map { dateStr in
+                    let dayOfWeek: Int? = {
+                        guard isRegular, let date = dateFmt.date(from: dateStr) else { return nil }
+                        let calWd = cal.component(.weekday, from: date)
+                        return ((calWd - 2 + 7) % 7) + 1
+                    }()
+                    return ScheduleInfo(
+                        scheduleId: sched.id,
+                        dayOfWeek: dayOfWeek,
+                        specificDate: isRegular ? nil : dateStr,
+                        startTime: sched.startTime.timeString,
+                        endTime: sched.endTime.timeString,
+                        minCapacity: sched.minCapacity,
+                        maxCapacity: sched.maxCapacity,
+                        content: sched.name.nilIfEmpty
+                    )
+                }
             }
         }
+
+        // 정규: 등록 화면(2b)과 동일한 "이번 달~+6개월" 범위로 달마다 나눠서 미리 계산
+        let scheduleMonths: [(month: Date, schedules: [ScheduleInfo])] = isRegular
+            ? PracticeMonthOption.selectableMonths().map { month in
+                let key = PracticeMonthOption.keyFormatter.string(from: month)
+                let matched = s.schedules.filter { $0.practiceMonth == key }
+                return (month: month, schedules: scheduleInfos(from: matched))
+            }
+            : []
+        let schedules: [ScheduleInfo] = isRegular ? (scheduleMonths.first?.schedules ?? []) : scheduleInfos(from: s.schedules)
 
         // MARK: 요가원 → CenterInfo (선택된 요가원이 있으면 상세 재조회로 위경도·물품 확보)
         let center: CenterInfo? = await {
@@ -571,18 +579,9 @@ class ClassRegisterContainer: ObservableObject {
             )
         }()
 
-        // MARK: 수강권 (미리보기 화면에는 표시되지 않지만 DTO 완결성을 위해 채움)
+        // MARK: 수강권 — 스웨거상 정규수련은 가격/수강권 필드 자체가 제외되므로(MVP) 하루수련만 채움
         let tickets: [TicketInfo] = isRegular
-            ? s.regularPricePlans.map {
-                TicketInfo(
-                    ticketId: $0.id,
-                    ticketType: $0.planType.rawValue,
-                    price: $0.price,
-                    validMonths: $0.planType == .period ? $0.validMonths : nil,
-                    weeklyCount: $0.planType == .period ? $0.weeklyCount : nil,
-                    totalSessions: $0.planType == .session ? $0.totalSessions : nil
-                )
-            }
+            ? []
             : [TicketInfo(
                 ticketId: "preview-one-day",
                 ticketType: "ONE_DAY",
@@ -598,12 +597,12 @@ class ClassRegisterContainer: ObservableObject {
             return FeatureInfo(featureId: index, code: code.id, description: code.name)
         }
 
-        return YogaClassDetailDTO(
+        let detail = YogaClassDetailDTO(
             classId: "preview",
             type: classType,
             name: previewName,
             description: s.description.nilIfEmpty,
-            price: isRegular ? (s.regularPricePlans.map(\.price).min() ?? 0) : (Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0),
+            price: isRegular ? 0 : (Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0),
             images: [],
             thumbnail: nil,
             categories: codeInfos(ids: s.categoryIds, in: s.categories),
@@ -621,5 +620,6 @@ class ClassRegisterContainer: ObservableObject {
             trainingTargets: codeInfos(ids: s.targetIds, in: s.targets),
             masterInfo: nil
         )
+        return (detail: detail, scheduleMonths: scheduleMonths)
     }
 }

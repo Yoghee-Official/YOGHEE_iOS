@@ -265,7 +265,7 @@ class APIService {
         let response: CenterListResponse = try await get(endPoint: Endpoint.centerList.path, parameters: nil, headers: headers)
         return response.data
     }
-    
+
     /// 요가원 상세 조회 (GET /api/center/{centerId}). 위경도·amenityCodes 포함.
     /// 스웨거 문서상 성공 응답 스키마가 다른 엔드포인트와 달리 {code,status,data} 래핑 없이
     /// CenterDetailDto를 바로 반환하는 것으로 보이나, 이 앱의 다른 API는 전부 래핑돼 있어

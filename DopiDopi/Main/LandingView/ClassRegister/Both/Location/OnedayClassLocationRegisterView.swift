@@ -17,8 +17,8 @@ struct OnedayClassLocationRegisterView: View {
         container.state.selectedClassTypeId == "regular"
     }
     
-    /// 원데이 6단계 / 정규 7단계
-    private var totalSteps: Int { isRegularStudioFlow ? 7 : 6 }
+    /// 원데이/정규 공통 6단계 (정규: 금액정보 화면 폐지 → 운영정보가 마지막 6단계)
+    private let totalSteps = 6
     /// 원데이: 장소=4 / 정규: 장소=2
     private var currentStep: Int { isRegularStudioFlow ? 2 : 4 }
     
