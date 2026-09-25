@@ -46,6 +46,7 @@ struct OneDayCategoryModuleView: View {
             .frame(width: 192)
         }
         .padding(.horizontal, 16)
+        .debugViewName()
     }
 }
 

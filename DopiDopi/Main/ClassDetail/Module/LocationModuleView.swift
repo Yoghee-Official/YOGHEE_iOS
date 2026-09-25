@@ -41,6 +41,7 @@ struct LocationModuleView: View {
             }
         }
         .padding(.horizontal, 16)
+        .debugViewName()
     }
 
     private var mapPlaceholder: some View {

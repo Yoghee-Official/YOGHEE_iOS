@@ -55,6 +55,7 @@ struct LeaderProfileModuleView: View {
             }
         }
         .frame(width: UIScreen.main.bounds.width, height: 472.ratio())
+        .debugViewName()
     }
     
     // MARK: - Profile Image Section

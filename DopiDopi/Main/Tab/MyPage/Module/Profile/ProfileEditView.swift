@@ -62,6 +62,7 @@ struct ProfileEditView: View {
                 }
             }
         }
+        .debugViewName()
     }
     
     // MARK: - Top Bar

@@ -30,38 +30,41 @@ struct TodayClassesModuleView: View {
     }
     
     var body: some View {
-        if classes.isEmpty {
-            MyPageEmptyView(message: "오늘 수업이 없습니다.")
-        } else {
-            VStack(spacing: 16.ratio()) {
-                ForEach(groupedClasses, id: \.date) { group in
-                    VStack(alignment: .leading, spacing: 12.ratio()) {
-                        // 날짜 레이블
-                        Text(group.date)
-                            .pretendardFont(.bold, size: 14)
-                            .foregroundColor(.Info)
-                            .padding(.horizontal, 16.ratio())
+        Group {
+            if classes.isEmpty {
+                MyPageEmptyView(message: "오늘 수업이 없습니다.")
+            } else {
+                VStack(spacing: 16.ratio()) {
+                    ForEach(groupedClasses, id: \.date) { group in
+                        VStack(alignment: .leading, spacing: 12.ratio()) {
+                            // 날짜 레이블
+                            Text(group.date)
+                                .pretendardFont(.bold, size: 14)
+                                .foregroundColor(.Info)
+                                .padding(.horizontal, 16.ratio())
                         
-                        // 해당 날짜의 수업 목록
-                        VStack(spacing: 12.ratio()) {
-                            ForEach(group.classes, id: \.classId) { item in
-                                YogaClassScheduleItemView(
-                                    item: item,
-                                    onTap: { onItemTap(item.classId) },
-                                    userRole: .instructor,
-                                    showAttendanceButton: true,
-                                    onAttendanceCheckTap: {
-                                        print("출석 체크 화면 이동")
-                                    }
-                                )
+                            // 해당 날짜의 수업 목록
+                            VStack(spacing: 12.ratio()) {
+                                ForEach(group.classes, id: \.classId) { item in
+                                    YogaClassScheduleItemView(
+                                        item: item,
+                                        onTap: { onItemTap(item.classId) },
+                                        userRole: .instructor,
+                                        showAttendanceButton: true,
+                                        onAttendanceCheckTap: {
+                                            print("출석 체크 화면 이동")
+                                        }
+                                    )
+                                }
                             }
+                            .padding(.horizontal, 16.ratio())
                         }
-                        .padding(.horizontal, 16.ratio())
                     }
                 }
+                .padding(.vertical, 16)
             }
-            .padding(.vertical, 16)
         }
+        .debugViewName()
     }
     
     // MARK: - Helper Methods

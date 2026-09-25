@@ -24,6 +24,7 @@ struct YogheeClubDiscountBanner: View {
         .padding(.vertical, 8)
         .background(Color.MindOrange)
         .cornerRadius(8)
+        .debugViewName()
     }
 }
 

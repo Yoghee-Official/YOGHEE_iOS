@@ -28,43 +28,46 @@ struct ScheduleModuleView: View {
     }
 
     var body: some View {
-        if detail.type == "R" {
-            RegularScheduleSectionView(
-                schedules: detail.schedules,
-                className: detail.name,
-                externalMonths: monthOptions,
-                selectedMonth: selectedMonth,
-                onMonthChange: onMonthChange
-            )
-        } else {
-            VStack(alignment: .leading, spacing: 16) {
-                scheduleHeaderLabel
-
-                VStack(spacing: 8) {
-                    CalendarView(
-                        reservedDates: reservedDates,
-                        selectedDate: $selectedDate,
-                        userRole: .yogini
-                    )
+        Group {
+            if detail.type == "R" {
+                RegularScheduleSectionView(
+                    schedules: detail.schedules,
+                    className: detail.name,
+                    externalMonths: monthOptions,
+                    selectedMonth: selectedMonth,
+                    onMonthChange: onMonthChange
+                )
+            } else {
+                VStack(alignment: .leading, spacing: 16) {
+                    scheduleHeaderLabel
 
                     VStack(spacing: 8) {
-                        ForEach(filteredSchedules, id: \.scheduleId) { schedule in
-                            ScheduleItemView(
-                                schedule: schedule,
-                                className: detail.name,
-                                onTap: { onScheduleTap(schedule.scheduleId) }
-                            )
-                            .transition(.asymmetric(
-                                insertion: .move(edge: .top).combined(with: .opacity),
-                                removal: .move(edge: .top).combined(with: .opacity)
-                            ))
+                        CalendarView(
+                            reservedDates: reservedDates,
+                            selectedDate: $selectedDate,
+                            userRole: .yogini
+                        )
+
+                        VStack(spacing: 8) {
+                            ForEach(filteredSchedules, id: \.scheduleId) { schedule in
+                                ScheduleItemView(
+                                    schedule: schedule,
+                                    className: detail.name,
+                                    onTap: { onScheduleTap(schedule.scheduleId) }
+                                )
+                                .transition(.asymmetric(
+                                    insertion: .move(edge: .top).combined(with: .opacity),
+                                    removal: .move(edge: .top).combined(with: .opacity)
+                                ))
+                            }
                         }
+                        .animation(.easeOut(duration: 0.4), value: filteredSchedules.map { $0.scheduleId })
                     }
-                    .animation(.easeOut(duration: 0.4), value: filteredSchedules.map { $0.scheduleId })
                 }
+                .padding(.horizontal, 16)
             }
-            .padding(.horizontal, 16)
         }
+        .debugViewName()
     }
 
     private var scheduleHeaderLabel: some View {

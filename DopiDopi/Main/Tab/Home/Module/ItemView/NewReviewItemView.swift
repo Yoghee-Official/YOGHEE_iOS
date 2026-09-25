@@ -19,5 +19,6 @@ struct StarRatingView: View {
                     .frame(width: 14, height: 13)
             }
         }
+        .debugViewName("StarRatingView", kind: .item)
     }
 }

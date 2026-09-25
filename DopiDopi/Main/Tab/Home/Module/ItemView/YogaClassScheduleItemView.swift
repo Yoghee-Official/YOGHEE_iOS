@@ -115,6 +115,7 @@ struct YogaClassScheduleItemView: View {
             .frame(height: cardHeight)
         }
         .buttonStyle(.plain)
+        .debugViewName(kind: .item)
     }
 }
 

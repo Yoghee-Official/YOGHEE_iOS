@@ -20,17 +20,20 @@ struct RecommendClassModuleView: View {
     private let cardHeight: CGFloat = 250.ratio()
     
     var body: some View {
-        if displayItems.isEmpty {
-            EmptyView()
-        } else {
-            PagingCarouselView(
-                items: displayItems,
-                cardWidth: cardWidth,
-                cardHeight: cardHeight,
-                onItemTap: onItemTap
-            )
-            .frame(height: cardHeight)
+        Group {
+            if displayItems.isEmpty {
+                EmptyView()
+            } else {
+                PagingCarouselView(
+                    items: displayItems,
+                    cardWidth: cardWidth,
+                    cardHeight: cardHeight,
+                    onItemTap: onItemTap
+                )
+                .frame(height: cardHeight)
+            }
         }
+        .debugViewName()
     }
 }
 
