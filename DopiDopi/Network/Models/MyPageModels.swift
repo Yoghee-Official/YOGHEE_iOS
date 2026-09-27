@@ -169,6 +169,30 @@ struct MyPageSectionConfiguration {
     }
 }
 
+// MARK: - 자격증 인증 등록 API (POST /api/my/license)
+
+/// 자격증 인증 등록 API 응답 (code, status, data). data는 안내 문구 문자열 ("자격증 인증 등록 요청 완료")
+struct LicenseVerifyResponse: Codable {
+    let code: Int
+    let status: String
+    let data: String?
+}
+
+/// 자격증 등록 화면 안내 목록 하드코딩 (추후 API 연동 필요 - YogaCodeHardcoded와 동일한 임시 방식)
+enum LicenseCertificateHardcoded {
+    static let supportedCertificates: [String] = [
+        "AYUSH / YCB (Yoga Certification Board) - Level 1~4",
+        "RYT (Registered Yoga Teacher) – Yoga Alliance USA - RYT 200 / 300 / 500",
+        "RYT (Registered Yoga Teacher) – Yoga Alliance USA - E RYT 200 / 500",
+        "대한요가협회",
+        "한국요가협회",
+        "한국요가학회",
+        "요가명상협회",
+        "한국생활요가협회",
+        "대한생활체육회 요가지도자 자격증"
+    ]
+}
+
 // MARK: - MyPage Section
 enum MyPageSection: Identifiable {
     // 공통

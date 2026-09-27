@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B132F27B46C00E615E1 /* GlassUI.swift */; };
+		E12F5485C27F35D81F708ED6 /* ImagePickerComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */; };
+		5A9576FF098E34E4E714AA69 /* LicenseRegisterContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D172B4EDA07757A81BCD4E3 /* LicenseRegisterContainer.swift */; };
+		0BFDC07770C4FD44F432D732 /* LicenseRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE29ADEB3BA344FDE9E45C3 /* LicenseRegisterView.swift */; };
 		52295B162F2F5A9500E615E1 /* FavoriteCenterModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */; };
 		52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */; };
 		52295B1B2F2F943B00E615E1 /* MessageBoxContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */; };
@@ -131,6 +134,9 @@
 		40AEBDA86D6B4A56B8A116DCD39A72F4 /* ReviewListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewListContainer.swift; sourceTree = "<group>"; };
 		4522CFF9668448BBA550CE9F585293F0 /* ReviewListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewListView.swift; sourceTree = "<group>"; };
 		52295B132F27B46C00E615E1 /* GlassUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassUI.swift; sourceTree = "<group>"; };
+		1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerComponents.swift; sourceTree = "<group>"; };
+		0D172B4EDA07757A81BCD4E3 /* LicenseRegisterContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseRegisterContainer.swift; sourceTree = "<group>"; };
+		3BE29ADEB3BA344FDE9E45C3 /* LicenseRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseRegisterView.swift; sourceTree = "<group>"; };
 		52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCenterModuleView.swift; sourceTree = "<group>"; };
 		52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteClassModuleView.swift; sourceTree = "<group>"; };
 		52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBoxContainer.swift; sourceTree = "<group>"; };
@@ -266,6 +272,7 @@
 			children = (
 				52295B132F27B46C00E615E1 /* GlassUI.swift */,
 				52295B222F324D5900E615E1 /* MyPageEmptyView.swift */,
+				1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */,
 			);
 			path = CommonView;
 			sourceTree = "<group>";
@@ -274,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				52F9879D2F4D057700C905D1 /* ClassRegister */,
+				8A108A1BE703FC7D8C375AA1 /* License */,
 				52295B1D2F2F947000E615E1 /* SettingsContainer.swift */,
 				52295B1E2F2F947000E615E1 /* SettingsView.swift */,
 				52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */,
@@ -282,6 +290,15 @@
 				4522CFF9668448BBA550CE9F585293F0 /* ReviewListView.swift */,
 			);
 			path = LandingView;
+			sourceTree = "<group>";
+		};
+		8A108A1BE703FC7D8C375AA1 /* License */ = {
+			isa = PBXGroup;
+			children = (
+				0D172B4EDA07757A81BCD4E3 /* LicenseRegisterContainer.swift */,
+				3BE29ADEB3BA344FDE9E45C3 /* LicenseRegisterView.swift */,
+			);
+			path = License;
 			sourceTree = "<group>";
 		};
 		52295B272F38E3D000E615E1 /* TodayClasses */ = {
@@ -914,6 +931,9 @@
 				52295B252F389DB300E615E1 /* LeaderProfileModuleView.swift in Sources */,
 				522CE5ED2F12A6BF0063FDF5 /* InterestedClassModuleView.swift in Sources */,
 				52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */,
+				E12F5485C27F35D81F708ED6 /* ImagePickerComponents.swift in Sources */,
+				5A9576FF098E34E4E714AA69 /* LicenseRegisterContainer.swift in Sources */,
+				0BFDC07770C4FD44F432D732 /* LicenseRegisterView.swift in Sources */,
 				522CE5EE2F12A6BF0063FDF5 /* MainBannerModuleView.swift in Sources */,
 				522CE5EF2F12A6BF0063FDF5 /* NewReviewModuleView.swift in Sources */,
 				522CE5F02F12A6BF0063FDF5 /* OneDayCategoryModuleView.swift in Sources */,

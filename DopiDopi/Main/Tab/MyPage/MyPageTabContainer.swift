@@ -12,6 +12,8 @@ enum MyPageNavigationDestination: Hashable {
     case settings
     case messageBox
     case classRegister
+    /// 지도자 세부항목 "자격증 등록(임시)" 진입점 (정식 진입 버튼 생기기 전까지 임시)
+    case licenseRegister
 }
 
 // MARK: - Intent
@@ -126,12 +128,18 @@ class MyPageTabContainer: ObservableObject {
         case .selectDetailItem(let itemName):
             state.selectedDetailItem = itemName
             log("세부항목 '\(itemName)' 클릭")
-            // TODO: 각 항목별 네비게이션 처리
-            // - "설정" → 세부 설정 페이지
-            // - "계정관리" → 계정관리 페이지
-            // - "이용약관" → 이용약관 페이지
-            // - "고객센터" → 고객센터 페이지
-            // - "환불정책" → 환불정책 페이지
+            switch itemName {
+            case "자격증 등록(임시)":
+                state.navigationDestination = .licenseRegister
+            default:
+                break
+                // TODO: 각 항목별 네비게이션 처리
+                // - "설정" → 세부 설정 페이지
+                // - "계정관리" → 계정관리 페이지
+                // - "이용약관" → 이용약관 페이지
+                // - "고객센터" → 고객센터 페이지
+                // - "환불정책" → 환불정책 페이지
+            }
             
         // 아이템 선택 액션
         case .selectItem(let itemId, let sectionId):

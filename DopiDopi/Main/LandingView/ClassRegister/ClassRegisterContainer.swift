@@ -43,8 +43,8 @@ enum ClassRegisterIntent {
     case addClassImages([Data])
     /// 특정 이미지 로딩 완료 (placeholder → 실제 이미지 표시)
     case setClassImageLoaded(String)
-    /// Presigned 업로드 완료 시 imageKey 저장
-    case setClassImageUploaded(id: String, imageKey: String)
+    /// Presigned 업로드 완료 시 imageUrl 저장
+    case setClassImageUploaded(id: String, imageUrl: String)
     /// 수련원 이미지 삭제
     case removeClassImage(String)
     /// 수련원 이미지 순서 변경
@@ -221,11 +221,11 @@ class ClassRegisterContainer: ObservableObject {
             updated.isLoading = false
             state.classImages[index] = updated
             objectWillChange.send()
-        case .setClassImageUploaded(let id, let imageKey):
+        case .setClassImageUploaded(let id, let imageUrl):
             guard let index = state.classImages.firstIndex(where: { $0.id == id }) else { return }
             var updated = state.classImages[index]
             updated.isLoading = false
-            updated.imageKey = imageKey
+            updated.imageUrl = imageUrl
             state.classImages[index] = updated
             objectWillChange.send()
         case .removeClassImage(let id):
@@ -287,7 +287,7 @@ class ClassRegisterContainer: ObservableObject {
         }
     }
     
-    /// 이미지 1장 Presigned 발급 → PUT 업로드 → imageKey 저장
+    /// 이미지 1장 Presigned 발급 → PUT 업로드 → imageUrl 저장
     func uploadClassImage(itemId: String, imageData: Data) async {
         guard let image = UIImage(data: imageData) else {
             handleIntent(.setClassImageLoaded(itemId))
@@ -304,12 +304,12 @@ class ClassRegisterContainer: ObservableObject {
         )
         do {
             let response = try await APIService.shared.postImagePresign(body: dto)
-            guard let first = response.files.first else {
+            guard let first = response.files.first, let imageUrl = first.imageUrl else {
                 handleIntent(.setClassImageLoaded(itemId))
                 return
             }
             try await APIService.shared.uploadImageToPresignedUrl(data: imageData, presignedUrl: first.presignedUrl, contentType: first.contentType)
-            await MainActor.run { handleIntent(.setClassImageUploaded(id: itemId, imageKey: first.imageKey)) }
+            await MainActor.run { handleIntent(.setClassImageUploaded(id: itemId, imageUrl: imageUrl)) }
         } catch {
             await MainActor.run { handleIntent(.setClassImageLoaded(itemId)) }
         }
@@ -417,7 +417,7 @@ class ClassRegisterContainer: ObservableObject {
         }()
 
         // MARK: 공통 — 이미지·환불
-        let imageKeys = s.classImages.compactMap(\.imageKey)
+        let imageUrls = s.classImages.compactMap(\.imageUrl)
         let refundPolicies = s.refundRules.map {
             ClassRegisterRefundPolicyDto(hoursBeforeClass: $0.hoursBefore, refundRate: $0.percent)
         }
@@ -471,7 +471,7 @@ class ClassRegisterContainer: ObservableObject {
             featureCodes:  s.featureIds.isEmpty ? nil : Array(s.featureIds),
             schedules:     onedaySchedules,
             monthlySchedules: monthlySchedules,
-            images:        imageKeys.isEmpty ? nil : imageKeys,
+            images:        imageUrls.isEmpty ? nil : imageUrls,
             price:         isRegular ? regularPrice : onedayPrice,
             categoryCodes: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
             policy:        ClassRegisterPolicyDto(
