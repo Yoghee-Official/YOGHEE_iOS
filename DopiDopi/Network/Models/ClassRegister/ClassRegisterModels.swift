@@ -244,14 +244,15 @@ struct ImageUploadDto: Codable {
     let files: [ImageUploadInfoDto]
 }
 
-/// Presigned URL 발급 응답 - 파일별 presignedUrl, imageKey
+/// Presigned URL 발급 응답 - 파일별 presignedUrl, imageUrl
 struct PresignFileResponseDto: Codable {
     let fileName: String
     let contentType: String
     let width: Int
     let height: Int
     let fileSize: Int
-    let imageKey: String
+    /// 도메인 API(클래스/프로필/자격증 등록 등) 호출 시 그대로 전달하는 이미지 전체 URL (스웨거 PresignedFileModel.imageUrl)
+    let imageUrl: String?
     let presignedUrl: String
 }
 
@@ -268,26 +269,32 @@ struct ImagePresignApiResponse: Codable {
     let data: ImagePresignResponse
 }
 
+/// 이미지 URL 갱신 공용 요청 바디 (프로필 이미지 변경 POST /api/my/profile, 자격증 인증 등록 POST /api/my/license 등에서 공용 사용)
+/// presign으로 받은 imageUrl(전체 URL)을 그대로 전달한다.
+struct ImageUpdateDto: Codable {
+    let imageUrl: String
+}
+
 // MARK: - 클래스 이미지 등록 (수련원 이미지, 최대 20장)
 
-/// 등록된 수련원 이미지 한 장 (드래그 순서·삭제용). 업로드 완료 시 imageKey 저장.
+/// 등록된 수련원 이미지 한 장 (드래그 순서·삭제용). 업로드 완료 시 imageUrl 저장.
 struct ClassRegisterImageItem: Identifiable, Equatable {
     let id: String
     let imageData: Data
     /// 업로드/처리 중이면 true, 완료되면 false (로딩 시 placeholder 표시)
     var isLoading: Bool
-    /// Presigned 업로드 후 서버가 준 imageKey (클래스 등록 API images 배열에 사용)
-    var imageKey: String?
-    
-    init(id: String, imageData: Data, isLoading: Bool = true, imageKey: String? = nil) {
+    /// Presigned 업로드 후 서버가 준 이미지 전체 URL (클래스 등록 API images 배열에 사용)
+    var imageUrl: String?
+
+    init(id: String, imageData: Data, isLoading: Bool = true, imageUrl: String? = nil) {
         self.id = id
         self.imageData = imageData
         self.isLoading = isLoading
-        self.imageKey = imageKey
+        self.imageUrl = imageUrl
     }
-    
+
     static func == (lhs: ClassRegisterImageItem, rhs: ClassRegisterImageItem) -> Bool {
-        lhs.id == rhs.id && lhs.isLoading == rhs.isLoading && lhs.imageKey == rhs.imageKey
+        lhs.id == rhs.id && lhs.isLoading == rhs.isLoading && lhs.imageUrl == rhs.imageUrl
     }
 }
 

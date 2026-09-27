@@ -75,6 +75,8 @@ struct MyPageTabView: View {
                     MessageBoxView()
                 case .classRegister:
                     ClassTypeRegisterView()
+                case .licenseRegister:
+                    LicenseRegisterView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
@@ -237,7 +239,7 @@ struct MyPageSectionView: View {
                 }
                 
             case .detailContents:
-                DetailContentsModuleView { itemName in
+                DetailContentsModuleView(isInstructor: container.state.currentRole == .instructor) { itemName in
                     container.handleIntent(.selectDetailItem(itemName))
                 }
             }

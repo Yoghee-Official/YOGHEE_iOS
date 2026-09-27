@@ -16,7 +16,7 @@ struct OnedayClassImageRegisterView: View {
     @State private var showImageSourceSheet = false
     @State private var showCamera = false
     @State private var showPhotoLibrary = false
-    @State private var permissionAlert: PermissionAlertKind?
+    @State private var permissionAlert: MediaPermissionAlertKind?
     
     private var isRegularStudioFlow: Bool {
         container.state.selectedClassTypeId == "regular"
@@ -65,7 +65,7 @@ struct OnedayClassImageRegisterView: View {
             )
         }
         .fullScreenCover(isPresented: $showCamera) {
-            ClassRegisterCameraPicker(onImagePicked: { data in
+            ImageCameraPicker(onImagePicked: { data in
                 DispatchQueue.main.async {
                     addImageData(data)
                     showCamera = false
@@ -73,7 +73,7 @@ struct OnedayClassImageRegisterView: View {
             }, onDismiss: { showCamera = false })
         }
         .fullScreenCover(isPresented: $showPhotoLibrary) {
-            ClassRegisterPhotoLibraryPicker(onImagePicked: { data in
+            ImagePhotoLibraryPicker(onImagePicked: { data in
                 DispatchQueue.main.async {
                     addImageData(data)
                     showPhotoLibrary = false
@@ -367,106 +367,6 @@ struct ClassImageSourceSheet: View {
                     }
                 }
             }
-        }
-    }
-}
-
-// MARK: - 권한 알림
-private enum PermissionAlertKind {
-    case deniedCamera
-    case deniedPhotoLibrary
-    case denied
-    
-    var title: String { "권한 필요" }
-    var message: String {
-        switch self {
-        case .deniedCamera:
-            return "카메라 접근이 거부되었습니다. 설정에서 권한을 허용해 주세요."
-        case .deniedPhotoLibrary:
-            return "사진 라이브러리 접근이 거부되었습니다. 설정에서 권한을 허용해 주세요."
-        case .denied:
-            return "접근 권한이 필요합니다."
-        }
-    }
-}
-
-// MARK: - 카메라 피커
-private struct ClassRegisterCameraPicker: UIViewControllerRepresentable {
-    let onImagePicked: (Data) -> Void
-    let onDismiss: () -> Void
-    @Environment(\.dismiss) private var dismiss
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.sourceType = .camera
-        picker.cameraCaptureMode = .photo
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ClassRegisterCameraPicker
-        
-        init(_ parent: ClassRegisterCameraPicker) {
-            self.parent = parent
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let image = info[.originalImage] as? UIImage,
-               let data = image.jpegData(compressionQuality: 0.8) {
-                parent.onImagePicked(data)
-            }
-            // 닫기는 부모 콜백에서 showCamera = false 로 처리 (풀스크린 해제)
-        }
-        
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.onDismiss()
-        }
-    }
-}
-
-// MARK: - 갤러리 피커
-private struct ClassRegisterPhotoLibraryPicker: UIViewControllerRepresentable {
-    let onImagePicked: (Data) -> Void
-    let onDismiss: () -> Void
-    @Environment(\.dismiss) private var dismiss
-    
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.sourceType = .photoLibrary
-        return picker
-    }
-    
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: ClassRegisterPhotoLibraryPicker
-        
-        init(_ parent: ClassRegisterPhotoLibraryPicker) {
-            self.parent = parent
-        }
-        
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            guard let image = info[.originalImage] as? UIImage,
-                  let data = image.jpegData(compressionQuality: 0.8) else { return }
-            picker.dismiss(animated: true) {
-                DispatchQueue.main.async { self.parent.onImagePicked(data) }
-            }
-        }
-        
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.onDismiss()
         }
     }
 }

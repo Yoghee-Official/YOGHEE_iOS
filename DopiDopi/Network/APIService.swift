@@ -92,6 +92,7 @@ class APIService {
         case centerDetail(centerId: String)
         case centerSearch(bbox: MapBoundingBox, keyword: String?, sort: String?)
         case imagePresign
+        case license
         case classRegister
         case feed
         case classDetail(classId: String)
@@ -127,6 +128,8 @@ class APIService {
                 return "/api/center/search"
             case .imagePresign:
                 return "/api/image/presign"
+            case .license:
+                return "/api/my/license"
             case .classRegister:
                 return "/api/class"
             case .feed:
@@ -164,7 +167,7 @@ class APIService {
                 if let keyword { params["keyword"] = keyword }  // 키워드 검색 시만 포함
                 if let sort    { params["sort"]    = sort    }
                 return params
-            case .login, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .classRegister, .feed, .classDetail, .reviews:
+            case .login, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews:
                 return nil
             }
         }
@@ -341,6 +344,16 @@ class APIService {
     func getReviews(classId: String, page: Int, sort: String) async throws -> ReviewPageResponse {
         let endpoint = Endpoint.reviews(classId: classId)
         return try await get(endPoint: endpoint.path, parameters: ["page": page, "sort": sort])
+    }
+
+    /// 자격증 인증 등록 (POST /api/my/license). imageUrl은 /api/image/presign 응답의 imageUrl(전체 URL)을 그대로 전달한다.
+    func postLicenseVerification(imageUrl: String) async throws -> LicenseVerifyResponse {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let body = ImageUpdateDto(imageUrl: imageUrl)
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        return try await post(endPoint: Endpoint.license.path, parameters: parameters, headers: headers)
     }
 
     /// 클래스 등록 (POST /api/class)
