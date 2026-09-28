@@ -283,7 +283,7 @@ struct InstructorClassModuleView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(detail.trainingTypes, id: \.categoryId) { type in
+                    ForEach(detail.trainingTypes, id: \.code) { type in
                         YogaTypeCardView(name: type.name)
                     }
                 }

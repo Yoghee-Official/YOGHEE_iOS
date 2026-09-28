@@ -590,11 +590,11 @@ class ClassRegisterContainer: ObservableObject {
             )]
 
         func codeInfos(ids: Set<String>, in list: [CodeInfoDTO]) -> [CategoryInfo] {
-            list.filter { ids.contains($0.id) }.map { CategoryInfo(categoryId: $0.id, name: $0.name) }
+            list.filter { ids.contains($0.id) }.map { CategoryInfo(code: $0.id, name: $0.name) }
         }
-        let features: [FeatureInfo] = s.features.enumerated().compactMap { index, code in
+        let features: [FeatureInfo] = s.features.compactMap { code in
             guard s.featureIds.contains(code.id) else { return nil }
-            return FeatureInfo(featureId: index, code: code.id, description: code.name)
+            return FeatureInfo(code: code.id, description: code.name)
         }
 
         let detail = YogaClassDetailDTO(

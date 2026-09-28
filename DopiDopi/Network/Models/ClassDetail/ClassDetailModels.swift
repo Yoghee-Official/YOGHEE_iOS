@@ -94,12 +94,11 @@ struct YogaClassDetailDTO: Codable {
 }
 
 struct CategoryInfo: Codable {
-    let categoryId: String
+    let code: String
     let name: String
 }
 
 struct FeatureInfo: Codable {
-    let featureId: Int
     let code: String
     let description: String
 }
