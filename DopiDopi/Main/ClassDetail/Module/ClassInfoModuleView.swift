@@ -58,7 +58,7 @@ struct ClassInfoModuleView: View {
             if !detail.features.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(detail.features, id: \.featureId) { feature in
+                        ForEach(detail.features, id: \.code) { feature in
                             FeatureTagView(feature: feature) {
                                 onFeatureTap(feature)
                             }
