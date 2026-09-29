@@ -55,12 +55,12 @@ struct InstructorClassModuleView: View {
             instructorFront
                 .opacity(isFlipped ? 0 : 1)
             instructorBack
-                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0), perspective: 0)
                 .opacity(isFlipped ? 1 : 0)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 303)
-        .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0))
+        .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0), perspective: 0)
         .animation(.easeInOut(duration: 0.5), value: isFlipped)
     }
 
@@ -180,12 +180,12 @@ struct InstructorClassModuleView: View {
             centerFront(center: center)
                 .opacity(isFlipped ? 0 : 1)
             centerBack(center: center)
-                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0))
+                .rotation3DEffect(.degrees(180), axis: (x: 0, y: 1, z: 0), perspective: 0)
                 .opacity(isFlipped ? 1 : 0)
         }
         .frame(maxWidth: .infinity)
         .frame(height: 303)
-        .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0))
+        .rotation3DEffect(.degrees(isFlipped ? 180 : 0), axis: (x: 0, y: 1, z: 0), perspective: 0)
         .animation(.easeInOut(duration: 0.5), value: isFlipped)
     }
 
