@@ -123,6 +123,24 @@ struct MyPageTabView: View {
                 }
             )
         }
+        .overlay {
+            // 지도자 토글 새로 진입 + 미인증 상태일 때 노출 (피그마 698-20054)
+            if container.showLicensePrompt {
+                LicenseCertificationAlertView(
+                    onConfirm: {
+                        container.showLicensePrompt = false
+                        // 자격증 등록 화면은 네비게이션 스택 위에 push되고, 그 아래 깔리는 마이페이지 바닥 화면은
+                        // 요기니로 되돌려둔다. 인증 완료 후 뒤로가기/닫기로 복귀했을 때 지도자 화면이 남지 않도록.
+                        container.handleIntent(.switchRole(.yogini))
+                        container.handleIntent(.selectDetailItem("지도자 인증"))
+                    },
+                    onDismiss: {
+                        container.showLicensePrompt = false
+                        container.handleIntent(.switchRole(.yogini))
+                    }
+                )
+            }
+        }
     }
 }
 

@@ -8,15 +8,13 @@
 import SwiftUI
 
 struct DetailContentsModuleView: View {
-    /// 지도자 전용 항목("자격증 등록(임시)") 노출 여부
+    /// 지도자 전용 항목("지도자 인증") 노출 여부
     let isInstructor: Bool
     let onItemTap: (String) -> Void
 
-    /// 지도자 전용 "자격증 등록(임시)" 항목은 랜딩시킬 화면이 아직 없어 임시로 노출
-    /// TODO: 자격증 등록 진입 버튼이 정식으로 생기면 이 임시 항목은 제거
     private var menuItems: [String] {
         isInstructor
-            ? ["자격증 등록(임시)", "설정", "계정관리", "이용약관", "고객센터", "환불정책"]
+            ? ["지도자 인증", "설정", "계정관리", "이용약관", "고객센터", "환불정책"]
             : ["설정", "계정관리", "이용약관", "고객센터", "환불정책"]
     }
     
