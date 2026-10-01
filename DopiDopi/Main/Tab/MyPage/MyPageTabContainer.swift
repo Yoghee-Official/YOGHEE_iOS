@@ -12,7 +12,7 @@ enum MyPageNavigationDestination: Hashable {
     case settings
     case messageBox
     case classRegister
-    /// 지도자 세부항목 "자격증 등록(임시)" 진입점 (정식 진입 버튼 생기기 전까지 임시)
+    /// 지도자 세부항목 "지도자 인증" 진입점
     case licenseRegister
 }
 
@@ -79,6 +79,8 @@ class MyPageTabContainer: ObservableObject {
     @Published private(set) var state = MyPageTabState()
     @Published var showProfileEditSheet: Bool = false  // Sheet 표시용 (public)
     @Published var showLoginSheet: Bool = false  // LoginView Sheet 표시용 (public)
+    /// 지도자 토글 진입 시, 아직 지도자 인증(자격증 등록)을 받지 않은 사용자에게 노출하는 안내 팝업 (피그마 Alert_18)
+    @Published var showLicensePrompt: Bool = false
     
     init() {
         // init에서는 로그인 체크하지 않음
@@ -129,7 +131,7 @@ class MyPageTabContainer: ObservableObject {
             state.selectedDetailItem = itemName
             log("세부항목 '\(itemName)' 클릭")
             switch itemName {
-            case "자격증 등록(임시)":
+            case "지도자 인증":
                 state.navigationDestination = .licenseRegister
             default:
                 break
@@ -151,9 +153,10 @@ class MyPageTabContainer: ObservableObject {
             let previousRole = state.currentRole
             state.currentRole = role
             log("역할 전환: \(previousRole.displayName) → \(role.displayName)")
-            
+
             // 역할 변경 시 데이터 다시 불러오기
-            loadMyPageData()
+            // 요기니 → 지도자로 "새로 진입"할 때만 인증 여부를 확인한다 (이미 지도자 탭에 있는 상태에서의 새로고침 등은 제외)
+            loadMyPageData(checkInstructorCertification: previousRole != .instructor && role == .instructor)
             
         // 네비게이션 액션
         case .clearNavigation:
@@ -266,10 +269,12 @@ class MyPageTabContainer: ObservableObject {
 //        }
 //    }
     
-    private func loadMyPageData() {
+    /// - Parameter checkInstructorCertification: true면 로딩 완료 후 지도자 인증 여부(leaderProfile.certificate)를 확인해
+    ///   미인증 상태일 경우 지도자 인증 안내 팝업(showLicensePrompt)을 띄운다. 지도자 토글에 "새로 진입"할 때만 true로 넘긴다.
+    private func loadMyPageData(checkInstructorCertification: Bool = false) {
         state.isLoading = true
         state.errorMessage = nil
-        
+
         Task { @MainActor in
             do {
                 let response = try await APIService.shared.getMyPageData(for: state.currentRole)
@@ -277,6 +282,14 @@ class MyPageTabContainer: ObservableObject {
                     self.state.myPageData = response.data
                     self.state.sections = self.createSections(from: response.data)
                     self.state.isLoading = false
+
+                    if checkInstructorCertification {
+                        let certificate = response.data.leaderProfile?.certificate
+                        if certificate?.isEmpty ?? true {
+                            log("⚠️ 지도자 인증 미완료 - 안내 팝업 노출")
+                            self.showLicensePrompt = true
+                        }
+                    }
                 }
             } catch {
                 // 토큰 만료(401)에 대한 갱신+재시도는 APIService 내부에서 이미 처리되고 온 뒤이므로,
