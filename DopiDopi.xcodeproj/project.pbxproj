@@ -56,6 +56,10 @@
 		522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */; };
 		522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */; };
 		358438C6326DA79C06B5B50D /* LicenseCertificationAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4682ED84FB17E35BFADFE3C /* LicenseCertificationAlertView.swift */; };
+		DA29BE9FF771228E9DFA359F /* AttendanceCheckContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */; };
+		F93A49B7F36356B209E73E17 /* AttendanceCheckBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */; };
+		F7824A7CD635CA1B1BB8F2AC /* AttendanceMemberRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */; };
+		23949769BF0CD4261C41F547 /* ReservationCancelAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */; };
 		522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */; };
 		522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BB2F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift */; };
 		522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BC2F12A6BF0063FDF5 /* UserProfileModuleView.swift */; };
@@ -70,6 +74,7 @@
 		522CE60B2F12A6BF0063FDF5 /* CategoryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5C92F12A6BF0063FDF5 /* CategoryModels.swift */; };
 		522CE60C2F12A6BF0063FDF5 /* MainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CA2F12A6BF0063FDF5 /* MainModels.swift */; };
 		522CE60D2F12A6BF0063FDF5 /* MyPageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CB2F12A6BF0063FDF5 /* MyPageModels.swift */; };
+		7BF1F964E63A5B72BCEA472D /* AttendanceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */; };
 		522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CD2F12A6BF0063FDF5 /* APIService.swift */; };
 		522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CE2F12A6BF0063FDF5 /* APIService+Auth.swift */; };
 		522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CF2F12A6BF0063FDF5 /* AuthManager.swift */; };
@@ -189,6 +194,10 @@
 		522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogaClassScheduleItemView.swift; sourceTree = "<group>"; };
 		522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailContentsModuleView.swift; sourceTree = "<group>"; };
 		F4682ED84FB17E35BFADFE3C /* LicenseCertificationAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseCertificationAlertView.swift; sourceTree = "<group>"; };
+		3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceCheckContainer.swift; sourceTree = "<group>"; };
+		0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceCheckBottomSheetView.swift; sourceTree = "<group>"; };
+		525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceMemberRowView.swift; sourceTree = "<group>"; };
+		7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationCancelAlertView.swift; sourceTree = "<group>"; };
 		522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservedClassesModuleView.swift; sourceTree = "<group>"; };
 		522CE5BB2F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThisWeekClassModuleView.swift; sourceTree = "<group>"; };
 		522CE5BC2F12A6BF0063FDF5 /* UserProfileModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModuleView.swift; sourceTree = "<group>"; };
@@ -203,6 +212,7 @@
 		522CE5C92F12A6BF0063FDF5 /* CategoryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModels.swift; sourceTree = "<group>"; };
 		522CE5CA2F12A6BF0063FDF5 /* MainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModels.swift; sourceTree = "<group>"; };
 		522CE5CB2F12A6BF0063FDF5 /* MyPageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageModels.swift; sourceTree = "<group>"; };
+		4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceModels.swift; sourceTree = "<group>"; };
 		522CE5CD2F12A6BF0063FDF5 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		522CE5CE2F12A6BF0063FDF5 /* APIService+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIService+Auth.swift"; sourceTree = "<group>"; };
 		522CE5CF2F12A6BF0063FDF5 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
@@ -306,8 +316,20 @@
 			isa = PBXGroup;
 			children = (
 				52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */,
+				C80930A8663E6CF1670080AE /* AttendanceCheck */,
 			);
 			path = TodayClasses;
+			sourceTree = "<group>";
+		};
+		C80930A8663E6CF1670080AE /* AttendanceCheck */ = {
+			isa = PBXGroup;
+			children = (
+				3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */,
+				0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */,
+				525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */,
+				7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */,
+			);
+			path = AttendanceCheck;
 			sourceTree = "<group>";
 		};
 		52295B2B2F3B93BC00E615E1 /* ClassRegisterBanner */ = {
@@ -518,6 +540,7 @@
 				52D6F3D82F9A61E800EC9BE8 /* ContentModels.swift */,
 				52735D20301F830B00515B0C /* ExploreModels.swift */,
 				522CE5CB2F12A6BF0063FDF5 /* MyPageModels.swift */,
+				4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -953,6 +976,10 @@
 				522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */,
 				522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */,
 				358438C6326DA79C06B5B50D /* LicenseCertificationAlertView.swift in Sources */,
+				DA29BE9FF771228E9DFA359F /* AttendanceCheckContainer.swift in Sources */,
+				F93A49B7F36356B209E73E17 /* AttendanceCheckBottomSheetView.swift in Sources */,
+				F7824A7CD635CA1B1BB8F2AC /* AttendanceMemberRowView.swift in Sources */,
+				23949769BF0CD4261C41F547 /* ReservationCancelAlertView.swift in Sources */,
 				522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */,
 				522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */,
 				522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */,
@@ -983,6 +1010,7 @@
 				52295B1C2F2F943B00E615E1 /* MessageBoxView.swift in Sources */,
 				522CE60C2F12A6BF0063FDF5 /* MainModels.swift in Sources */,
 				522CE60D2F12A6BF0063FDF5 /* MyPageModels.swift in Sources */,
+				7BF1F964E63A5B72BCEA472D /* AttendanceModels.swift in Sources */,
 				522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */,
 				522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */,
 				52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */,
