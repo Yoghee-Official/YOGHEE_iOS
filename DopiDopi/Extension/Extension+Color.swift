@@ -14,6 +14,7 @@ extension Color {
     static let MindOrange: Color = Color(red: 1, green: 0.33, blue: 0.13)
     static let LandBrown: Color = Color(red: 0.37, green: 0.28, blue: 0.21)
     static let FlowBlue: Color = Color(red: 0.79, green: 0.88, blue: 0.99)
+    static let SkyBlue: Color = Color(red: 0.22, green: 0.58, blue: 1)
     static let Notice: Color = Color(red: 0.94, green: 0.93, blue: 0.92)
     static let Info: Color = Color(red: 0.7, green: 0.7, blue: 0.7)
     static let CleanWhite: Color = .white

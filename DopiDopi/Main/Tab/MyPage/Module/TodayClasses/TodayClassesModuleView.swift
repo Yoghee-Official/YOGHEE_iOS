@@ -10,7 +10,9 @@ import SwiftUI
 struct TodayClassesModuleView: View {
     let classes: [YogaClassScheduleDTO]
     let onItemTap: (String) -> Void
-    
+
+    @State private var attendanceCheckItem: YogaClassScheduleDTO?
+
     // 날짜별로 그룹화
     private var groupedClasses: [(date: String, classes: [YogaClassScheduleDTO])] {
         let grouped = Dictionary(grouping: classes) { classItem -> String in
@@ -52,7 +54,7 @@ struct TodayClassesModuleView: View {
                                         userRole: .instructor,
                                         showAttendanceButton: true,
                                         onAttendanceCheckTap: {
-                                            print("출석 체크 화면 이동")
+                                            attendanceCheckItem = item
                                         }
                                     )
                                 }
@@ -65,6 +67,11 @@ struct TodayClassesModuleView: View {
             }
         }
         .debugViewName()
+        .sheet(item: $attendanceCheckItem) { item in
+            AttendanceCheckBottomSheetView(classItem: item)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.hidden)
+        }
     }
     
     // MARK: - Helper Methods

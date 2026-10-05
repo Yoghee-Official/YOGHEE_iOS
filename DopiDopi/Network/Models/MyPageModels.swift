@@ -73,7 +73,7 @@ struct WeekClassDTO: Codable, Equatable {
     let weekEnd: [YogaClassScheduleDTO]?
 }
 
-struct YogaClassScheduleDTO: Codable, Equatable {
+struct YogaClassScheduleDTO: Codable, Equatable, Identifiable {
     let classId: String
     let className: String
     let day: String
@@ -83,6 +83,10 @@ struct YogaClassScheduleDTO: Codable, Equatable {
     let attendance: Int
     let isPast: Bool
     let categories: [String]?
+    /// 실제 수업 세션 아이디. 출석체크(지도자용 세션 API)에 사용하며, 없으면 classId로 대체
+    var sessionId: String? = nil
+
+    var id: String { sessionId ?? classId }
 }
 
 //struct FavoriteOneDayClassDTO: Codable, Equatable {

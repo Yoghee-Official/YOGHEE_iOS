@@ -98,6 +98,9 @@ class APIService {
         case classDetail(classId: String)
         case reviews(classId: String)
         case appVersion(platform: String)
+        case sessionMembers(sessionId: String, status: String?)
+        case sessionAttendance(sessionId: String)
+        case cancelLeaderReservation(reservationId: String)
 
         var path: String {
             switch self {
@@ -140,6 +143,12 @@ class APIService {
                 return "/api/review/\(classId)"
             case .appVersion:
                 return "/api/app/version"
+            case .sessionMembers(let sessionId, _):
+                return "/api/leader/sessions/\(sessionId)/members"
+            case .sessionAttendance(let sessionId):
+                return "/api/leader/sessions/\(sessionId)/attendance"
+            case .cancelLeaderReservation(let reservationId):
+                return "/api/leader/reservations/\(reservationId)/cancel"
             }
         }
         
@@ -167,7 +176,10 @@ class APIService {
                 if let keyword { params["keyword"] = keyword }  // 키워드 검색 시만 포함
                 if let sort    { params["sort"]    = sort    }
                 return params
-            case .login, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews:
+            case .sessionMembers(_, let status):
+                if let status { return ["status": status] }
+                return nil
+            case .login, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation:
                 return nil
             }
         }
@@ -363,6 +375,34 @@ class APIService {
         let data = try JSONEncoder().encode(body)
         guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
         return try await post(endPoint: Endpoint.classRegister.path, parameters: parameters, headers: headers)
+    }
+
+    /// 세션 예약 회원 조회 (GET /api/leader/sessions/{sessionId}/members). 출석체크 바텀시트 데이터.
+    func getSessionMembers(sessionId: String, status: String? = nil) async throws -> LeaderSessionMembersResponse {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let endpoint = Endpoint.sessionMembers(sessionId: sessionId, status: status)
+        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
+    }
+
+    /// 예약 회원 출석·결석 처리 (POST /api/leader/sessions/{sessionId}/attendance)
+    func updateAttendance(sessionId: String, reservationIds: [String], status: AttendanceStatus) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let body = UpdateAttendanceRequestDTO(reservationIds: reservationIds, status: status.rawValue)
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await post(endPoint: Endpoint.sessionAttendance(sessionId: sessionId).path, parameters: parameters, headers: headers)
+    }
+
+    /// 지도자의 수강생 예약 취소 (POST /api/leader/reservations/{reservationId}/cancel). 전액 환불 처리됨.
+    func cancelLeaderReservation(reservationId: String, reason: String? = nil) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let body = CancelReservationRequestDTO(reason: reason)
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await post(endPoint: Endpoint.cancelLeaderReservation(reservationId: reservationId).path, parameters: parameters, headers: headers)
     }
     
     // MARK: - Internal Methods
