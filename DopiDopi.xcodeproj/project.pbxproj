@@ -32,6 +32,8 @@
 		522CE5E02F12A6BF0063FDF5 /* ContentTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5922F12A6BF0063FDF5 /* ContentTabContainer.swift */; };
 		522CE5E12F12A6BF0063FDF5 /* ContentTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5932F12A6BF0063FDF5 /* ContentTabView.swift */; };
 		522CE5E22F12A6BF0063FDF5 /* ExploreTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5952F12A6BF0063FDF5 /* ExploreTabContainer.swift */; };
+		0D0531A743AD42FFB4E4E3DB /* ExploreClassCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */; };
+		483F302AEE2A4D4FB05B64C1 /* ExploreLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179A83046348446EB629C660 /* ExploreLocationManager.swift */; };
 		522CE5E32F12A6BF0063FDF5 /* ExploreTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5962F12A6BF0063FDF5 /* ExploreTabView.swift */; };
 		522CE5E42F12A6BF0063FDF5 /* CategoryClassListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5982F12A6BF0063FDF5 /* CategoryClassListItemView.swift */; };
 		522CE5E52F12A6BF0063FDF5 /* YogheeClubDiscountBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5992F12A6BF0063FDF5 /* YogheeClubDiscountBanner.swift */; };
@@ -89,7 +91,7 @@
 		522CE6C52F152F980063FDF5 /* MyPageSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */; };
 		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
 		52735D21301F830B00515B0C /* ExploreModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52735D20301F830B00515B0C /* ExploreModels.swift */; };
-		52735D233020D1E800515B0C /* ExploreBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52735D223020D1E800515B0C /* ExploreBottomSheetView.swift */; };
+		52735D233020D1E800515B0C /* ExploreFilterLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52735D223020D1E800515B0C /* ExploreFilterLayerView.swift */; };
 		529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */; };
 		529D09932F8260A10039C771 /* RegularClassManagementRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */; };
 		52A174612EF7F11D00208298 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = 52A174602EF7F11D00208298 /* SwiftUIIntrospect */; };
@@ -170,6 +172,8 @@
 		522CE5922F12A6BF0063FDF5 /* ContentTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTabContainer.swift; sourceTree = "<group>"; };
 		522CE5932F12A6BF0063FDF5 /* ContentTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTabView.swift; sourceTree = "<group>"; };
 		522CE5952F12A6BF0063FDF5 /* ExploreTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreTabContainer.swift; sourceTree = "<group>"; };
+		BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreClassCardView.swift; sourceTree = "<group>"; };
+		179A83046348446EB629C660 /* ExploreLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreLocationManager.swift; sourceTree = "<group>"; };
 		522CE5962F12A6BF0063FDF5 /* ExploreTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreTabView.swift; sourceTree = "<group>"; };
 		522CE5982F12A6BF0063FDF5 /* CategoryClassListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryClassListItemView.swift; sourceTree = "<group>"; };
 		522CE5992F12A6BF0063FDF5 /* YogheeClubDiscountBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogheeClubDiscountBanner.swift; sourceTree = "<group>"; };
@@ -224,7 +228,7 @@
 		522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSectionHeaderView.swift; sourceTree = "<group>"; };
 		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
 		52735D20301F830B00515B0C /* ExploreModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreModels.swift; sourceTree = "<group>"; };
-		52735D223020D1E800515B0C /* ExploreBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreBottomSheetView.swift; sourceTree = "<group>"; };
+		52735D223020D1E800515B0C /* ExploreFilterLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreFilterLayerView.swift; sourceTree = "<group>"; };
 		529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassHolidayRegisterView.swift; sourceTree = "<group>"; };
 		529D09942F8260A10039C772 /* RegularClassManagementRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassManagementRegisterView.swift; sourceTree = "<group>"; };
 		52A98C392FE9739100492465 /* HomeCoachMarkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCoachMarkView.swift; sourceTree = "<group>"; };
@@ -411,8 +415,10 @@
 		522CE5972F12A6BF0063FDF5 /* Explore */ = {
 			isa = PBXGroup;
 			children = (
-				52735D223020D1E800515B0C /* ExploreBottomSheetView.swift */,
+				52735D223020D1E800515B0C /* ExploreFilterLayerView.swift */,
 				522CE5952F12A6BF0063FDF5 /* ExploreTabContainer.swift */,
+				BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */,
+				179A83046348446EB629C660 /* ExploreLocationManager.swift */,
 				522CE5962F12A6BF0063FDF5 /* ExploreTabView.swift */,
 			);
 			path = Explore;
@@ -941,6 +947,8 @@
 				522CE5E12F12A6BF0063FDF5 /* ContentTabView.swift in Sources */,
 				52295B302F49F94400E615E1 /* CustomNavigationBar.swift in Sources */,
 				522CE5E22F12A6BF0063FDF5 /* ExploreTabContainer.swift in Sources */,
+				0D0531A743AD42FFB4E4E3DB /* ExploreClassCardView.swift in Sources */,
+				483F302AEE2A4D4FB05B64C1 /* ExploreLocationManager.swift in Sources */,
 				52F987AE2F572E3600C905D1 /* ScheduleSheetContext.swift in Sources */,
 				52295B322F4A0B5E00E615E1 /* Extension+UINavigationController.swift in Sources */,
 				522CE5E32F12A6BF0063FDF5 /* ExploreTabView.swift in Sources */,
@@ -1014,7 +1022,7 @@
 				522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */,
 				522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */,
 				52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */,
-				52735D233020D1E800515B0C /* ExploreBottomSheetView.swift in Sources */,
+				52735D233020D1E800515B0C /* ExploreFilterLayerView.swift in Sources */,
 				522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */,
 				522CE6112F12A6BF0063FDF5 /* SplashView.swift in Sources */,
 				AEDE08A47FB14997B7125CF6 /* LoadingView.swift in Sources */,

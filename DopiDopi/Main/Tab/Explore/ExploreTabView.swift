@@ -11,57 +11,191 @@ import KakaoMapsSDK
 struct ExploreTabView: View {
     let onBackTapped: () -> Void
     @StateObject private var container = ExploreTabContainer()
-    @State private var keyword: String = ""
-    /// 지도가 제공하는 현재 bbox — 검색 버튼 탭 시에만 사용 (지도 이동으로는 검색 미실행)
-    @State private var currentBbox: MapBoundingBox? = nil
-    /// 키보드 표시 여부 — NotificationCenter로 감지, 바텀시트 숨김 여부 결정
-    @State private var isKeyboardVisible: Bool = false
+    @StateObject private var locationManager = ExploreLocationManager()
+    /// 검색바 입력 텍스트 — 검색 후에도 유지
+    @State private var inputKeyword: String = ""
+    @State private var showsFilterLayer = false
+    @State private var navigationPath: [String] = []
 
     var body: some View {
-        ZStack(alignment: .top) {
-            ExploreMapRepresentable(
-                onBoundingBoxChange: { bbox in currentBbox = bbox },
-                onPinTapped: { classId in
-                    container.handleIntent(.selectClass(id: classId))
-                },
-                classes: container.state.classes,
-                selectedClassId: container.state.selectedClassId
-            )
-            .ignoresSafeArea()
+        NavigationStack(path: $navigationPath) {
+            ZStack(alignment: .top) {
+                ExploreMapRepresentable(
+                    initialCoordinate: .seoulCityHall,
+                    initialZoomLevel: ExploreTabState.defaultZoomLevel,
+                    classes: container.state.classes,
+                    selectedClassId: container.state.selectedClassId,
+                    cameraCommand: container.state.cameraCommand,
+                    onCameraIdle: { bbox, isUserGesture in
+                        container.handleIntent(.mapCameraIdle(bbox: bbox, isUserGesture: isUserGesture))
+                    },
+                    onCameraCommandFinished: { bbox in
+                        container.handleIntent(.cameraCommandFinished(bbox: bbox))
+                    },
+                    onPinTapped: { classId in
+                        container.handleIntent(.selectClass(id: classId))
+                    }
+                )
+                .ignoresSafeArea()
 
-            VStack(alignment: .trailing, spacing: 8) {
-                HStack(spacing: 8) {
-                    ExploreBackButton(onTap: onBackTapped)
-                    ExploreSearchBar(
-                        keyword: $keyword,
-                        onSearch: {
-                            dismissKeyboard()
-                            guard let bbox = currentBbox else { return }
-                            container.handleIntent(
-                                .searchClasses(bbox: bbox, keyword: keyword.isEmpty ? nil : keyword)
-                            )
-                        }
-                    )
+                topControls
+            }
+            .overlay(alignment: .bottom) {
+                bottomControls
+            }
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: String.self) { classId in
+                ClassDetailView(classId: classId)
+            }
+        }
+        .fullScreenCover(isPresented: $showsFilterLayer) {
+            ExploreFilterLayerView(
+                filter: container.state.filter,
+                onClose: {
+                    // 닫기: 선택된 필터 전체 삭제 후 종료
+                    showsFilterLayer = false
+                    container.handleIntent(.applyFilter(ExploreSearchFilter()))
+                },
+                onApply: { filter in
+                    showsFilterLayer = false
+                    container.handleIntent(.applyFilter(filter))
+                }
+            )
+        }
+        .onAppear {
+            locationManager.requestAuthorizationIfNeeded()
+            resolveLocationIfPossible()
+        }
+        .onChange(of: locationManager.authorizationStatus) { _, _ in
+            resolveLocationIfPossible()
+        }
+        .onChange(of: locationManager.currentCoordinate) { _, _ in
+            resolveLocationIfPossible()
+        }
+    }
+
+    // MARK: - 상단 (검색바 / 필터 / 현위치)
+
+    private var topControls: some View {
+        VStack(alignment: .trailing, spacing: 14) {
+            ExploreSearchBar(
+                keyword: $inputKeyword,
+                placeholder: container.state.classType.placeholder,
+                onBack: onBackTapped,
+                onSearch: {
+                    let trimmed = inputKeyword.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !trimmed.isEmpty else { return }   // 미입력 시 반응 없음
+                    dismissKeyboard()
+                    container.handleIntent(.submitKeyword(trimmed))
+                }
+            )
+            .padding(.horizontal, 16)
+
+            filterChipsRow
+
+            // 3c 현위치 — 위치 허용하지 않았을 경우 미노출
+            if locationManager.isAuthorized {
+                ExploreGpsButton {
+                    if let coordinate = locationManager.currentCoordinate {
+                        container.handleIntent(.moveToCurrentLocation(coordinate: coordinate))
+                    }
+                    locationManager.refreshLocation()
+                }
+                .padding(.trailing, 31)
+                .padding(.top, 10)
+            }
+        }
+        .padding(.top, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    // MARK: - 2a~2d 필터 칩
+
+    private var filterChipsRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ExploreFilterChip(
+                    title: "필터",
+                    iconName: container.state.filter.hasValidValue ? "CouponIcon" : "CouponIconBlack",
+                    isSelected: container.state.filter.hasValidValue
+                ) {
+                    showsFilterLayer = true
                 }
 
-                ExploreGpsButton()
+                ExploreFilterChip(
+                    title: "하루수련 보기",
+                    isSelected: container.state.classType == .oneDay
+                ) {
+                    container.handleIntent(.selectClassType(.oneDay))
+                }
+
+                ExploreFilterChip(
+                    title: "정규수련(요가원) 모아보기",
+                    isSelected: container.state.classType == .regular
+                ) {
+                    container.handleIntent(.selectClassType(.regular))
+                }
+
+                ExploreFilterChip(
+                    title: "오늘 예약",
+                    isSelected: container.state.isTodayAvailable
+                ) {
+                    container.handleIntent(.toggleTodayAvailable)
+                }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 17)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 24)
         }
-        .overlay(alignment: .bottom) {
-            ExploreBottomSheetView(
-                classes: container.state.classes,
-                isKeyboardVisible: isKeyboardVisible
-            )
+    }
+
+    // MARK: - 하단 (재검색 / 수업 유닛 / 토스트)
+
+    private var bottomControls: some View {
+        VStack(spacing: 12) {
+            if let message = container.state.toastMessage {
+                ExploreToastView(message: message)
+                    .transition(.opacity)
+                    .task(id: message) {
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        container.handleIntent(.dismissToast)
+                    }
+            }
+
+            if container.state.showsResearchButton {
+                ExploreResearchButton {
+                    container.handleIntent(.researchCurrentArea)
+                }
+            }
+
+            if let selected = container.state.selectedClass {
+                ExploreClassCardView(
+                    item: selected,
+                    classType: container.state.resultClassType,
+                    address: container.state.selectedClassAddress,
+                    onTap: { navigationPath.append(selected.classId) },
+                    onFavoriteToggle: {
+                        container.handleIntent(.toggleFavorite(classId: selected.classId))
+                    }
+                )
+                .padding(.horizontal, 16)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
         }
-        // 키보드 표시/숨김 감지 → 바텀시트 z축 제어
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in
-            isKeyboardVisible = true
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-            isKeyboardVisible = false
+        .padding(.bottom, 40)
+        .animation(.easeInOut(duration: 0.2), value: container.state.selectedClassId)
+        .animation(.easeInOut(duration: 0.2), value: container.state.toastMessage)
+        .animation(.easeInOut(duration: 0.2), value: container.state.showsResearchButton)
+    }
+
+    // MARK: - 위치
+
+    /// 권한 확정 시 1회 — 허용이면 현재 위치, 미허용이면 서울시청 중심으로 최초 검색
+    private func resolveLocationIfPossible() {
+        guard locationManager.isAuthorizationDetermined else { return }
+        if locationManager.isAuthorized {
+            guard let coordinate = locationManager.currentCoordinate else { return }
+            container.handleIntent(.locationResolved(coordinate: coordinate))
+        } else {
+            container.handleIntent(.locationResolved(coordinate: nil))
         }
     }
 
@@ -70,81 +204,134 @@ struct ExploreTabView: View {
     }
 }
 
-// MARK: - 뒤로가기 버튼 (2899:22072)
-
-struct ExploreBackButton: View {
-    let onTap: () -> Void
-
-    var body: some View {
-        Button {
-            onTap()
-        } label: {
-            Image("BackArrow")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 24, height: 24)
-                .frame(width: 48, height: 48)
-                .background(Color.white)
-                .clipShape(Circle())
-                .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 2)
-        }
-    }
-}
-
-// MARK: - 검색바 (2899:22052)
+// MARK: - 1a~1c 검색바
 
 struct ExploreSearchBar: View {
     @Binding var keyword: String
+    let placeholder: String
+    let onBack: () -> Void
     let onSearch: () -> Void
+
+    @FocusState private var isFocused: Bool
+
+    private var hasKeyword: Bool {
+        !keyword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
 
     var body: some View {
         HStack(spacing: 0) {
-            TextField("검색어를 입력하세요.", text: $keyword)
-                .pretendardFont(.medium, size: 12)
-                .foregroundColor(.DarkBlack)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 16)
-                .submitLabel(.search)
-                .onSubmit { onSearch() }  // 키보드 검색 버튼 탭 시
+            // 1a 뒤로가기
+            Button(action: onBack) {
+                Image("BackArrow")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24, height: 24)
+                    .frame(width: 32, height: 40)
+            }
 
-            Button {
-                onSearch()
-            } label: {
-                Text("검색")
+            Rectangle()
+                .fill(Color.Background)
+                .frame(width: 1, height: 32)
+                .padding(.leading, 6)
+
+            // 1b 검색바 — 선택 시 placeholder 지워지며 키보드 노출
+            ZStack(alignment: .leading) {
+                if keyword.isEmpty && !isFocused {
+                    Text(placeholder)
+                        .pretendardFont(.medium, size: 12)
+                        .foregroundColor(.Info)
+                        .lineLimit(1)
+                }
+                TextField("", text: $keyword)
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.DarkBlack)
+                    .focused($isFocused)
+                    .submitLabel(.search)
+                    .onSubmit { onSearch() }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, 20)
+            .padding(.trailing, 8)
+
+            // 1c 검색 — 입력 시 "확인" + #D6F695
+            Button(action: onSearch) {
+                Text(hasKeyword ? "확인" : "검색")
                     .pretendardFont(.medium, size: 12)
                     .foregroundColor(.black)
                     .frame(width: 40, height: 40)
-                    .background(
-                        RadialGradient(
-                            colors: [
-                                Color(red: 1.0, green: 0.929, blue: 0.451),
-                                Color(red: 1.0, green: 0.945, blue: 0.600),
-                                Color(red: 1.0, green: 0.965, blue: 0.745)
-                            ],
-                            center: .center,
-                            startRadius: 0,
-                            endRadius: 20
-                        )
-                    )
+                    .background(searchButtonBackground)
                     .clipShape(Circle())
             }
-            .padding(.trailing, 4)
         }
-        .frame(height: 48)
+        .padding(.leading, 12)
+        .padding(.trailing, 8)
+        .padding(.vertical, 8)
         .background(Color.white.opacity(0.9))
         .clipShape(Capsule())
         .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 2)
     }
+
+    @ViewBuilder
+    private var searchButtonBackground: some View {
+        if hasKeyword {
+            Color.NatureGreen
+        } else {
+            // #buttonbackground
+            RadialGradient(
+                stops: [
+                    .init(color: Color(red: 1.0, green: 0.925, blue: 0.451), location: 0.486),
+                    .init(color: Color(red: 1.0, green: 0.945, blue: 0.600), location: 0.743),
+                    .init(color: Color(red: 1.0, green: 0.965, blue: 0.745), location: 1.0)
+                ],
+                center: .center,
+                startRadius: 0,
+                endRadius: 20
+            )
+        }
+    }
 }
 
-// MARK: - GPS 버튼 (2899:22074)
+// MARK: - 필터 칩 (3:28050 비활성 / 3:28209 활성)
+
+struct ExploreFilterChip: View {
+    let title: String
+    var iconName: String? = nil
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 8) {
+                Text(title)
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(isSelected ? .MindOrange : .DarkBlack)
+                if let iconName {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 12, height: 12)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(Color.white)
+            .clipShape(Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(isSelected ? Color.MindOrange : Color.Background, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - 3c 현위치 버튼
 
 struct ExploreGpsButton: View {
+    let onTap: () -> Void
+
     var body: some View {
-        Button {
-            // TODO: 기능 확인 후 개발 필요
-            print("GPS 버튼 탭 - TODO: 기능 확인 후 개발 필요")
-        } label: {
+        Button(action: onTap) {
             Image("Gps")
                 .resizable()
                 .scaledToFit()
@@ -156,17 +343,67 @@ struct ExploreGpsButton: View {
     }
 }
 
+// MARK: - 3d 해당 위치 재검색 (27:14434)
+
+struct ExploreResearchButton: View {
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 4) {
+                Image(systemName: "arrow.clockwise")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 13, height: 13)
+                    .foregroundColor(.DarkBlack)
+                Text("해당 위치 재검색")
+                    .pretendardFont(.medium, size: 12)
+                    .foregroundColor(.DarkBlack)
+            }
+            .padding(8)
+            .background(Color.white.opacity(0.9))
+            .clipShape(Capsule())
+            .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 2)
+        }
+    }
+}
+
+// MARK: - 검색 결과 없음 토스트
+
+struct ExploreToastView: View {
+    let message: String
+
+    var body: some View {
+        Text(message)
+            .pretendardFont(.medium, size: 12)
+            .foregroundColor(.white)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color.black.opacity(0.75))
+            .clipShape(Capsule())
+            .padding(.horizontal, 24)
+    }
+}
+
 // MARK: - 전체화면 카카오맵 Representable
 
 private struct ExploreMapRepresentable: UIViewControllerRepresentable {
-    let onBoundingBoxChange: (MapBoundingBox) -> Void
-    let onPinTapped: (String) -> Void          // 탭된 classId 전달
-    let classes: [ClassMapSearchDTO]
+    let initialCoordinate: MapCoordinate
+    let initialZoomLevel: Int
+    let classes: [ClassMapMarkerDTO]
     let selectedClassId: String?
+    let cameraCommand: ExploreCameraCommand?
+    let onCameraIdle: (MapBoundingBox, Bool) -> Void
+    let onCameraCommandFinished: (MapBoundingBox) -> Void
+    let onPinTapped: (String) -> Void          // 탭된 classId 전달
 
     func makeUIViewController(context: Context) -> ExploreMapViewController {
         ExploreMapViewController(
-            onBoundingBoxChange: onBoundingBoxChange,
+            initialCoordinate: initialCoordinate,
+            initialZoomLevel: initialZoomLevel,
+            onCameraIdle: onCameraIdle,
+            onCameraCommandFinished: onCameraCommandFinished,
             onPinTapped: onPinTapped
         )
     }
@@ -174,6 +411,7 @@ private struct ExploreMapRepresentable: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: ExploreMapViewController, context: Context) {
         // 검색 결과 또는 선택 상태가 바뀔 때 핀 갱신
         uiViewController.updatePois(classes, selectedId: selectedClassId)
+        uiViewController.apply(cameraCommand)
     }
 }
 
@@ -182,25 +420,35 @@ private struct ExploreMapRepresentable: UIViewControllerRepresentable {
 final class ExploreMapViewController: UIViewController, MapControllerDelegate {
     private var mapContainer: KMViewContainer?
     private var mapController: KMController?
-    private let onBoundingBoxChange: (MapBoundingBox) -> Void
+    private let onCameraIdle: (MapBoundingBox, Bool) -> Void
+    private let onCameraCommandFinished: (MapBoundingBox) -> Void
     private let onPinTapped: (String) -> Void
 
     /// 지도 뷰 참조 — addViewSucceeded 이후 설정, resetEngine 시 nil
     private weak var kakaoMapView: KakaoMap?
 
     /// 변경 감지용 — 같은 값이면 핀 재렌더 생략
-    private var currentClasses: [ClassMapSearchDTO] = []
+    private var currentClasses: [ClassMapMarkerDTO] = []
     private var currentSelectedId: String?
+
+    /// 마지막으로 처리한 카메라 명령 id / 지도 준비 전 대기 명령
+    private var lastCameraCommandId: UUID?
+    private var pendingCameraCommand: ExploreCameraCommand?
 
     private let pinLayerID = "centerPins"
 
-    private let defaultLatitude:  Double = 37.5666805
-    private let defaultLongitude: Double = 126.9784147
-    private let defaultZoomLevel: Int    = 9
+    private let initialCoordinate: MapCoordinate
+    private let initialZoomLevel: Int
 
-    init(onBoundingBoxChange: @escaping (MapBoundingBox) -> Void,
+    init(initialCoordinate: MapCoordinate,
+         initialZoomLevel: Int,
+         onCameraIdle: @escaping (MapBoundingBox, Bool) -> Void,
+         onCameraCommandFinished: @escaping (MapBoundingBox) -> Void,
          onPinTapped: @escaping (String) -> Void) {
-        self.onBoundingBoxChange = onBoundingBoxChange
+        self.initialCoordinate = initialCoordinate
+        self.initialZoomLevel = initialZoomLevel
+        self.onCameraIdle = onCameraIdle
+        self.onCameraCommandFinished = onCameraCommandFinished
         self.onPinTapped = onPinTapped
         super.init(nibName: nil, bundle: nil)
     }
@@ -223,12 +471,21 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        // 엔진이 해제된 상태라면 다시 준비 후 활성화 (prepare → addViews → addViewSucceeded 재실행)
+        if mapController?.isEnginePrepared == false {
+            mapController?.prepareEngine()
+        }
         mapController?.activateEngine()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        kakaoMapView = nil
+        // 수련 상세 push 시에도 호출되므로 reset이 아닌 pause — 복귀 시 지도·핀·카메라 상태 유지
+        mapController?.pauseEngine()
+    }
+
+    deinit {
+        mapController?.pauseEngine()
         mapController?.resetEngine()
     }
 
@@ -238,8 +495,8 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
         let mapviewInfo = MapviewInfo(
             viewName: "exploreMapView",
             viewInfoName: "map",
-            defaultPosition: MapPoint(longitude: defaultLongitude, latitude: defaultLatitude),
-            defaultLevel: defaultZoomLevel
+            defaultPosition: MapPoint(longitude: initialCoordinate.longitude, latitude: initialCoordinate.latitude),
+            defaultLevel: initialZoomLevel
         )
         mapController?.addView(mapviewInfo)
     }
@@ -254,7 +511,12 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
             refreshPoisOnMap(mapView)
         }
         if let bbox = boundingBox(from: mapView) {
-            onBoundingBoxChange(bbox)
+            onCameraIdle(bbox, false)
+        }
+        // 지도 준비 전에 들어온 카메라 명령 처리
+        if let pending = pendingCameraCommand {
+            pendingCameraCommand = nil
+            move(mapView, with: pending)
         }
     }
 
@@ -279,9 +541,32 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
         manager.addLabelLayer(option: options)
     }
 
+    // MARK: - 카메라 이동 (SwiftUI updateUIViewController 에서 호출)
+
+    func apply(_ command: ExploreCameraCommand?) {
+        guard let command, command.id != lastCameraCommandId else { return }
+        lastCameraCommandId = command.id
+        guard let mapView = kakaoMapView else {
+            pendingCameraCommand = command
+            return
+        }
+        move(mapView, with: command)
+    }
+
+    private func move(_ mapView: KakaoMap, with command: ExploreCameraCommand) {
+        let target = MapPoint(longitude: command.coordinate.longitude, latitude: command.coordinate.latitude)
+        let update = CameraUpdate.make(target: target, zoomLevel: command.zoomLevel, mapView: mapView)
+        mapView.moveCamera(update) { [weak self, weak mapView] in
+            guard let self, let mapView, let bbox = self.boundingBox(from: mapView) else { return }
+            DispatchQueue.main.async {
+                self.onCameraCommandFinished(bbox)
+            }
+        }
+    }
+
     // MARK: - POI 업데이트 (SwiftUI updateUIViewController 에서 호출)
 
-    func updatePois(_ classes: [ClassMapSearchDTO], selectedId: String?) {
+    func updatePois(_ classes: [ClassMapMarkerDTO], selectedId: String?) {
         guard classes != currentClasses || selectedId != currentSelectedId else { return }
         currentClasses = classes
         currentSelectedId = selectedId
@@ -295,9 +580,11 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
 
         layer.clearAllItems()
 
-        for dto in currentClasses {
+        // 응답은 최근 등록순(sort=recent) — 앞쪽 수련일수록 상단 노출, 선택 핀은 최상단
+        let count = currentClasses.count
+        for (index, dto) in currentClasses.enumerated() {
             let isSelected = dto.classId == currentSelectedId
-            let image    = makePinImage(name: dto.centerName, isSelected: isSelected)
+            let image    = makePinImage(name: dto.name, isSelected: isSelected)
             let styleID  = "pin_\(dto.classId)_\(isSelected ? "s" : "n")"
 
             let iconStyle = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.5, y: 1.0))
@@ -306,7 +593,7 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
             manager.addPoiStyle(style)
 
             let poiOptions = PoiOptions(styleID: styleID)
-            poiOptions.rank = isSelected ? 1 : 0   // 선택된 핀이 위에 렌더
+            poiOptions.rank = isSelected ? count + 1 : count - index
             poiOptions.clickable = true
 
             let point = MapPoint(longitude: dto.longitude, latitude: dto.latitude)
@@ -418,6 +705,7 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
         }
     }
 
+
     // MARK: - BoundingBox 계산
 
     private func boundingBox(from mapView: KakaoMap) -> MapBoundingBox? {
@@ -438,8 +726,11 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
 
 extension ExploreMapViewController: KakaoMapEventDelegate {
     func cameraDidStopped(kakaoMap: KakaoMap, by: MoveBy) {
-        if let bbox = boundingBox(from: kakaoMap) {
-            onBoundingBoxChange(bbox)
+        guard let bbox = boundingBox(from: kakaoMap) else { return }
+        // 사용자 스크롤/줌인-아웃 여부 — 3d 재검색 버튼 노출 판단
+        let isUserGesture = by != .notUserAction
+        DispatchQueue.main.async { [weak self] in
+            self?.onCameraIdle(bbox, isUserGesture)
         }
     }
 
@@ -460,6 +751,6 @@ extension ExploreMapViewController: KakaoMapEventDelegate {
 }
 
 #Preview("SearchBar") {
-    ExploreSearchBar(keyword: .constant(""), onSearch: {})
+    ExploreSearchBar(keyword: .constant(""), placeholder: ExploreClassType.oneDay.placeholder, onBack: {}, onSearch: {})
         .padding()
 }
