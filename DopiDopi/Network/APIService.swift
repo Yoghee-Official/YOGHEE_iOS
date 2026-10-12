@@ -90,7 +90,8 @@ class APIService {
         case myPage(role: UserRole)
         case centerList
         case centerDetail(centerId: String)
-        case centerSearch(bbox: MapBoundingBox, keyword: String?, sort: String?)
+        case classMapSearch(query: ClassMapSearchQuery)
+        case classFavorite(classId: String)
         case imagePresign
         case license
         case classRegister
@@ -127,8 +128,13 @@ class APIService {
                 return "/api/center"
             case .centerDetail(let centerId):
                 return "/api/center/\(centerId)"
-            case .centerSearch:
-                return "/api/center/search"
+            case .classMapSearch(let query):
+                switch query.type {
+                case .oneDay:  return "/api/center/search/one-day"
+                case .regular: return "/api/center/search/regular"
+                }
+            case .classFavorite(let classId):
+                return "/api/class/favorite?classId=\(classId)"
             case .imagePresign:
                 return "/api/image/presign"
             case .license:
@@ -166,20 +172,38 @@ class APIService {
                 return params
             case .appVersion(let platform):
                 return ["platform": platform]
-            case .centerSearch(let bbox, let keyword, let sort):
+            case .classMapSearch(let query):
                 var params: Parameters = [
-                    "swLat": bbox.swLat,
-                    "swLng": bbox.swLng,
-                    "neLat": bbox.neLat,
-                    "neLng": bbox.neLng
+                    "swLat": query.bbox.swLat,
+                    "swLng": query.bbox.swLng,
+                    "neLat": query.bbox.neLat,
+                    "neLng": query.bbox.neLng,
+                    "sort": "recent"  // 여러 개 노출 시 최근 등록 수련 기준
                 ]
-                if let keyword { params["keyword"] = keyword }  // 키워드 검색 시만 포함
-                if let sort    { params["sort"]    = sort    }
+                if let keyword = query.keyword { params["keyword"] = keyword }  // 키워드 검색 시만 포함
+                if query.todayAvailable { params["todayAvailable"] = true }
+
+                // 배열 파라미터는 콤마 구분 문자열로 전달 (ex. ashtanga,hatha)
+                let filter = query.filter
+                if !filter.allCategoryCodes.isEmpty {
+                    params["categoryCodes"] = filter.allCategoryCodes.joined(separator: ",")
+                }
+                if !filter.amenityCodes.isEmpty {
+                    params["amenityCodes"] = filter.amenityCodes.sorted().joined(separator: ",")
+                }
+                if !filter.dates.isEmpty {
+                    params["dates"] = filter.dates.sorted().joined(separator: ",")
+                }
+                if filter.isTimeChanged {
+                    params["startTime"] = String(format: "%02d:00", filter.startHour)
+                    // 24시는 HH:mm 범위를 벗어나므로 23:59로 전달
+                    params["endTime"]   = filter.endHour >= 24 ? "23:59" : String(format: "%02d:00", filter.endHour)
+                }
                 return params
             case .sessionMembers(_, let status):
                 if let status { return ["status": status] }
                 return nil
-            case .login, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation:
+            case .login, .classFavorite, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation:
                 return nil
             }
         }
@@ -221,12 +245,24 @@ class APIService {
         return response.data
     }
 
-    /// 지도 영역 수련 검색 (/api/center/search)
-    /// - keyword: 검색창 입력 시 전달. nil이면 bbox 범위 내 기본 탐색
-    func searchMapClasses(bbox: MapBoundingBox, keyword: String? = nil, sort: String? = nil) async throws -> ClassMapSearchData {
-        let endpoint = Endpoint.centerSearch(bbox: bbox, keyword: keyword, sort: sort)
-        let response: ClassMapSearchResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+    /// 지도 수련 검색 (하루수련: /api/center/search/one-day, 정규수련: /api/center/search/regular)
+    /// - 토큰이 있으면 isFavorite이 채워지므로 선택적으로 Authorization 헤더 포함
+    func searchClassMap(query: ClassMapSearchQuery) async throws -> [ClassMapMarkerDTO] {
+        let endpoint = Endpoint.classMapSearch(query: query)
+        var headers: HTTPHeaders?
+        if let token = await getAccessToken() {
+            headers = ["Authorization": "Bearer \(token)"]
+        }
+        let response: ClassMapMarkerResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
         return response.data
+    }
+
+    /// 수련 찜/찜 해제 토글 (POST /api/class/favorite?classId=)
+    func toggleClassFavorite(classId: String) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let endpoint = Endpoint.classFavorite(classId: classId)
+        let _: APIEmptyResponse = try await post(endPoint: endpoint.path, parameters: nil, headers: headers)
     }
 
     /// 지역별 클래스 조회 (정규수련 - /api/class/address)
