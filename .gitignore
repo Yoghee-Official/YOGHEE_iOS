@@ -1,2 +1,8 @@
 CLAUDE.md
 .claude/commands/dev.md
+
+# Xcode user-specific
+xcuserdata/
+
+# macOS
+.DS_Store
