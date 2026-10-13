@@ -1,0 +1,42 @@
+{
+  "originHash" : "debf858a1a32dbf9ddaf951ddade880f7111390c7f358d1f8cfef6e1f524b721",
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "bda9ed57d72988a3a2ada33d824583541f86eac6",
+        "version" : "5.12.2"
+      }
+    },
+    {
+      "identity" : "kakao-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kakao/kakao-ios-sdk",
+      "state" : {
+        "branch" : "master",
+        "revision" : "8627646b7430bcadc5a2f726b21ea25db70cd189"
+      }
+    },
+    {
+      "identity" : "kakaomapssdk-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kakao-mapsSDK/KakaoMapsSDK-SPM",
+      "state" : {
+        "revision" : "f4d72bc1f1508032ce71b4fce8e7964f066537e4",
+        "version" : "2.12.19"
+      }
+    },
+    {
+      "identity" : "swiftui-introspect",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/siteline/SwiftUI-Introspect",
+      "state" : {
+        "revision" : "453fe2e2ee3cc90885a68cb61bc5067637e7ad98",
+        "version" : "26.2.0"
+      }
+    }
+  ],
+  "version" : 3
+}
