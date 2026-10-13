@@ -231,10 +231,13 @@ class APIService {
 //    }
     
     /// 메인 데이터 조회
+    /// - 비로그인도 조회 가능. 토큰이 있으면 개인화 데이터를 위해 Authorization 헤더 포함
     func getMainData(type: String) async throws -> MainResponse {
         let endpoint = Endpoint.main(type: type)
-        guard let token = await getAccessToken() else { throw APIError.unauthorized }
-        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        var headers: HTTPHeaders? = nil
+        if let token = await getAccessToken() {
+            headers = ["Authorization": "Bearer \(token)"]
+        }
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
     }
     
