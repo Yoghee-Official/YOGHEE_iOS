@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0BFDC07770C4FD44F432D732 /* LicenseRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE29ADEB3BA344FDE9E45C3 /* LicenseRegisterView.swift */; };
+		0D0531A743AD42FFB4E4E3DB /* ExploreClassCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */; };
+		23949769BF0CD4261C41F547 /* ReservationCancelAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */; };
+		358438C6326DA79C06B5B50D /* LicenseCertificationAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4682ED84FB17E35BFADFE3C /* LicenseCertificationAlertView.swift */; };
+		483F302AEE2A4D4FB05B64C1 /* ExploreLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179A83046348446EB629C660 /* ExploreLocationManager.swift */; };
 		52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B132F27B46C00E615E1 /* GlassUI.swift */; };
 		52295B162F2F5A9500E615E1 /* FavoriteCenterModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */; };
 		52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */; };
@@ -32,8 +36,6 @@
 		522CE5E02F12A6BF0063FDF5 /* ContentTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5922F12A6BF0063FDF5 /* ContentTabContainer.swift */; };
 		522CE5E12F12A6BF0063FDF5 /* ContentTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5932F12A6BF0063FDF5 /* ContentTabView.swift */; };
 		522CE5E22F12A6BF0063FDF5 /* ExploreTabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5952F12A6BF0063FDF5 /* ExploreTabContainer.swift */; };
-		0D0531A743AD42FFB4E4E3DB /* ExploreClassCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */; };
-		483F302AEE2A4D4FB05B64C1 /* ExploreLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179A83046348446EB629C660 /* ExploreLocationManager.swift */; };
 		522CE5E32F12A6BF0063FDF5 /* ExploreTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5962F12A6BF0063FDF5 /* ExploreTabView.swift */; };
 		522CE5E42F12A6BF0063FDF5 /* CategoryClassListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5982F12A6BF0063FDF5 /* CategoryClassListItemView.swift */; };
 		522CE5E52F12A6BF0063FDF5 /* YogheeClubDiscountBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5992F12A6BF0063FDF5 /* YogheeClubDiscountBanner.swift */; };
@@ -57,11 +59,6 @@
 		522CE5F72F12A6BF0063FDF5 /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */; };
 		522CE5FC2F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */; };
 		522CE5FD2F12A6BF0063FDF5 /* DetailContentsModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */; };
-		358438C6326DA79C06B5B50D /* LicenseCertificationAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4682ED84FB17E35BFADFE3C /* LicenseCertificationAlertView.swift */; };
-		DA29BE9FF771228E9DFA359F /* AttendanceCheckContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */; };
-		F93A49B7F36356B209E73E17 /* AttendanceCheckBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */; };
-		F7824A7CD635CA1B1BB8F2AC /* AttendanceMemberRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */; };
-		23949769BF0CD4261C41F547 /* ReservationCancelAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */; };
 		522CE6002F12A6BF0063FDF5 /* ReservedClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */; };
 		522CE6012F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BB2F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift */; };
 		522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5BC2F12A6BF0063FDF5 /* UserProfileModuleView.swift */; };
@@ -76,7 +73,6 @@
 		522CE60B2F12A6BF0063FDF5 /* CategoryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5C92F12A6BF0063FDF5 /* CategoryModels.swift */; };
 		522CE60C2F12A6BF0063FDF5 /* MainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CA2F12A6BF0063FDF5 /* MainModels.swift */; };
 		522CE60D2F12A6BF0063FDF5 /* MyPageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CB2F12A6BF0063FDF5 /* MyPageModels.swift */; };
-		7BF1F964E63A5B72BCEA472D /* AttendanceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */; };
 		522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CD2F12A6BF0063FDF5 /* APIService.swift */; };
 		522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CE2F12A6BF0063FDF5 /* APIService+Auth.swift */; };
 		522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5CF2F12A6BF0063FDF5 /* AuthManager.swift */; };
@@ -89,7 +85,6 @@
 		522CE6172F12A6BF0063FDF5 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 522CE58D2F12A6BF0063FDF5 /* Pretendard-SemiBold.otf */; };
 		522CE6182F12A6BF0063FDF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 522CE5D32F12A6BF0063FDF5 /* Assets.xcassets */; };
 		522CE6C52F152F980063FDF5 /* MyPageSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */; };
-		523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */; };
 		52735D21301F830B00515B0C /* ExploreModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52735D20301F830B00515B0C /* ExploreModels.swift */; };
 		52735D233020D1E800515B0C /* ExploreFilterLayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52735D223020D1E800515B0C /* ExploreFilterLayerView.swift */; };
 		529D09872F8258000039C770 /* RegularClassHolidayRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */; };
@@ -132,18 +127,26 @@
 		52F987D12F65000100C905D1 /* ClassRegisterEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */; };
 		5A9576FF098E34E4E714AA69 /* LicenseRegisterContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D172B4EDA07757A81BCD4E3 /* LicenseRegisterContainer.swift */; };
 		78E9B5EE409843DF8C452BFB67D90387 /* ReviewListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4522CFF9668448BBA550CE9F585293F0 /* ReviewListView.swift */; };
+		7BF1F964E63A5B72BCEA472D /* AttendanceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */; };
 		7C1508E209044A7C825A0CF543EB81EB /* ReviewListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40AEBDA86D6B4A56B8A116DCD39A72F4 /* ReviewListContainer.swift */; };
 		AEDE08A47FB14997B7125CF6 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB34BC78EC14B1D977C281B /* LoadingView.swift */; };
+		DA29BE9FF771228E9DFA359F /* AttendanceCheckContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */; };
 		E12F5485C27F35D81F708ED6 /* ImagePickerComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */; };
 		EFB48EF52F4340B4B524AC76 /* ClassRegisterPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB74641DDFE94F0C932942BB /* ClassRegisterPreviewView.swift */; };
+		F7824A7CD635CA1B1BB8F2AC /* AttendanceMemberRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */; };
+		F93A49B7F36356B209E73E17 /* AttendanceCheckBottomSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0D172B4EDA07757A81BCD4E3 /* LicenseRegisterContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseRegisterContainer.swift; sourceTree = "<group>"; };
+		0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceCheckBottomSheetView.swift; sourceTree = "<group>"; };
 		1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerComponents.swift; sourceTree = "<group>"; };
+		179A83046348446EB629C660 /* ExploreLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreLocationManager.swift; sourceTree = "<group>"; };
 		3BE29ADEB3BA344FDE9E45C3 /* LicenseRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseRegisterView.swift; sourceTree = "<group>"; };
+		3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceCheckContainer.swift; sourceTree = "<group>"; };
 		40AEBDA86D6B4A56B8A116DCD39A72F4 /* ReviewListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewListContainer.swift; sourceTree = "<group>"; };
 		4522CFF9668448BBA550CE9F585293F0 /* ReviewListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewListView.swift; sourceTree = "<group>"; };
+		4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceModels.swift; sourceTree = "<group>"; };
 		52295B132F27B46C00E615E1 /* GlassUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassUI.swift; sourceTree = "<group>"; };
 		52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCenterModuleView.swift; sourceTree = "<group>"; };
 		52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteClassModuleView.swift; sourceTree = "<group>"; };
@@ -172,8 +175,6 @@
 		522CE5922F12A6BF0063FDF5 /* ContentTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTabContainer.swift; sourceTree = "<group>"; };
 		522CE5932F12A6BF0063FDF5 /* ContentTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTabView.swift; sourceTree = "<group>"; };
 		522CE5952F12A6BF0063FDF5 /* ExploreTabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreTabContainer.swift; sourceTree = "<group>"; };
-		BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreClassCardView.swift; sourceTree = "<group>"; };
-		179A83046348446EB629C660 /* ExploreLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreLocationManager.swift; sourceTree = "<group>"; };
 		522CE5962F12A6BF0063FDF5 /* ExploreTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreTabView.swift; sourceTree = "<group>"; };
 		522CE5982F12A6BF0063FDF5 /* CategoryClassListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryClassListItemView.swift; sourceTree = "<group>"; };
 		522CE5992F12A6BF0063FDF5 /* YogheeClubDiscountBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogheeClubDiscountBanner.swift; sourceTree = "<group>"; };
@@ -197,11 +198,6 @@
 		522CE5AF2F12A6BF0063FDF5 /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
 		522CE5B52F12A6BF0063FDF5 /* YogaClassScheduleItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YogaClassScheduleItemView.swift; sourceTree = "<group>"; };
 		522CE5B72F12A6BF0063FDF5 /* DetailContentsModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailContentsModuleView.swift; sourceTree = "<group>"; };
-		F4682ED84FB17E35BFADFE3C /* LicenseCertificationAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseCertificationAlertView.swift; sourceTree = "<group>"; };
-		3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceCheckContainer.swift; sourceTree = "<group>"; };
-		0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceCheckBottomSheetView.swift; sourceTree = "<group>"; };
-		525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceMemberRowView.swift; sourceTree = "<group>"; };
-		7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationCancelAlertView.swift; sourceTree = "<group>"; };
 		522CE5BA2F12A6BF0063FDF5 /* ReservedClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservedClassesModuleView.swift; sourceTree = "<group>"; };
 		522CE5BB2F12A6BF0063FDF5 /* ThisWeekClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThisWeekClassModuleView.swift; sourceTree = "<group>"; };
 		522CE5BC2F12A6BF0063FDF5 /* UserProfileModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileModuleView.swift; sourceTree = "<group>"; };
@@ -216,7 +212,6 @@
 		522CE5C92F12A6BF0063FDF5 /* CategoryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModels.swift; sourceTree = "<group>"; };
 		522CE5CA2F12A6BF0063FDF5 /* MainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModels.swift; sourceTree = "<group>"; };
 		522CE5CB2F12A6BF0063FDF5 /* MyPageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageModels.swift; sourceTree = "<group>"; };
-		4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceModels.swift; sourceTree = "<group>"; };
 		522CE5CD2F12A6BF0063FDF5 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
 		522CE5CE2F12A6BF0063FDF5 /* APIService+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APIService+Auth.swift"; sourceTree = "<group>"; };
 		522CE5CF2F12A6BF0063FDF5 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
@@ -226,7 +221,7 @@
 		522CE5D52F12A6BF0063FDF5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		522CE5D62F12A6BF0063FDF5 /* YOGHEEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YOGHEEApp.swift; sourceTree = "<group>"; };
 		522CE6C42F152F980063FDF5 /* MyPageSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyPageSectionHeaderView.swift; sourceTree = "<group>"; };
-		523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = KakaoSDKFriendResources.bundle; path = "../../../Library/Developer/Xcode/DerivedData/YOGHEE-cbvxjgdsdcvlrrdclyncspdvvzck/SourcePackages/checkouts/kakao-ios-sdk/Sources/KakaoSDKFriendCore/KakaoSDKFriendResources.bundle"; sourceTree = "<group>"; };
+		525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceMemberRowView.swift; sourceTree = "<group>"; };
 		52735D20301F830B00515B0C /* ExploreModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreModels.swift; sourceTree = "<group>"; };
 		52735D223020D1E800515B0C /* ExploreFilterLayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreFilterLayerView.swift; sourceTree = "<group>"; };
 		529D09882F8258000039C770 /* RegularClassHolidayRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularClassHolidayRegisterView.swift; sourceTree = "<group>"; };
@@ -264,7 +259,10 @@
 		52F987C52F60C00100C905D1 /* OnedayClassImageRegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassImageRegisterView.swift; sourceTree = "<group>"; };
 		52F987C82F64EEB200C905D1 /* OnedayClassSetPriceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnedayClassSetPriceView.swift; sourceTree = "<group>"; };
 		52F987D02F65000100C905D1 /* ClassRegisterEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterEnvironment.swift; sourceTree = "<group>"; };
+		7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationCancelAlertView.swift; sourceTree = "<group>"; };
 		9EB34BC78EC14B1D977C281B /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreClassCardView.swift; sourceTree = "<group>"; };
+		F4682ED84FB17E35BFADFE3C /* LicenseCertificationAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseCertificationAlertView.swift; sourceTree = "<group>"; };
 		FB74641DDFE94F0C932942BB /* ClassRegisterPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterPreviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -323,17 +321,6 @@
 				C80930A8663E6CF1670080AE /* AttendanceCheck */,
 			);
 			path = TodayClasses;
-			sourceTree = "<group>";
-		};
-		C80930A8663E6CF1670080AE /* AttendanceCheck */ = {
-			isa = PBXGroup;
-			children = (
-				3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */,
-				0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */,
-				525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */,
-				7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */,
-			);
-			path = AttendanceCheck;
 			sourceTree = "<group>";
 		};
 		52295B2B2F3B93BC00E615E1 /* ClassRegisterBanner */ = {
@@ -724,7 +711,6 @@
 		52F308782E3F4CD10066ED1B = {
 			isa = PBXGroup;
 			children = (
-				523FFCE82E50D63C00A28C5A /* KakaoSDKFriendResources.bundle */,
 				522CE5D72F12A6BF0063FDF5 /* DopiDopi */,
 				52F308822E3F4CD10066ED1B /* Products */,
 			);
@@ -832,6 +818,17 @@
 			path = License;
 			sourceTree = "<group>";
 		};
+		C80930A8663E6CF1670080AE /* AttendanceCheck */ = {
+			isa = PBXGroup;
+			children = (
+				3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */,
+				0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */,
+				525AD09031515760766C6BA4 /* AttendanceMemberRowView.swift */,
+				7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */,
+			);
+			path = AttendanceCheck;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -908,7 +905,6 @@
 				522CE6162F12A6BF0063FDF5 /* Pretendard-Regular.otf in Resources */,
 				522CE6172F12A6BF0063FDF5 /* Pretendard-SemiBold.otf in Resources */,
 				522CE6182F12A6BF0063FDF5 /* Assets.xcassets in Resources */,
-				523FFCE92E50D63C00A28C5A /* KakaoSDKFriendResources.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
