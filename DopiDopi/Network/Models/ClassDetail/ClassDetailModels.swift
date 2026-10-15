@@ -21,9 +21,12 @@ struct YogaClassDetailDTO: Codable {
     let price: Int
     let images: [String]
     let thumbnail: String?
-    let categories: [CategoryInfo]
-    let trainingTypes: [CategoryInfo]
-    let trainingTargets: [CategoryInfo]
+    /// 요가 타입 (YOGA_TYPE)
+    let yogaTypes: [CategoryInfo]
+    /// 수련 방식 (TRAINING_METHOD)
+    let trainingMethods: [CategoryInfo]
+    /// 수련 대상 (TARGET)
+    let targets: [CategoryInfo]
     let features: [FeatureInfo]
     let favoriteCount: Int
     let isFavorite: Bool
@@ -45,9 +48,9 @@ struct YogaClassDetailDTO: Codable {
         price         = try c.decode(Int.self,             forKey: .price)
         images        = try c.decodeIfPresent([String].self,       forKey: .images)        ?? []
         thumbnail     = try c.decodeIfPresent(String.self,         forKey: .thumbnail)
-        categories    = try c.decodeIfPresent([CategoryInfo].self, forKey: .categories)    ?? []
-        trainingTypes = try c.decodeIfPresent([CategoryInfo].self, forKey: .trainingTypes) ?? []
-        trainingTargets = try c.decodeIfPresent([CategoryInfo].self, forKey: .trainingTargets) ?? []
+        yogaTypes       = try c.decodeCategoryCodes(forKey: .yogaTypes,       in: YogaCodeHardcoded.types)
+        trainingMethods = try c.decodeCategoryCodes(forKey: .trainingMethods, in: YogaCodeHardcoded.categories)
+        targets         = try c.decodeCategoryCodes(forKey: .targets,         in: YogaCodeHardcoded.targets)
         features      = try c.decodeIfPresent([FeatureInfo].self,  forKey: .features)      ?? []
         favoriteCount = try c.decode(Int.self,             forKey: .favoriteCount)
         isFavorite    = try c.decode(Bool.self,            forKey: .isFavorite)
@@ -63,11 +66,11 @@ struct YogaClassDetailDTO: Codable {
 
     init(classId: String, type: String, name: String, description: String?,
          price: Int, images: [String], thumbnail: String?,
-         categories: [CategoryInfo], features: [FeatureInfo],
+         features: [FeatureInfo],
          favoriteCount: Int, isFavorite: Bool, reviewCount: Int, rating: Double,
          recentReviews: [YogaReviewDTO], policy: PolicyInfo?,
          schedules: [ScheduleInfo], tickets: [TicketInfo], center: CenterInfo?,
-         trainingTypes: [CategoryInfo] = [], trainingTargets: [CategoryInfo] = [],
+         yogaTypes: [CategoryInfo] = [], trainingMethods: [CategoryInfo] = [], targets: [CategoryInfo] = [],
          masterInfo: MasterInfo? = nil) {
         self.classId        = classId
         self.type           = type
@@ -76,9 +79,9 @@ struct YogaClassDetailDTO: Codable {
         self.price          = price
         self.images         = images
         self.thumbnail      = thumbnail
-        self.categories     = categories
-        self.trainingTypes  = trainingTypes
-        self.trainingTargets = trainingTargets
+        self.yogaTypes       = yogaTypes
+        self.trainingMethods = trainingMethods
+        self.targets         = targets
         self.features       = features
         self.favoriteCount  = favoriteCount
         self.isFavorite     = isFavorite
@@ -96,6 +99,19 @@ struct YogaClassDetailDTO: Codable {
 struct CategoryInfo: Codable {
     let code: String
     let name: String
+}
+
+private extension KeyedDecodingContainer {
+    /// 서버는 코드 문자열 배열(["vinyasa"])로 내려주므로 하드코딩 목록에서 이름을 찾아 CategoryInfo로 변환.
+    /// 목록에 없는 코드는 코드 자체를 이름으로 사용. 과거 객체 배열([{code, name}]) 형태도 허용
+    func decodeCategoryCodes(forKey key: Key, in list: [CodeInfoDTO]) throws -> [CategoryInfo] {
+        if let codes = try? decodeIfPresent([String].self, forKey: key) {
+            return codes.map { code in
+                CategoryInfo(code: code, name: list.first { $0.id == code }?.name ?? code)
+            }
+        }
+        return try decodeIfPresent([CategoryInfo].self, forKey: key) ?? []
+    }
 }
 
 struct FeatureInfo: Codable {

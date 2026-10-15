@@ -69,7 +69,12 @@ struct ClassDTO: Codable, Equatable {
     let masterName: String?
     let rating: Double?
     let review: Int?
-    let categories: [String]?
+    /// 요가 타입 코드 목록 (YOGA_TYPE)
+    var yogaTypes: [String]? = nil
+    /// 수련 대상 코드 목록 (TARGET)
+    var targets: [String]? = nil
+    /// 수련 방식 코드 목록 (TRAINING_METHOD)
+    var trainingMethods: [String]? = nil
 }
 
 struct CenterDTO: Codable, Equatable {

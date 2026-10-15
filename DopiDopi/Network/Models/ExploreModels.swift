@@ -62,9 +62,9 @@ struct ExploreSearchFilter: Equatable {
     static let defaultStartHour = 9
     static let defaultEndHour   = 17
 
-    var trainingTypeCodes: Set<String> = []   // 전문 수련 유형
-    var categoryCodes: Set<String> = []       // 수련 태그
-    var targetCodes: Set<String> = []         // 이용 대상
+    var trainingTypeCodes: Set<String> = []   // 전문 수련 유형 (서버 yogaTypes)
+    var trainingMethodCodes: Set<String> = [] // 수련 태그 (서버 trainingMethods)
+    var targetCodes: Set<String> = []         // 이용 대상 (서버 targets)
     var dates: Set<String> = []               // yyyy-MM-dd
     var startHour: Int = defaultStartHour
     var endHour: Int = defaultEndHour
@@ -77,13 +77,8 @@ struct ExploreSearchFilter: Equatable {
 
     /// 2a 필터 버튼 활성화 기준 — 유효값이 하나라도 있는지
     var hasValidValue: Bool {
-        !trainingTypeCodes.isEmpty || !categoryCodes.isEmpty || !targetCodes.isEmpty
+        !trainingTypeCodes.isEmpty || !trainingMethodCodes.isEmpty || !targetCodes.isEmpty
             || !dates.isEmpty || isTimeChanged || !amenityCodes.isEmpty
-    }
-
-    /// 서버 categoryCodes(OR)로 전달 — 수련 유형·태그·이용 대상을 합쳐서 전송
-    var allCategoryCodes: [String] {
-        (trainingTypeCodes.union(categoryCodes).union(targetCodes)).sorted()
     }
 }
 

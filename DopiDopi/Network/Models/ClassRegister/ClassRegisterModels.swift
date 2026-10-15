@@ -41,7 +41,7 @@ enum YogaCodeHardcoded {
         CodeInfoDTO(id: "yin_yoga",       name: "인요가"),
     ]
 
-    /// 수련 카테고리 (강도·스타일 분류)
+    /// 수련 방식 (TRAINING_METHOD — 강도·스타일 분류)
     static let categories: [CodeInfoDTO] = [
         CodeInfoDTO(id: "advanced",  name: "숙련자"),
         CodeInfoDTO(id: "beginner",  name: "초심자"),
@@ -535,7 +535,12 @@ struct ClassRegisterRequestDto: Codable {
     let monthlySchedules: [ClassRegisterMonthlyScheduleDto]?
     let images: [String]?
     let price: Int
-    let categoryCodes: [String]?
+    /// 요가 타입 코드 목록 (YOGA_TYPE)
+    let yogaTypes: [String]?
+    /// 수련 대상 코드 목록 (TARGET)
+    let targets: [String]?
+    /// 수련 방식 코드 목록 (TRAINING_METHOD)
+    let trainingMethods: [String]?
     let policy: ClassRegisterPolicyDto?
     let holidayPolicy: ClassRegisterHolidayPolicyDto?  // 정규 전용
     // tickets(수강권) 필드 없음: 2026-09 스웨거 기준 정규수련 MVP는 등록 요청에서 가격/수강권 개념 자체를 제외함

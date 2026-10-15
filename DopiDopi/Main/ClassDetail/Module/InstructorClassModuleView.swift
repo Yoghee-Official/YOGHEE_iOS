@@ -32,13 +32,13 @@ struct InstructorClassModuleView: View {
                     classDescriptionSection(description: description)
                 }
 
-                if !detail.trainingTypes.isEmpty {
+                if !detail.yogaTypes.isEmpty {
                     yogaTypeSection
                 }
-                if !detail.categories.isEmpty {
+                if !detail.trainingMethods.isEmpty {
                     practiceMethodSection
                 }
-                if !detail.trainingTargets.isEmpty {
+                if !detail.targets.isEmpty {
                     targetAudienceSection
                 }
             }
@@ -283,7 +283,7 @@ struct InstructorClassModuleView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(detail.trainingTypes, id: \.code) { type in
+                    ForEach(detail.yogaTypes, id: \.code) { type in
                         YogaTypeCardView(name: type.name)
                     }
                 }
@@ -295,14 +295,14 @@ struct InstructorClassModuleView: View {
     private var practiceMethodSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeader("수련 방식")
-            chipRow(items: detail.categories.map(\.name))
+            chipRow(items: detail.trainingMethods.map(\.name))
         }
     }
 
     private var targetAudienceSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             sectionHeader("수련 대상")
-            chipRow(items: detail.trainingTargets.map(\.name))
+            chipRow(items: detail.targets.map(\.name))
         }
     }
 

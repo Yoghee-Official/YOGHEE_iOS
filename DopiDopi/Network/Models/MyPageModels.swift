@@ -82,7 +82,12 @@ struct YogaClassScheduleDTO: Codable, Equatable, Identifiable {
     let address: String?
     let attendance: Int
     let isPast: Bool
-    let categories: [String]?
+    /// 요가 타입 코드 목록 (YOGA_TYPE)
+    var yogaTypes: [String]? = nil
+    /// 수련 대상 코드 목록 (TARGET)
+    var targets: [String]? = nil
+    /// 수련 방식 코드 목록 (TRAINING_METHOD)
+    var trainingMethods: [String]? = nil
     /// 실제 수업 세션 아이디. 출석체크(지도자용 세션 API)에 사용하며, 없으면 classId로 대체
     var sessionId: String? = nil
 
