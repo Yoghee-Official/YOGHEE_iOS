@@ -473,7 +473,9 @@ class ClassRegisterContainer: ObservableObject {
             monthlySchedules: monthlySchedules,
             images:        imageUrls.isEmpty ? nil : imageUrls,
             price:         isRegular ? regularPrice : onedayPrice,
-            categoryCodes: s.categoryIds.isEmpty ? nil : Array(s.categoryIds),
+            yogaTypes:       s.typeIds.isEmpty ? nil : s.typeIds.sorted(),
+            targets:         s.targetIds.isEmpty ? nil : s.targetIds.sorted(),
+            trainingMethods: s.categoryIds.isEmpty ? nil : s.categoryIds.sorted(),
             policy:        ClassRegisterPolicyDto(
                 discountRate:      isRegular ? nil : discountRate,
                 discountStartDate: isRegular ? nil : discountStartDate,
@@ -605,7 +607,6 @@ class ClassRegisterContainer: ObservableObject {
             price: isRegular ? 0 : (Int(s.pricePerSession.replacingOccurrences(of: ",", with: "")) ?? 0),
             images: [],
             thumbnail: nil,
-            categories: codeInfos(ids: s.categoryIds, in: s.categories),
             features: features,
             favoriteCount: 0,
             isFavorite: false,
@@ -616,8 +617,9 @@ class ClassRegisterContainer: ObservableObject {
             schedules: schedules,
             tickets: tickets,
             center: center,
-            trainingTypes: codeInfos(ids: s.typeIds, in: s.types),
-            trainingTargets: codeInfos(ids: s.targetIds, in: s.targets),
+            yogaTypes: codeInfos(ids: s.typeIds, in: s.types),
+            trainingMethods: codeInfos(ids: s.categoryIds, in: s.categories),
+            targets: codeInfos(ids: s.targetIds, in: s.targets),
             masterInfo: nil
         )
         return (detail: detail, scheduleMonths: scheduleMonths)

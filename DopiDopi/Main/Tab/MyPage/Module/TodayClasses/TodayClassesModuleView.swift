@@ -118,8 +118,7 @@ struct TodayClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울 관악구",
                 attendance: 23,
-                isPast: false,
-                categories: ["하루수련"]
+                isPast: false
             ),
             YogaClassScheduleDTO(
                 classId: "2",
@@ -129,8 +128,7 @@ struct TodayClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "정규수련 | 나머지 지도자",
                 attendance: 23,
-                isPast: false,
-                categories: []
+                isPast: false
             ),
             YogaClassScheduleDTO(
                 classId: "3",
@@ -140,8 +138,7 @@ struct TodayClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울 관악구",
                 attendance: 23,
-                isPast: false,
-                categories: []
+                isPast: false
             ),
             YogaClassScheduleDTO(
                 classId: "4",
@@ -151,8 +148,7 @@ struct TodayClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울시 강남구",
                 attendance: 15,
-                isPast: false,
-                categories: []
+                isPast: false
             )
         ],
         onItemTap: { classId in

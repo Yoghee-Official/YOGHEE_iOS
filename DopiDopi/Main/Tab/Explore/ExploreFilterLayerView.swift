@@ -85,7 +85,7 @@ struct ExploreFilterLayerView: View {
     private var categorySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             chipGroup(title: "전문 수련 유형", items: YogaCodeHardcoded.types, selection: $filter.trainingTypeCodes)
-            chipGroup(title: "수련 태그 선택", items: YogaCodeHardcoded.categories, selection: $filter.categoryCodes)
+            chipGroup(title: "수련 태그 선택", items: YogaCodeHardcoded.categories, selection: $filter.trainingMethodCodes)
             chipGroup(title: "이용 대상", items: YogaCodeHardcoded.targets, selection: $filter.targetCodes)
         }
         .padding(.top, 16)

@@ -119,7 +119,6 @@ struct PriceReservationBarView: View {
                 price: 12000,
                 images: [],
                 thumbnail: nil,
-                categories: [],
                 features: [],
                 favoriteCount: 0,
                 isFavorite: false,

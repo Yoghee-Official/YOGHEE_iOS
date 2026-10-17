@@ -185,8 +185,14 @@ class APIService {
 
                 // 배열 파라미터는 콤마 구분 문자열로 전달 (ex. ashtanga,hatha)
                 let filter = query.filter
-                if !filter.allCategoryCodes.isEmpty {
-                    params["categoryCodes"] = filter.allCategoryCodes.joined(separator: ",")
+                if !filter.trainingTypeCodes.isEmpty {
+                    params["yogaTypes"] = filter.trainingTypeCodes.sorted().joined(separator: ",")
+                }
+                if !filter.targetCodes.isEmpty {
+                    params["targets"] = filter.targetCodes.sorted().joined(separator: ",")
+                }
+                if !filter.trainingMethodCodes.isEmpty {
+                    params["trainingMethods"] = filter.trainingMethodCodes.sorted().joined(separator: ",")
                 }
                 if !filter.amenityCodes.isEmpty {
                     params["amenityCodes"] = filter.amenityCodes.sorted().joined(separator: ",")

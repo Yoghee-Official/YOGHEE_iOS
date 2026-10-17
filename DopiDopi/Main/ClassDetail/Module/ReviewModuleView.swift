@@ -284,7 +284,6 @@ struct ReviewItemCard: View {
             price: 50000,
             images: [],
             thumbnail: nil,
-            categories: [],
             features: [],
             favoriteCount: 0,
             isFavorite: false,

@@ -70,8 +70,7 @@ struct WeekClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울시 강남구 테헤란로 123",
                 attendance: 5,
-                isPast: false,
-                categories: []
+                isPast: false
             ),
             YogaClassScheduleDTO(
                 classId: "2",
@@ -81,8 +80,7 @@ struct WeekClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울시 강남구 역삼동 456",
                 attendance: 8,
-                isPast: true,
-                categories: []
+                isPast: true
             ),
             YogaClassScheduleDTO(
                 classId: "3",
@@ -92,8 +90,7 @@ struct WeekClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울시 서초구 서초동 789",
                 attendance: 12,
-                isPast: true,
-                categories: []
+                isPast: true
             )
         ],
         weekEnd: [
@@ -105,8 +102,7 @@ struct WeekClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울시 강남구 논현동 321",
                 attendance: 15,
-                isPast: true,
-                categories: []
+                isPast: true
             ),
             YogaClassScheduleDTO(
                 classId: "5",
@@ -116,8 +112,7 @@ struct WeekClassesModuleView: View {
                 thumbnailUrl: "https://via.placeholder.com/160",
                 address: "서울시 강남구 신사동 654",
                 attendance: 10,
-                isPast: true,
-                categories: []
+                isPast: true
             )
         ],
         onItemTap: { classId in

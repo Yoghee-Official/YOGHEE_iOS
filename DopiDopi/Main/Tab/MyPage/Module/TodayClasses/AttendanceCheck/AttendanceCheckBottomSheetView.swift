@@ -172,7 +172,6 @@ struct AttendanceCheckBottomSheetView: View {
             address: "서울 관악구",
             attendance: 23,
             isPast: false,
-            categories: [],
             sessionId: "session-1"
         )
     )

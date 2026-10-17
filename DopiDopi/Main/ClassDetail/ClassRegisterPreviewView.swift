@@ -131,12 +131,12 @@ private extension YogaClassDetailDTO {
         YogaClassDetailDTO(
             classId: classId, type: type, name: name, description: description,
             price: price, images: images, thumbnail: thumbnail,
-            categories: categories, features: features,
+            features: features,
             favoriteCount: favoriteCount, isFavorite: isFavorite,
             reviewCount: reviewCount, rating: rating,
             recentReviews: recentReviews, policy: policy,
             schedules: schedules, tickets: tickets, center: center,
-            trainingTypes: trainingTypes, trainingTargets: trainingTargets,
+            yogaTypes: yogaTypes, trainingMethods: trainingMethods, targets: targets,
             masterInfo: masterInfo
         )
     }
