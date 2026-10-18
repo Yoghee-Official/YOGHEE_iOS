@@ -22,9 +22,14 @@ struct AttendanceCheckState: Equatable {
     var session: LeaderSessionDTO?
     var members: [LeaderSessionMemberDTO] = []
     var isLoading: Bool = false
+    /// 예약 회원 목록을 한 번이라도 정상 조회했는지 여부 (조회 전 빈 상태 문구가 잠깐 보이는 것을 막기 위함)
+    var hasLoaded: Bool = false
     var errorMessage: String?
     /// 취소 확인 얼럿 대상 예약 ID (nil이면 얼럿 미노출)
     var reservationIdPendingCancel: String?
+
+    /// 수련 인원이 0명일 때: 방어 문구를 노출하고 타이틀("요기니 만나보기") / "한 번에 출석" 버튼은 숨긴다
+    var isMemberEmpty: Bool { hasLoaded && members.isEmpty }
 }
 
 @MainActor
@@ -71,6 +76,7 @@ class AttendanceCheckContainer: ObservableObject {
                 let response = try await APIService.shared.getSessionMembers(sessionId: sessionId)
                 state.session = response.session
                 state.members = response.members
+                state.hasLoaded = true
                 state.isLoading = false
             } catch {
                 state.errorMessage = (error as? APIError)?.errorDescription ?? "출석 정보를 불러오지 못했습니다."

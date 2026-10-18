@@ -83,10 +83,10 @@ struct AttendanceMemberRowView: View {
         Button(action: onToggleAttendance) {
             Group {
                 if isAttended {
-                    Image("CheckCircleIconFull")
+                    Image("HandSignIcon")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 44.ratio(), height: 44.ratio())
+                        .frame(width: 52.ratio(), height: 78.ratio())
                 } else {
                     Text("클릭시\n출석완료")
                         .pretendardFont(.regular, size: 14)
