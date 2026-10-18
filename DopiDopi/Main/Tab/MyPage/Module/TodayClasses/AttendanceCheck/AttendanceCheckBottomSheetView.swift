@@ -3,7 +3,7 @@
 //  YOGHEE
 //
 //  마이페이지(지도자) "오늘의 수업" 3d 영역 클릭 시 노출되는 출석체크 바텀시트
-//  피그마 참고: node-id 3-13279
+//  피그마 참고: node-id 3-13279 (수련 인원 0명일 때: node-id 1146-29833)
 //
 
 import SwiftUI
@@ -33,9 +33,12 @@ struct AttendanceCheckBottomSheetView: View {
                 .allowsHitTesting(false)
                 .padding(.horizontal, 16.ratio())
 
-            header
-                .padding(.horizontal, 16.ratio())
-                .padding(.top, 12.ratio())
+            // 수련 인원이 0명이면 타이틀 / 한 번에 출석 버튼 미노출
+            if !container.state.members.isEmpty {
+                header
+                    .padding(.horizontal, 16.ratio())
+                    .padding(.top, 12.ratio())
+            }
 
             content
         }
@@ -86,10 +89,17 @@ struct AttendanceCheckBottomSheetView: View {
                 .buttonStyle(.bordered)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else if container.state.members.isEmpty {
-            MyPageEmptyView(message: "예약한 회원이 없습니다.")
+        } else if container.state.isMemberEmpty {
+            Text("출석 체크할 인원이 없어요. 다른 수업을 확인해보세요.")
+                .pretendardFont(.bold, size: 14)
+                .tracking(-0.408)
+                .foregroundColor(.Info)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 16.ratio())
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
+
+            completeButton
+        } else if !container.state.members.isEmpty {
             ScrollView {
                 VStack(spacing: 15.ratio()) {
                     ForEach(container.state.members) { member in
