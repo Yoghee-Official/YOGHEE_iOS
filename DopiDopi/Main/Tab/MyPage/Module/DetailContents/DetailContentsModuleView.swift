@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct DetailContentsModuleView: View {
-    /// 지도자 전용 항목("지도자 인증") 노출 여부
+    /// 지도자 전용 항목("요가원 등록 및 관리", "지도자 인증") 노출 여부
     let isInstructor: Bool
     let onItemTap: (String) -> Void
 
     private var menuItems: [String] {
         isInstructor
-            ? ["지도자 인증", "설정", "계정관리", "이용약관", "고객센터", "환불정책"]
+            ? ["요가원 등록 및 관리", "지도자 인증", "설정", "계정관리", "이용약관", "고객센터", "환불정책"]
             : ["설정", "계정관리", "이용약관", "고객센터", "환불정책"]
     }
     

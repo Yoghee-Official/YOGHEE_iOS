@@ -227,6 +227,19 @@ struct NewCenterResponse: Codable {
     let data: String?
 }
 
+// MARK: - 요가원 정보 수정 API (PUT /api/center/{centerId})
+
+/// 요가원 수정 요청 바디. 수정 화면의 최종값 전체를 보낸다.
+/// description·detailAddress는 빈 문자열이면 서버에서 삭제되고, 빈 amenityCodes는 전체 삭제를 의미한다.
+struct UpdateCenterRequestDto: Codable {
+    var name: String
+    var description: String?
+    var roadAddress: String?
+    var jibunAddress: String?
+    var detailAddress: String?
+    var amenityCodes: [String]
+}
+
 // MARK: - 이미지 Presigned URL 발급 (POST /api/image/presign)
 
 /// 업로드할 이미지 파일 정보 (presign 요청용)

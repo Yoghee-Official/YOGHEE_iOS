@@ -77,6 +77,8 @@ struct MyPageTabView: View {
                     ClassTypeRegisterView()
                 case .licenseRegister:
                     LicenseRegisterView()
+                case .centerManage:
+                    CenterManageView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in

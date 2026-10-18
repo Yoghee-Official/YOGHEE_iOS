@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F63F5DC7C601F6F1CB53B11 /* CenterManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE04DE4FD7432EA696781C5 /* CenterManageView.swift */; };
+		2261B2D8C3959FC481E044EC /* CenterManageAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236EB37AF0F52694B00BB39 /* CenterManageAlertView.swift */; };
 		0BFDC07770C4FD44F432D732 /* LicenseRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE29ADEB3BA344FDE9E45C3 /* LicenseRegisterView.swift */; };
 		0D0531A743AD42FFB4E4E3DB /* ExploreClassCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1339D746EB4217817FDEE7 /* ExploreClassCardView.swift */; };
 		23949769BF0CD4261C41F547 /* ReservationCancelAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD16ABA8DBC806AB2B63F36 /* ReservationCancelAlertView.swift */; };
@@ -138,6 +140,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7DE04DE4FD7432EA696781C5 /* CenterManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterManageView.swift; sourceTree = "<group>"; };
+		8236EB37AF0F52694B00BB39 /* CenterManageAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterManageAlertView.swift; sourceTree = "<group>"; };
 		0D172B4EDA07757A81BCD4E3 /* LicenseRegisterContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseRegisterContainer.swift; sourceTree = "<group>"; };
 		0FF0DADF5442627DF1E1F003 /* AttendanceCheckBottomSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceCheckBottomSheetView.swift; sourceTree = "<group>"; };
 		1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerComponents.swift; sourceTree = "<group>"; };
@@ -281,6 +285,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FD3B69997802F085F833F90D /* CenterManage */ = {
+			isa = PBXGroup;
+			children = (
+				7DE04DE4FD7432EA696781C5 /* CenterManageView.swift */,
+				8236EB37AF0F52694B00BB39 /* CenterManageAlertView.swift */,
+			);
+			path = CenterManage;
+			sourceTree = "<group>";
+		};
 		22DA650E3D414FA88956A419 /* LoadingView */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,6 +506,7 @@
 			isa = PBXGroup;
 			children = (
 				522CE5BD2F12A6BF0063FDF5 /* Module */,
+				FD3B69997802F085F833F90D /* CenterManage */,
 				522CE5BF2F12A6BF0063FDF5 /* MyPageTabView.swift */,
 				522CE5BE2F12A6BF0063FDF5 /* MyPageTabContainer.swift */,
 			);
@@ -989,6 +1003,8 @@
 				522CE6022F12A6BF0063FDF5 /* UserProfileModuleView.swift in Sources */,
 				522CE6032F12A6BF0063FDF5 /* MyPageTabContainer.swift in Sources */,
 				522CE6042F12A6BF0063FDF5 /* MyPageTabView.swift in Sources */,
+				1F63F5DC7C601F6F1CB53B11 /* CenterManageView.swift in Sources */,
+				2261B2D8C3959FC481E044EC /* CenterManageAlertView.swift in Sources */,
 				522CE6052F12A6BF0063FDF5 /* ProfileEditView.swift in Sources */,
 				522CE6062F12A6BF0063FDF5 /* TeaTimeTabContainer.swift in Sources */,
 				522CE6072F12A6BF0063FDF5 /* TeaTimeTabView.swift in Sources */,
