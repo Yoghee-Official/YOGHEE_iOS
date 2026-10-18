@@ -14,6 +14,8 @@ enum MyPageNavigationDestination: Hashable {
     case classRegister
     /// 지도자 세부항목 "지도자 인증" 진입점
     case licenseRegister
+    /// 지도자 세부항목 "요가원 등록 및 관리" 진입점 (AP_MO_1)
+    case centerManage
 }
 
 // MARK: - Intent
@@ -133,6 +135,8 @@ class MyPageTabContainer: ObservableObject {
             switch itemName {
             case "지도자 인증":
                 state.navigationDestination = .licenseRegister
+            case "요가원 등록 및 관리":
+                state.navigationDestination = .centerManage
             default:
                 break
                 // TODO: 각 항목별 네비게이션 처리

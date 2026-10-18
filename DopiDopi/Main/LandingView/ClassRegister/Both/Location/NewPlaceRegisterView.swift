@@ -3,13 +3,19 @@
 //  YOGHEE
 //
 //  신규 장소 등록 화면 (AP_MO_2, Figma 3104-15819)
+//  editingCenterId를 넘기면 장소 수정 화면 (AP_MO_3, Figma 3104-15671)으로 동작
 //
 
 import SwiftUI
 
 struct NewPlaceRegisterView: View {
     @ObservedObject var container: ClassRegisterContainer
-    let onDismiss: () -> Void
+    /// nil이면 화면을 직접 dismiss (푸시로 진입한 경우)
+    var onDismiss: (() -> Void)? = nil
+    /// 수정할 요가원 ID. 있으면 상세 조회로 필드를 채우고 PUT으로 저장
+    var editingCenterId: String? = nil
+    
+    @Environment(\.dismiss) private var dismiss
     
     @State private var countryRegion: String = "대한민국"
     @State private var sido: String = ""
@@ -27,6 +33,10 @@ struct NewPlaceRegisterView: View {
     @State private var showPostcodeSheet = false
     @State private var isRegistering = false
     @State private var registerError: String?
+    @State private var isLoadingDetail = false
+    @State private var didLoadDetail = false
+    
+    private var isEditMode: Bool { editingCenterId != nil }
     
     private let detailDescriptionMaxLength = 3000
     
@@ -53,11 +63,17 @@ struct NewPlaceRegisterView: View {
             registerButton
         }
         .background(Color.SandBeige)
-        .customNavigationBar(title: "신규 장소 등록")
+        .customNavigationBar(title: isEditMode ? "장소 수정" : "신규 장소 등록")
+        .overlay {
+            if isLoadingDetail {
+                ProgressView()
+            }
+        }
         .onAppear {
             if container.state.amenities == nil {
                 container.loadCodeList()
             }
+            loadCenterDetailIfNeeded()
         }
         .sheet(isPresented: $showPostcodeSheet) {
             KakaoPostcodeWebView(
@@ -77,6 +93,45 @@ struct NewPlaceRegisterView: View {
         kakaoJibunAddress = result.jibunAddress
         if let s = result.sido, !s.isEmpty { sido = s }
         if let s = result.sigungu, !s.isEmpty { sigungu = s }
+    }
+    
+    /// 수정 모드: 상세 조회 결과로 주소·장소명·설명·물품/편의시설 선택값을 채움 (최초 1회)
+    private func loadCenterDetailIfNeeded() {
+        guard let centerId = editingCenterId, !didLoadDetail else { return }
+        didLoadDetail = true
+        isLoadingDetail = true
+        Task {
+            do {
+                let detail = try await APIService.shared.getCenterDetail(centerId: centerId)
+                await MainActor.run {
+                    applyCenterDetail(detail)
+                    isLoadingDetail = false
+                }
+            } catch {
+                await MainActor.run {
+                    isLoadingDetail = false
+                    registerError = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    private func applyCenterDetail(_ detail: CenterDetailDto) {
+        sido = detail.sido ?? ""
+        sigungu = detail.sigungu ?? ""
+        kakaoRoadAddress = detail.roadAddress ?? ""
+        kakaoJibunAddress = detail.jibunAddress ?? ""
+        roadAddress = kakaoRoadAddress.isEmpty ? kakaoJibunAddress : kakaoRoadAddress
+        zonecode = detail.zonecode ?? ""
+        detailAddress = detail.detailAddress ?? ""
+        placeName = detail.name ?? ""
+        detailDescription = String((detail.description ?? "").prefix(detailDescriptionMaxLength))
+        // amenityCodes는 물품·편의시설이 한 목록으로 내려오므로 코드표 기준으로 나눠 담음
+        let codes = Set(detail.amenityCodes ?? [])
+        let amenityIds = Set(container.state.amenities?.amenity.map(\.id) ?? [])
+        let facilityIds = Set(container.state.amenities?.facility.map(\.id) ?? [])
+        selectedAmenityIds = codes.intersection(amenityIds)
+        selectedFacilityIds = codes.intersection(facilityIds)
     }
     
     // MARK: - 2a: 수련 위치
@@ -265,7 +320,7 @@ struct NewPlaceRegisterView: View {
                     .padding(.bottom, 8.ratio())
             }
             Button(action: performRegister) {
-                Text(isRegistering ? "등록 중..." : "등록")
+                Text(submitButtonTitle)
                     .pretendardFont(.semiBold, size: 15)
                     .foregroundColor(canRegister && !isRegistering ? .DarkBlack : .Info)
                     .frame(maxWidth: .infinity)
@@ -281,18 +336,39 @@ struct NewPlaceRegisterView: View {
         .background(Color.SandBeige)
     }
     
+    private var submitButtonTitle: String {
+        if isEditMode {
+            return isRegistering ? "수정 중..." : "수정 완료"
+        }
+        return isRegistering ? "등록 중..." : "등록"
+    }
+    
+    private func close() {
+        if let onDismiss {
+            onDismiss()
+        } else {
+            dismiss()
+        }
+    }
+    
     private func performRegister() {
         guard canRegister, !isRegistering else { return }
         registerError = nil
         isRegistering = true
-        let body = makeNewCenterDto()
+        let editingCenterId = editingCenterId
+        let newCenterBody = makeNewCenterDto()
+        let updateBody = makeUpdateCenterDto()
         Task {
             do {
-                _ = try await APIService.shared.registerCenter(body: body)
+                if let centerId = editingCenterId {
+                    try await APIService.shared.updateCenter(centerId: centerId, body: updateBody)
+                } else {
+                    _ = try await APIService.shared.registerCenter(body: newCenterBody)
+                }
                 await MainActor.run {
                     isRegistering = false
                     container.loadCenterList()
-                    onDismiss()
+                    close()
                 }
             } catch {
                 await MainActor.run {
@@ -303,16 +379,33 @@ struct NewPlaceRegisterView: View {
         }
     }
     
-    /// 도로명/지번 둘 중 하나만 있어도 되므로, 카카오 값이 없으면 화면 주소로 채움
+    /// 도로명/지번은 둘 중 하나만 있어도 되므로, 카카오 값이 없으면 화면 주소로 채움
+    private func resolvedAddresses() -> (road: String?, jibun: String?) {
+        let road = kakaoRoadAddress.nilIfEmpty
+        let jibun = kakaoJibunAddress.nilIfEmpty
+        if road == nil && jibun == nil {
+            return (roadAddress.nilIfEmpty, nil)
+        }
+        return (road, jibun)
+    }
+    
+    /// 수정은 화면의 최종값 전체를 보냄. 상세 주소·설명을 비우면 빈 문자열로 보내 서버에서 삭제되게 함
+    private func makeUpdateCenterDto() -> UpdateCenterRequestDto {
+        let addresses = resolvedAddresses()
+        return UpdateCenterRequestDto(
+            name: placeName.trimmingCharacters(in: .whitespacesAndNewlines),
+            description: detailDescription,
+            roadAddress: addresses.road,
+            jibunAddress: addresses.jibun,
+            detailAddress: detailAddress,
+            amenityCodes: Array(selectedAmenityIds.union(selectedFacilityIds))
+        )
+    }
+    
     private func makeNewCenterDto() -> NewCenterDto {
         let fullAddr = [roadAddress, detailAddress].filter { !$0.isEmpty }.joined(separator: " ")
         let allAmenityIds = selectedAmenityIds.union(selectedFacilityIds)
-        var road = kakaoRoadAddress.nilIfEmpty
-        var jibun = kakaoJibunAddress.nilIfEmpty
-        if road == nil && jibun == nil {
-            road = roadAddress.nilIfEmpty
-            jibun = nil
-        }
+        let (road, jibun) = resolvedAddresses()
         return NewCenterDto(
             name: placeName.trimmingCharacters(in: .whitespacesAndNewlines),
             description: detailDescription.nilIfEmpty,

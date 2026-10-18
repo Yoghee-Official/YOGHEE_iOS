@@ -19,6 +19,9 @@ struct ClassTypeData: Identifiable {
 
 struct ClassTypeRegisterView: View {
     @StateObject private var container = ClassRegisterContainer()
+    /// 요가원 등록 및 관리(AP_MO_1) "수련 추가 등록"으로 진입 시, 수련 장소 단계에서 미리 선택될 요가원
+    var preselectedCenterId: String? = nil
+    @State private var didApplyPreselectedCenter = false
     
     private let classTypes: [ClassTypeData] = [
         ClassTypeData(
@@ -79,6 +82,13 @@ struct ClassTypeRegisterView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.SandBeige)
         .customNavigationBar(title: "운영 방식 선택")
+        .onAppear {
+            guard !didApplyPreselectedCenter else { return }
+            didApplyPreselectedCenter = true
+            if let preselectedCenterId {
+                container.handleIntent(.selectCenter(preselectedCenterId))
+            }
+        }
     }
 }
 

@@ -350,6 +350,22 @@ class APIService {
         return try await post(endPoint: Endpoint.centerList.path, parameters: parameters, headers: headers)
     }
     
+    /// 요가원 정보 수정 (PUT /api/center/{centerId}). 화면에 표시된 최종값 전체를 보낸다.
+    func updateCenter(centerId: String, body: UpdateCenterRequestDto) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await put(endPoint: Endpoint.centerDetail(centerId: centerId).path, parameters: parameters, headers: headers)
+    }
+
+    /// 요가원 삭제 (DELETE /api/center/{centerId}). 등록된 수련이 있으면 409(CENTER_DELETE_NOT_ALLOWED).
+    func deleteCenter(centerId: String) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let _: APIEmptyResponse = try await delete(endPoint: Endpoint.centerDetail(centerId: centerId).path, headers: headers)
+    }
+    
     /// 이미지 업로드용 Presigned URL 발급 (POST /api/image/presign). bucket "class" 등. 응답은 { code, status, data: { type, files } } 형태.
     func postImagePresign(body: ImageUploadDto) async throws -> ImagePresignResponse {
         guard let token = await getAccessToken() else { throw APIError.unauthorized }
@@ -562,6 +578,16 @@ class APIService {
     /// POST 요청을 위한 기본 메서드
     func post<T: Codable>(endPoint: String, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) async throws -> T {
         return try await request(method: .post, endPoint: endPoint, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+    }
+
+    /// PUT 요청을 위한 기본 메서드
+    func put<T: Codable>(endPoint: String, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) async throws -> T {
+        return try await request(method: .put, endPoint: endPoint, parameters: parameters, encoding: JSONEncoding.default, headers: headers)
+    }
+
+    /// DELETE 요청을 위한 기본 메서드
+    func delete<T: Codable>(endPoint: String, parameters: Parameters? = nil, headers: HTTPHeaders? = nil) async throws -> T {
+        return try await request(method: .delete, endPoint: endPoint, parameters: parameters, headers: headers)
     }
 }
 
