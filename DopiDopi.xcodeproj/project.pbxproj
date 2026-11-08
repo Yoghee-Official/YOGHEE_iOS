@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BA59B98E9A2441CAEA3E92F /* ReservationHistoryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1021C7DEF70A4E85AF8DAC36 /* ReservationHistoryModels.swift */; };
+		F5D8264E2A7F457DBD7648CE /* ReservationHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE360E1BB3794511B4CB281A /* ReservationHistoryContainer.swift */; };
+		3A26C3460A644A9E91588A3B /* ReservationHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9918085499E64089AFB48769 /* ReservationHistoryView.swift */; };
 		1F63F5DC7C601F6F1CB53B11 /* CenterManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DE04DE4FD7432EA696781C5 /* CenterManageView.swift */; };
 		2261B2D8C3959FC481E044EC /* CenterManageAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8236EB37AF0F52694B00BB39 /* CenterManageAlertView.swift */; };
 		0BFDC07770C4FD44F432D732 /* LicenseRegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE29ADEB3BA344FDE9E45C3 /* LicenseRegisterView.swift */; };
@@ -140,6 +143,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1021C7DEF70A4E85AF8DAC36 /* ReservationHistoryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationHistoryModels.swift; sourceTree = "<group>"; };
+		AE360E1BB3794511B4CB281A /* ReservationHistoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationHistoryContainer.swift; sourceTree = "<group>"; };
+		9918085499E64089AFB48769 /* ReservationHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationHistoryView.swift; sourceTree = "<group>"; };
 		7DE04DE4FD7432EA696781C5 /* CenterManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterManageView.swift; sourceTree = "<group>"; };
 		8236EB37AF0F52694B00BB39 /* CenterManageAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterManageAlertView.swift; sourceTree = "<group>"; };
 		0D172B4EDA07757A81BCD4E3 /* LicenseRegisterContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseRegisterContainer.swift; sourceTree = "<group>"; };
@@ -285,6 +291,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EFCA171854864DB39177D2B5 /* ReservationHistory */ = {
+			isa = PBXGroup;
+			children = (
+				9918085499E64089AFB48769 /* ReservationHistoryView.swift */,
+				AE360E1BB3794511B4CB281A /* ReservationHistoryContainer.swift */,
+			);
+			path = ReservationHistory;
+			sourceTree = "<group>";
+		};
 		FD3B69997802F085F833F90D /* CenterManage */ = {
 			isa = PBXGroup;
 			children = (
@@ -505,6 +520,7 @@
 		522CE5C12F12A6BF0063FDF5 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
+				EFCA171854864DB39177D2B5 /* ReservationHistory */,
 				522CE5BD2F12A6BF0063FDF5 /* Module */,
 				FD3B69997802F085F833F90D /* CenterManage */,
 				522CE5BF2F12A6BF0063FDF5 /* MyPageTabView.swift */,
@@ -539,6 +555,7 @@
 		522CE5CC2F12A6BF0063FDF5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1021C7DEF70A4E85AF8DAC36 /* ReservationHistoryModels.swift */,
 				52D6F3DE2FA79A1C00EC9BE8 /* ClassDetail */,
 				52F987A52F51E59300C905D1 /* ClassRegister */,
 				522CE5C82F12A6BF0063FDF5 /* AuthModels.swift */,
@@ -929,6 +946,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0BA59B98E9A2441CAEA3E92F /* ReservationHistoryModels.swift in Sources */,
+				F5D8264E2A7F457DBD7648CE /* ReservationHistoryContainer.swift in Sources */,
+				3A26C3460A644A9E91588A3B /* ReservationHistoryView.swift in Sources */,
 				522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */,
 				52735D21301F830B00515B0C /* ExploreModels.swift in Sources */,
 				522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */,

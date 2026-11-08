@@ -16,6 +16,8 @@ enum MyPageNavigationDestination: Hashable {
     case licenseRegister
     /// 지도자 세부항목 "요가원 등록 및 관리" 진입점 (AP_MO_1)
     case centerManage
+    /// 요기니 "수련 미리보기" 목록 더보기 → 내역 보기 (RC_MO_1)
+    case reservationHistory
 }
 
 // MARK: - Intent
@@ -40,6 +42,9 @@ enum MyPageTabIntent {
     
     // 아이템 선택 액션
     case selectItem(String, String) // itemId, sectionId
+    
+    // 섹션 헤더 "목록 더보기" 액션
+    case tapMoreButton(String) // sectionId
     
     // 토글 액션
     case switchRole(UserRole)  // 역할 전환
@@ -152,6 +157,10 @@ class MyPageTabContainer: ObservableObject {
             log("Selected item: \(itemId) from section: \(sectionId)")
             handleItemSelection(itemId: itemId, sectionId: sectionId)
             
+        case .tapMoreButton(let sectionId):
+            log("목록 더보기 클릭: \(sectionId)")
+            handleMoreButton(sectionId: sectionId)
+            
         // 토글 액션
         case .switchRole(let role):
             let previousRole = state.currentRole
@@ -165,6 +174,20 @@ class MyPageTabContainer: ObservableObject {
         // 네비게이션 액션
         case .clearNavigation:
             state.navigationDestination = nil
+        }
+    }
+    
+    private func handleMoreButton(sectionId: String) {
+        switch sectionId {
+        case "reservedClasses":
+            switch state.currentRole {
+            case .yogini:
+                state.navigationDestination = .reservationHistory
+            case .instructor:
+                print("📋 [마이페이지] 수련 미리보기 목록 더보기 클릭 - TODO: 개설한 수련 목록(OC_MO_1) 이동")
+            }
+        default:
+            print("📋 [마이페이지] \(sectionId) 목록 더보기 클릭 - TODO: 찜한 수련/요가원 목록 화면 이동")
         }
     }
     

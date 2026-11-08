@@ -102,6 +102,8 @@ class APIService {
         case sessionMembers(sessionId: String, status: String?)
         case sessionAttendance(sessionId: String)
         case cancelLeaderReservation(reservationId: String)
+        case myReservations(status: String?, sort: String?)
+        case cancelMyReservation(reservationId: String)
 
         var path: String {
             switch self {
@@ -155,6 +157,10 @@ class APIService {
                 return "/api/leader/sessions/\(sessionId)/attendance"
             case .cancelLeaderReservation(let reservationId):
                 return "/api/leader/reservations/\(reservationId)/cancel"
+            case .myReservations:
+                return "/api/my/reservations"
+            case .cancelMyReservation(let reservationId):
+                return "/api/my/reservations/\(reservationId)/cancel"
             }
         }
         
@@ -209,7 +215,12 @@ class APIService {
             case .sessionMembers(_, let status):
                 if let status { return ["status": status] }
                 return nil
-            case .login, .classFavorite, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation:
+            case .myReservations(let status, let sort):
+                var params: Parameters = [:]
+                if let status { params["status"] = status }
+                if let sort { params["sort"] = sort }
+                return params.isEmpty ? nil : params
+            case .login, .classFavorite, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation:
                 return nil
             }
         }
@@ -464,6 +475,27 @@ class APIService {
         let data = try JSONEncoder().encode(body)
         guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
         let _: APIEmptyResponse = try await post(endPoint: Endpoint.cancelLeaderReservation(reservationId: reservationId).path, parameters: parameters, headers: headers)
+    }
+
+    /// 요기니 예약 내역 조회 (GET /api/my/reservations). 내역 보기(RC_MO_1) 화면 데이터.
+    /// - status: UPCOMING / COMPLETED / CANCELLED (생략 시 전체), sort: recent / paid / reserved (생략 시 수업 시작 시각 순)
+    func getMyReservations(status: String? = nil, sort: String? = nil) async throws -> [ReservationDTO] {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let endpoint = Endpoint.myReservations(status: status, sort: sort)
+        let response: MyReservationListResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
+        return response.data
+    }
+
+    /// 요기니 예약 취소·환불 (POST /api/my/reservations/{reservationId}/cancel). 서버가 환불 정책을 다시 계산해 환불함.
+    /// 취소 요청(CL_MO_1) 화면의 "취소 요청" 버튼에서 취소 사유(reason)와 함께 호출 예정
+    func cancelMyReservation(reservationId: String, reason: String? = nil) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let body = CancelReservationRequestDTO(reason: reason)
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await post(endPoint: Endpoint.cancelMyReservation(reservationId: reservationId).path, parameters: parameters, headers: headers)
     }
     
     // MARK: - Internal Methods
