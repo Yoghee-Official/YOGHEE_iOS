@@ -79,6 +79,8 @@ struct MyPageTabView: View {
                     LicenseRegisterView()
                 case .centerManage:
                     CenterManageView()
+                case .reservationHistory:
+                    ReservationHistoryView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
@@ -167,8 +169,7 @@ struct MyPageSectionView: View {
                         }
                     ),
                     onMoreButtonTap: {
-                        // TODO: 목록 더보기 액션 처리
-                        print("목록 더보기 클릭: \(section.id)")
+                        container.handleIntent(.tapMoreButton(section.id))
                     }
                 )
             }
