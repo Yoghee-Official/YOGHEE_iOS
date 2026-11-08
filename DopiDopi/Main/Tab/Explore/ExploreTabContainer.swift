@@ -28,8 +28,8 @@ enum ExploreTabIntent {
     case applyFilter(ExploreSearchFilter)
     /// 3d 해당 위치 재검색
     case researchCurrentArea
-    /// 3b 위치 핀 탭 — nil이면 선택 해제
-    case selectClass(id: String?)
+    /// 3b 위치 핀 탭 (ExploreMapPinGroup.id) — nil이면 선택 해제
+    case selectPin(id: String?)
     /// 4a 찜 버튼
     case toggleFavorite(classId: String)
     case dismissToast
@@ -61,9 +61,9 @@ struct ExploreTabState: Equatable {
     var classes: [ClassMapMarkerDTO] = []
     /// 결과를 조회한 수련 타입 — 4a 정규/하루 구분값 표시용
     var resultClassType: ExploreClassType = .oneDay
-    var selectedClassId: String?
-    /// 4a 주소 1줄 (시·구·동) — 핀 선택 시 상세 API로 조회
-    var selectedClassAddress: String?
+    var selectedPinId: String?
+    /// 4a 주소 1줄 (시·구·동) — classId 기준, 핀 선택 시 상세 API로 조회
+    var classAddresses: [String: String] = [:]
 
     var cameraCommand: ExploreCameraCommand?
     var currentBbox: MapBoundingBox?
@@ -73,9 +73,14 @@ struct ExploreTabState: Equatable {
     var isLoading: Bool = false
     var errorMessage: String?
 
-    var selectedClass: ClassMapMarkerDTO? {
-        guard let selectedClassId else { return nil }
-        return classes.first { $0.classId == selectedClassId }
+    /// 3b 동일 위치 수련을 묶은 핀 목록 — 응답 순서(최근 등록순) 유지
+    var pinGroups: [ExploreMapPinGroup] {
+        ExploreMapPinGroup.grouped(classes)
+    }
+
+    var selectedPinGroup: ExploreMapPinGroup? {
+        guard let selectedPinId else { return nil }
+        return pinGroups.first { $0.id == selectedPinId }
     }
 }
 
@@ -144,8 +149,8 @@ class ExploreTabContainer: ObservableObject {
         case .researchCurrentArea:
             search()
 
-        case .selectClass(let id):
-            selectClass(id: id)
+        case .selectPin(let id):
+            selectPin(id: id)
 
         case .toggleFavorite(let classId):
             toggleFavorite(classId: classId)
@@ -188,7 +193,7 @@ class ExploreTabContainer: ObservableObject {
                 guard !Task.isCancelled else { return }
                 self.state.classes = classes
                 self.state.resultClassType = query.type
-                self.selectClass(id: nil)               // 새 검색 시 핀 선택 초기화
+                self.selectPin(id: nil)                 // 새 검색 시 핀 선택 초기화
                 self.state.isLoading = false
 
                 if classes.isEmpty {
@@ -212,32 +217,45 @@ class ExploreTabContainer: ObservableObject {
 
     // MARK: - 핀 선택
 
-    private func selectClass(id: String?) {
+    private func selectPin(id: String?) {
         detailTask?.cancel()
-        state.selectedClassId = id
-        state.selectedClassAddress = nil
+        state.selectedPinId = id
 
-        guard let id, let selected = state.selectedClass else { return }
+        guard let group = state.selectedPinGroup else { return }
 
         state.cameraCommand = ExploreCameraCommand(
-            coordinate: MapCoordinate(latitude: selected.latitude, longitude: selected.longitude),
+            coordinate: MapCoordinate(latitude: group.latitude, longitude: group.longitude),
             zoomLevel: ExploreTabState.selectedZoomLevel
         )
 
-        // 지도 API에 주소가 없어 상세 API로 시·구·동 조회
+        // 지도 API에 주소가 없어 상세 API로 시·구·동 조회 — 묶인 수련 중 미조회 건만
+        let classIds = group.items.map(\.classId).filter { state.classAddresses[$0] == nil }
+        guard !classIds.isEmpty else { return }
+
         detailTask = Task {
-            do {
-                let detail = try await APIService.shared.getClassDetail(classId: id).data
-                guard !Task.isCancelled, self.state.selectedClassId == id else { return }
-                let center = detail.center
-                let address = [center?.depth1, center?.depth2, center?.depth3]
-                    .compactMap { $0 }
-                    .filter { !$0.isEmpty }
-                    .joined(separator: " ")
-                self.state.selectedClassAddress = address.isEmpty ? nil : address
-            } catch {
-                print("❌ 수련 주소 조회 실패: \(error)")
+            await withTaskGroup(of: (String, String?).self) { taskGroup in
+                for classId in classIds {
+                    taskGroup.addTask { (classId, await Self.fetchAddress(classId: classId)) }
+                }
+                for await (classId, address) in taskGroup {
+                    guard !Task.isCancelled, let address else { continue }
+                    self.state.classAddresses[classId] = address
+                }
             }
+        }
+    }
+
+    nonisolated private static func fetchAddress(classId: String) async -> String? {
+        do {
+            let center = try await APIService.shared.getClassDetail(classId: classId).data.center
+            let address = [center?.depth1, center?.depth2, center?.depth3]
+                .compactMap { $0 }
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
+            return address.isEmpty ? nil : address
+        } catch {
+            print("❌ 수련 주소 조회 실패: \(error)")
+            return nil
         }
     }
 

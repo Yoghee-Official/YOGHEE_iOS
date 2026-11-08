@@ -23,8 +23,8 @@ struct ExploreTabView: View {
                 ExploreMapRepresentable(
                     initialCoordinate: .seoulCityHall,
                     initialZoomLevel: ExploreTabState.defaultZoomLevel,
-                    classes: container.state.classes,
-                    selectedClassId: container.state.selectedClassId,
+                    pinGroups: container.state.pinGroups,
+                    selectedPinId: container.state.selectedPinId,
                     cameraCommand: container.state.cameraCommand,
                     onCameraIdle: { bbox, isUserGesture in
                         container.handleIntent(.mapCameraIdle(bbox: bbox, isUserGesture: isUserGesture))
@@ -32,8 +32,8 @@ struct ExploreTabView: View {
                     onCameraCommandFinished: { bbox in
                         container.handleIntent(.cameraCommandFinished(bbox: bbox))
                     },
-                    onPinTapped: { classId in
-                        container.handleIntent(.selectClass(id: classId))
+                    onPinTapped: { pinId in
+                        container.handleIntent(.selectPin(id: pinId))
                     }
                 )
                 .ignoresSafeArea()
@@ -166,22 +166,22 @@ struct ExploreTabView: View {
                 }
             }
 
-            if let selected = container.state.selectedClass {
-                ExploreClassCardView(
-                    item: selected,
+            if let group = container.state.selectedPinGroup {
+                ExploreClassCardCarousel(
+                    items: group.items,
                     classType: container.state.resultClassType,
-                    address: container.state.selectedClassAddress,
-                    onTap: { navigationPath.append(selected.classId) },
-                    onFavoriteToggle: {
-                        container.handleIntent(.toggleFavorite(classId: selected.classId))
+                    addresses: container.state.classAddresses,
+                    onTap: { classId in navigationPath.append(classId) },
+                    onFavoriteToggle: { classId in
+                        container.handleIntent(.toggleFavorite(classId: classId))
                     }
                 )
-                .padding(.horizontal, 16)
+                .id(group.id)   // 다른 핀 선택 시 첫 번째 카드부터 노출
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .padding(.bottom, 40)
-        .animation(.easeInOut(duration: 0.2), value: container.state.selectedClassId)
+        .animation(.easeInOut(duration: 0.2), value: container.state.selectedPinId)
         .animation(.easeInOut(duration: 0.2), value: container.state.toastMessage)
         .animation(.easeInOut(duration: 0.2), value: container.state.showsResearchButton)
     }
@@ -391,12 +391,12 @@ struct ExploreToastView: View {
 private struct ExploreMapRepresentable: UIViewControllerRepresentable {
     let initialCoordinate: MapCoordinate
     let initialZoomLevel: Int
-    let classes: [ClassMapMarkerDTO]
-    let selectedClassId: String?
+    let pinGroups: [ExploreMapPinGroup]
+    let selectedPinId: String?
     let cameraCommand: ExploreCameraCommand?
     let onCameraIdle: (MapBoundingBox, Bool) -> Void
     let onCameraCommandFinished: (MapBoundingBox) -> Void
-    let onPinTapped: (String) -> Void          // 탭된 classId 전달
+    let onPinTapped: (String) -> Void          // 탭된 핀 그룹 id 전달
 
     func makeUIViewController(context: Context) -> ExploreMapViewController {
         ExploreMapViewController(
@@ -410,7 +410,7 @@ private struct ExploreMapRepresentable: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: ExploreMapViewController, context: Context) {
         // 검색 결과 또는 선택 상태가 바뀔 때 핀 갱신
-        uiViewController.updatePois(classes, selectedId: selectedClassId)
+        uiViewController.updatePois(pinGroups, selectedId: selectedPinId)
         uiViewController.apply(cameraCommand)
     }
 }
@@ -428,7 +428,7 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
     private weak var kakaoMapView: KakaoMap?
 
     /// 변경 감지용 — 같은 값이면 핀 재렌더 생략
-    private var currentClasses: [ClassMapMarkerDTO] = []
+    private var currentGroups: [ExploreMapPinGroup] = []
     private var currentSelectedId: String?
 
     /// 마지막으로 처리한 카메라 명령 id / 지도 준비 전 대기 명령
@@ -507,7 +507,7 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
         mapView.eventDelegate = self
         setupLabelLayer(mapView)
         // updatePois가 먼저 호출된 경우 지도 준비 후 즉시 렌더
-        if !currentClasses.isEmpty {
+        if !currentGroups.isEmpty {
             refreshPoisOnMap(mapView)
         }
         if let bbox = boundingBox(from: mapView) {
@@ -566,9 +566,9 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
 
     // MARK: - POI 업데이트 (SwiftUI updateUIViewController 에서 호출)
 
-    func updatePois(_ classes: [ClassMapMarkerDTO], selectedId: String?) {
-        guard classes != currentClasses || selectedId != currentSelectedId else { return }
-        currentClasses = classes
+    func updatePois(_ groups: [ExploreMapPinGroup], selectedId: String?) {
+        guard groups != currentGroups || selectedId != currentSelectedId else { return }
+        currentGroups = groups
         currentSelectedId = selectedId
         guard let mapView = kakaoMapView else { return }
         refreshPoisOnMap(mapView)
@@ -580,14 +580,15 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
 
         layer.clearAllItems()
 
-        // 응답은 최근 등록순(sort=recent) — 앞쪽 수련일수록 상단 노출, 선택 핀은 최상단
-        let count = currentClasses.count
-        for (index, dto) in currentClasses.enumerated() {
-            let isSelected = dto.classId == currentSelectedId
-            let image    = makePinImage(name: dto.name, isSelected: isSelected)
-            let styleID  = "pin_\(dto.classId)_\(isSelected ? "s" : "n")"
+        // 응답은 최근 등록순(sort=recent) — 앞쪽 핀일수록 상단 노출, 선택 핀은 최상단
+        let count = currentGroups.count
+        for (index, group) in currentGroups.enumerated() {
+            guard let representative = group.items.first else { continue }
+            let isSelected = group.id == currentSelectedId
+            let pin      = makePinImage(name: group.name, additionalCount: group.additionalCount, isSelected: isSelected)
+            let styleID  = "pin_\(representative.classId)_\(group.additionalCount)_\(isSelected ? "s" : "n")"
 
-            let iconStyle = PoiIconStyle(symbol: image, anchorPoint: CGPoint(x: 0.5, y: 1.0))
+            let iconStyle = PoiIconStyle(symbol: pin.image, anchorPoint: pin.anchor)
             let perLevel  = PerLevelPoiStyle(iconStyle: iconStyle, level: 0)
             let style     = PoiStyle(styleID: styleID, styles: [perLevel])
             manager.addPoiStyle(style)
@@ -596,115 +597,107 @@ final class ExploreMapViewController: UIViewController, MapControllerDelegate {
             poiOptions.rank = isSelected ? count + 1 : count - index
             poiOptions.clickable = true
 
-            let point = MapPoint(longitude: dto.longitude, latitude: dto.latitude)
+            let point = MapPoint(longitude: group.longitude, latitude: group.latitude)
             let poi = layer.addPoi(option: poiOptions, at: point)
-            poi?.userObject = dto.classId as AnyObject
+            poi?.userObject = group.id as AnyObject
             poi?.show()
         }
     }
 
-    // MARK: - 핀 이미지 렌더링
+    // MARK: - 핀 이미지 렌더링 (YogaName / YogaName(+Plus))
 
-    private func makePinImage(name: String, isSelected: Bool) -> UIImage {
-        let mindOrange = UIColor(red: 1.0,       green: 85/255.0,  blue: 32/255.0,  alpha: 1.0) // #FF5520
-        let sandBeige  = UIColor(red: 252/255.0, green: 250/255.0, blue: 244/255.0, alpha: 1.0) // #FCFAF4
-        let textColor: UIColor = isSelected ? mindOrange : .black
+    /// anchor: 꼬리 끝 위치 — 그림자 여백을 포함한 캔버스 기준 비율
+    private func makePinImage(name: String, additionalCount: Int, isSelected: Bool) -> (image: UIImage, anchor: CGPoint) {
+        let landBrown = UIColor(red: 93/255.0, green: 70/255.0, blue: 52/255.0, alpha: 1.0) // #5D4634
+        let bubbleFill: UIColor     = isSelected ? landBrown : .white
+        let nameColor: UIColor      = isSelected ? .white : landBrown
+        let badgeFill: UIColor      = isSelected ? .white : landBrown
+        let badgeTextColor: UIColor = isSelected ? landBrown : .white
 
-        let font   = UIFont(name: "Pretendard-Medium", size: 12) ?? UIFont.systemFont(ofSize: 12, weight: .medium)
-        let hPad: CGFloat   = 8    // 좌우 패딩
-        let vPad: CGFloat   = 6    // 상하 패딩
-        let tailH: CGFloat  = 6    // 꼬리 높이
-        let tailW: CGFloat  = 10   // 꼬리 너비
-        let inset: CGFloat  = 4    // 그림자 여백 (상/좌/우)
+        let font = UIFont(name: "Pretendard-Medium", size: 12) ?? UIFont.systemFont(ofSize: 12, weight: .medium)
+        let hasBadge = additionalCount > 0
+        let bubbleH: CGFloat     = 30
+        let leadingPad: CGFloat  = 8
+        let trailingPad: CGFloat = hasBadge ? 4 : 8   // +N 뱃지가 있으면 우측 패딩 축소
+        let gap: CGFloat         = 4    // 이름 ↔ 뱃지 간격
+        let badgePad: CGFloat    = 4
+        let tailHalf: CGFloat    = 4 * sqrt(2)   // 8pt 정사각형 45° 회전 — 대각선 절반
+        let inset: CGFloat       = 4    // 그림자 여백
 
-        let textAttrs: [NSAttributedString.Key: Any] = [.font: font]
-        let textSize = (name as NSString).size(withAttributes: textAttrs)
+        func attributes(_ color: UIColor) -> [NSAttributedString.Key: Any] {
+            [.font: font, .kern: -0.408, .foregroundColor: color]
+        }
+        let nameAttrs  = attributes(nameColor)
+        let badgeAttrs = attributes(badgeTextColor)
+        let badgeText  = "+\(additionalCount)" as NSString
 
-        let bubbleW  = ceil(textSize.width) + hPad * 2
-        let bubbleH  = ceil(textSize.height) + vPad * 2
-        let cornerR  = bubbleH / 2  // 완전한 필 형태
+        let nameSize      = (name as NSString).size(withAttributes: nameAttrs)
+        let badgeTextSize = badgeText.size(withAttributes: badgeAttrs)
+        let badgeH = ceil(badgeTextSize.height) + badgePad * 2
+        let badgeW = max(ceil(badgeTextSize.width) + badgePad * 2, badgeH)
 
-        // 캔버스: 상/좌/우만 inset, 하단은 꼬리 끝 = 앵커(0.5, 1.0)
-        let canvasW  = bubbleW + inset * 2
-        let canvasH  = bubbleH + tailH + inset
+        let contentW = ceil(nameSize.width) + (hasBadge ? gap + badgeW : 0)
+        let bubbleW  = leadingPad + contentW + trailingPad
 
-        let bx = inset              // 버블 x 시작
-        let by = inset              // 버블 y 시작
-        let bubbleRect  = CGRect(x: bx, y: by, width: bubbleW, height: bubbleH)
-        let tailCX      = bx + bubbleW / 2  // 꼬리 중심 x
-        let leftCenter  = CGPoint(x: bubbleRect.minX + cornerR, y: bubbleRect.minY + cornerR)
-        let rightCenter = CGPoint(x: bubbleRect.maxX - cornerR, y: bubbleRect.minY + cornerR)
+        // 꼬리(마름모)는 중심이 버블 하단에 걸치고, 위쪽 절반은 버블에 가려짐
+        let bubbleRect = CGRect(x: inset, y: inset, width: bubbleW, height: bubbleH)
+        let tailTipY   = bubbleRect.maxY + tailHalf
+        let canvasSize = CGSize(width: bubbleW + inset * 2, height: tailTipY + inset)
+        let anchor     = CGPoint(x: 0.5, y: tailTipY / canvasSize.height)
 
-        // scale = 1.0 고정: KakaoMaps가 UIImage.scale을 무시하고 픽셀을 포인트로 처리하므로
-        // 기본 Retina 배율(2x/3x)로 렌더하면 지도에서 실제보다 2~3배 크게 보임
+        // KakaoMaps가 UIImage.scale을 무시하고 픽셀을 포인트로 처리하므로 배율 고정
         let format = UIGraphicsImageRendererFormat()
         format.scale = 2.0
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: canvasW, height: canvasH), format: format)
-        return renderer.image { ctx in
+        let renderer = UIGraphicsImageRenderer(size: canvasSize, format: format)
+        let image = renderer.image { ctx in
             let cgCtx = ctx.cgContext
 
-            if isSelected {
-                // ─── 선택 상태 ───
-                // 1. 꼬리: 오렌지 솔리드 fill (그림자 포함)
-                //    버블보다 먼저 그려서 버블이 위에 덮어씌워짐
-                let tailPath = UIBezierPath()
-                tailPath.move(to: CGPoint(x: tailCX - tailW / 2, y: bubbleRect.maxY))
-                tailPath.addLine(to: CGPoint(x: tailCX + tailW / 2, y: bubbleRect.maxY))
-                tailPath.addLine(to: CGPoint(x: tailCX,             y: bubbleRect.maxY + tailH))
-                tailPath.close()
+            // drop-shadow(0, 2, 2, 15%) — 꼬리 + 버블 전체에 한 번만 적용
+            cgCtx.setShadow(offset: CGSize(width: 0, height: 2), blur: 2,
+                            color: UIColor.black.withAlphaComponent(0.15).cgColor)
+            cgCtx.beginTransparencyLayer(auxiliaryInfo: nil)
 
-                cgCtx.setShadow(offset: CGSize(width: 0, height: 2), blur: 2,
-                                color: UIColor.black.withAlphaComponent(0.15).cgColor)
-                mindOrange.setFill()
-                tailPath.fill()
-                cgCtx.setShadow(offset: .zero, blur: 0, color: UIColor.clear.cgColor)
+            // 1. 꼬리: 브라운 마름모
+            let tailCenter = CGPoint(x: bubbleRect.midX, y: bubbleRect.maxY)
+            let tailPath = UIBezierPath()
+            tailPath.move(to: CGPoint(x: tailCenter.x,            y: tailCenter.y - tailHalf))
+            tailPath.addLine(to: CGPoint(x: tailCenter.x + tailHalf, y: tailCenter.y))
+            tailPath.addLine(to: CGPoint(x: tailCenter.x,            y: tailCenter.y + tailHalf))
+            tailPath.addLine(to: CGPoint(x: tailCenter.x - tailHalf, y: tailCenter.y))
+            tailPath.close()
+            landBrown.setFill()
+            tailPath.fill()
 
-                // 2. 버블: 베이지 fill + 오렌지 테두리 (그림자 없음 — 꼬리에서 처리)
-                let bubblePath = UIBezierPath(roundedRect: bubbleRect, cornerRadius: cornerR)
-                sandBeige.setFill()
-                bubblePath.fill()
-                mindOrange.setStroke()
-                bubblePath.lineWidth = 1.0
-                bubblePath.stroke()
+            // 2. 버블: 필 형태 + 브라운 1pt 테두리
+            let bubblePath = UIBezierPath(roundedRect: bubbleRect.insetBy(dx: 0.5, dy: 0.5), cornerRadius: (bubbleH - 1) / 2)
+            bubbleFill.setFill()
+            bubblePath.fill()
+            landBrown.setStroke()
+            bubblePath.lineWidth = 1.0
+            bubblePath.stroke()
 
-            } else {
-                // ─── 미선택 상태 ───
-                // 버블 + 꼬리를 단일 경로로 구성
-                let path = UIBezierPath()
-                path.move(to: CGPoint(x: leftCenter.x,          y: bubbleRect.minY))
-                path.addLine(to: CGPoint(x: rightCenter.x,      y: bubbleRect.minY))
-                path.addArc(withCenter: rightCenter, radius: cornerR,
-                            startAngle: -.pi / 2, endAngle: .pi / 2, clockwise: true)
-                path.addLine(to: CGPoint(x: tailCX + tailW / 2, y: bubbleRect.maxY))
-                path.addLine(to: CGPoint(x: tailCX,             y: bubbleRect.maxY + tailH))
-                path.addLine(to: CGPoint(x: tailCX - tailW / 2, y: bubbleRect.maxY))
-                path.addLine(to: CGPoint(x: leftCenter.x,       y: bubbleRect.maxY))
-                path.addArc(withCenter: leftCenter, radius: cornerR,
-                            startAngle: .pi / 2, endAngle: -.pi / 2, clockwise: true)
-                path.close()
+            // 3. 이름
+            let nameOrigin = CGPoint(x: bubbleRect.minX + leadingPad,
+                                     y: bubbleRect.midY - nameSize.height / 2)
+            (name as NSString).draw(at: nameOrigin, withAttributes: nameAttrs)
 
-                // 아주 약한 그림자 — 핀 형태만 구분될 정도
-                cgCtx.setShadow(offset: CGSize(width: 0, height: 1), blur: 1,
-                                color: UIColor.black.withAlphaComponent(0.05).cgColor)
-                sandBeige.setFill()
-                path.fill()
-                cgCtx.setShadow(offset: .zero, blur: 0, color: UIColor.clear.cgColor)
+            // 4. +N 뱃지
+            if hasBadge {
+                let badgeRect = CGRect(x: bubbleRect.minX + leadingPad + ceil(nameSize.width) + gap,
+                                       y: bubbleRect.midY - badgeH / 2,
+                                       width: badgeW,
+                                       height: badgeH)
+                badgeFill.setFill()
+                UIBezierPath(roundedRect: badgeRect, cornerRadius: badgeH / 2).fill()
+                badgeText.draw(at: CGPoint(x: badgeRect.midX - badgeTextSize.width / 2,
+                                           y: badgeRect.midY - badgeTextSize.height / 2),
+                               withAttributes: badgeAttrs)
             }
 
-            // ─── 텍스트 (공통) ───
-            let textRect = CGRect(
-                x: bubbleRect.minX + hPad,
-                y: bubbleRect.minY + (bubbleH - textSize.height) / 2,
-                width: textSize.width,
-                height: textSize.height
-            )
-            (name as NSString).draw(in: textRect, withAttributes: [
-                .font: font,
-                .foregroundColor: textColor
-            ])
+            cgCtx.endTransparencyLayer()
         }
+        return (image, anchor)
     }
-
 
     // MARK: - BoundingBox 계산
 
@@ -739,9 +732,9 @@ extension ExploreMapViewController: KakaoMapEventDelegate {
         let manager = kakaoMap.getLabelManager()
         guard let layer   = manager.getLabelLayer(layerID: layerID),
               let poi     = layer.getPoi(poiID: poiID),
-              let classId = poi.userObject as? String else { return }
+              let pinId   = poi.userObject as? String else { return }
         DispatchQueue.main.async { [weak self] in
-            self?.onPinTapped(classId)
+            self?.onPinTapped(pinId)
         }
     }
 }

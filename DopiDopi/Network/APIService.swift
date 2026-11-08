@@ -86,7 +86,10 @@ class APIService {
         case categoryClasses(categoryCode: String, sort: String?)
         case addressClasses(regionCode: String, sort: String?)
         case categoryDetail(categoryId: String)
-        case notifications
+        case notifications(tab: MessageBoxTab, page: Int, size: Int)
+        case notificationDetail(notificationId: String)
+        case notificationsReadAll(tab: MessageBoxTab)
+        case notificationHide(notificationId: String)
         case myPage(role: UserRole)
         case centerList
         case centerDetail(centerId: String)
@@ -118,7 +121,14 @@ class APIService {
             case .categoryDetail(let id):
                 return "/api/category/\(id)/"
             case .notifications:
-                return "/api/notifications/"
+                return "/api/notifications"
+            case .notificationDetail(let notificationId):
+                return "/api/notifications/\(notificationId)"
+            case .notificationsReadAll(let tab):
+                // PUT 요청은 JSONEncoding으로 바디에 담기므로 쿼리 파라미터는 경로에 직접 붙인다
+                return "/api/notifications/read-all?type=\(tab.typeParameter)"
+            case .notificationHide(let notificationId):
+                return "/api/notifications/\(notificationId)/hide"
             case .myPage(let role):
                 switch role {
                 case .yogini:
@@ -220,7 +230,14 @@ class APIService {
                 if let status { params["status"] = status }
                 if let sort { params["sort"] = sort }
                 return params.isEmpty ? nil : params
-            case .login, .classFavorite, .categoryDetail, .notifications, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation:
+            case .notifications(let tab, let page, let size):
+                return [
+                    "type": tab.typeParameter,
+                    "readStatus": tab.readStatusParameter,
+                    "page": page,
+                    "size": size
+                ]
+            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation:
                 return nil
             }
         }
@@ -304,10 +321,36 @@ class APIService {
         return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
     }
     
-    /// 알림 목록 조회 (추후 개발 예정)
-    func getNotifications() async throws -> MainResponse {
-        let endpoint = Endpoint.notifications
-        return try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+    /// 메세지함 목록 조회 (GET /api/notifications). 접힌 카드용 정보만 내려오고 본문은 상세조회로 받는다.
+    func getNotifications(tab: MessageBoxTab, page: Int, size: Int = 20) async throws -> NotificationListDTO {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let endpoint = Endpoint.notifications(tab: tab, page: page, size: size)
+        let response: NotificationAPIResponse<NotificationListDTO> = try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
+        return response.data
+    }
+
+    /// 메세지 상세 조회 (GET /api/notifications/{notificationId}). 성공 시 서버에서 자동 읽음 처리된다.
+    func getNotificationDetail(notificationId: String) async throws -> NotificationDetailDTO {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: NotificationAPIResponse<NotificationDetailDTO> = try await get(endPoint: Endpoint.notificationDetail(notificationId: notificationId).path, headers: headers)
+        return response.data
+    }
+
+    /// 현재 탭의 미확인 메세지 모두 읽음 (PUT /api/notifications/read-all?type=)
+    func readAllNotifications(tab: MessageBoxTab) async throws -> NotificationReadAllDTO {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: NotificationAPIResponse<NotificationReadAllDTO> = try await put(endPoint: Endpoint.notificationsReadAll(tab: tab).path, headers: headers)
+        return response.data
+    }
+
+    /// 메세지 삭제 (PUT /api/notifications/{notificationId}/hide). 실제 삭제가 아니라 내 메세지함에서 숨김 처리.
+    func hideNotification(notificationId: String) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let _: APIEmptyResponse = try await put(endPoint: Endpoint.notificationHide(notificationId: notificationId).path, headers: headers)
     }
     
     /// 마이페이지 데이터 조회

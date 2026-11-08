@@ -112,3 +112,34 @@ struct ClassMapMarkerDTO: Codable, Equatable {
     let latitude: Double
     let longitude: Double
 }
+
+// MARK: - 3b 위치 핀 그룹 (동일 위치 수련 묶음)
+
+/// 위경도가 같은 수련을 하나의 핀으로 묶음 — 지도 API 응답에 centerId가 없어 좌표로 판단
+struct ExploreMapPinGroup: Equatable, Identifiable {
+    let id: String
+    let latitude: Double
+    let longitude: Double
+    /// 응답 순서(최근 등록순) 유지 — 첫 번째 수련이 핀 표시명
+    var items: [ClassMapMarkerDTO]
+
+    var name: String { items.first?.name ?? "" }
+
+    /// 핀 우측 추가 수업 개수 (+N)
+    var additionalCount: Int { items.count - 1 }
+
+    static func grouped(_ classes: [ClassMapMarkerDTO]) -> [ExploreMapPinGroup] {
+        var groups: [ExploreMapPinGroup] = []
+        var indexByKey: [String: Int] = [:]
+        for dto in classes {
+            let key = "\(dto.latitude),\(dto.longitude)"
+            if let index = indexByKey[key] {
+                groups[index].items.append(dto)
+            } else {
+                indexByKey[key] = groups.count
+                groups.append(ExploreMapPinGroup(id: key, latitude: dto.latitude, longitude: dto.longitude, items: [dto]))
+            }
+        }
+        return groups
+    }
+}
