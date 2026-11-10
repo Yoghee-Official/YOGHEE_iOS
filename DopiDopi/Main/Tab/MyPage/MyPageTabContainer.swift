@@ -18,6 +18,8 @@ enum MyPageNavigationDestination: Hashable {
     case centerManage
     /// 요기니 "수련 미리보기" 목록 더보기 → 내역 보기 (RC_MO_1)
     case reservationHistory
+    /// 지도자 "수련 미리보기" 목록 더보기 → 개설한 수련 목록 (OC_MO_1)
+    case openedClassList
 }
 
 // MARK: - Intent
@@ -184,7 +186,7 @@ class MyPageTabContainer: ObservableObject {
             case .yogini:
                 state.navigationDestination = .reservationHistory
             case .instructor:
-                print("📋 [마이페이지] 수련 미리보기 목록 더보기 클릭 - TODO: 개설한 수련 목록(OC_MO_1) 이동")
+                state.navigationDestination = .openedClassList
             }
         default:
             print("📋 [마이페이지] \(sectionId) 목록 더보기 클릭 - TODO: 찜한 수련/요가원 목록 화면 이동")

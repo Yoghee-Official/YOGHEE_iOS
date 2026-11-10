@@ -107,6 +107,8 @@ class APIService {
         case cancelLeaderReservation(reservationId: String)
         case myReservations(status: String?, sort: String?)
         case cancelMyReservation(reservationId: String)
+        case leaderClasses
+        case leaderClass(classId: String)
 
         var path: String {
             switch self {
@@ -171,6 +173,10 @@ class APIService {
                 return "/api/my/reservations"
             case .cancelMyReservation(let reservationId):
                 return "/api/my/reservations/\(reservationId)/cancel"
+            case .leaderClasses:
+                return "/api/leader/classes"
+            case .leaderClass(let classId):
+                return "/api/leader/classes/\(classId)"
             }
         }
         
@@ -237,7 +243,7 @@ class APIService {
                     "page": page,
                     "size": size
                 ]
-            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation:
+            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass:
                 return nil
             }
         }
@@ -539,6 +545,21 @@ class APIService {
         let data = try JSONEncoder().encode(body)
         guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
         let _: APIEmptyResponse = try await post(endPoint: Endpoint.cancelMyReservation(reservationId: reservationId).path, parameters: parameters, headers: headers)
+    }
+    
+    /// 지도자가 개설한 수련 목록 (GET /api/leader/classes). 개설한 수련 목록(OC_MO_1) 화면 데이터.
+    func getLeaderClasses() async throws -> [LeaderClassDTO] {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: LeaderClassListResponse = try await get(endPoint: Endpoint.leaderClasses.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// 개설한 수련 삭제 (DELETE /api/leader/classes/{classId}). 이용권 구매·예약·결제·리뷰·공지 이력이 있으면 409(CLASS_DELETE_NOT_ALLOWED).
+    func deleteLeaderClass(classId: String) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let _: APIEmptyResponse = try await delete(endPoint: Endpoint.leaderClass(classId: classId).path, headers: headers)
     }
     
     // MARK: - Internal Methods

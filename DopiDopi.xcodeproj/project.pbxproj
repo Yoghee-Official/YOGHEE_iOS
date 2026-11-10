@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5B5D5FDE0F4F4967935BCE14 /* OpenedClassModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8CBA31B30042C6BDEF0079 /* OpenedClassModels.swift */; };
+		4A4DE153CC9D4B3F96D815AC /* OpenedClassCategoryFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC440584D4974E9AB3749A38 /* OpenedClassCategoryFilterSheet.swift */; };
+		911743FC1DA14C678DCF926E /* OpenedClassListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6251A963D6A48C09CC600DA /* OpenedClassListContainer.swift */; };
+		48B495C34BFE4C9AA6BE64A5 /* OpenedClassListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B4DAE42860487F9E6B608D /* OpenedClassListView.swift */; };
 		0BA59B98E9A2441CAEA3E92F /* ReservationHistoryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1021C7DEF70A4E85AF8DAC36 /* ReservationHistoryModels.swift */; };
 		F5D8264E2A7F457DBD7648CE /* ReservationHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE360E1BB3794511B4CB281A /* ReservationHistoryContainer.swift */; };
 		3A26C3460A644A9E91588A3B /* ReservationHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9918085499E64089AFB48769 /* ReservationHistoryView.swift */; };
@@ -145,6 +149,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1B8CBA31B30042C6BDEF0079 /* OpenedClassModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassModels.swift; sourceTree = "<group>"; };
+		AC440584D4974E9AB3749A38 /* OpenedClassCategoryFilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassCategoryFilterSheet.swift; sourceTree = "<group>"; };
+		A6251A963D6A48C09CC600DA /* OpenedClassListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassListContainer.swift; sourceTree = "<group>"; };
+		C1B4DAE42860487F9E6B608D /* OpenedClassListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassListView.swift; sourceTree = "<group>"; };
 		1021C7DEF70A4E85AF8DAC36 /* ReservationHistoryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationHistoryModels.swift; sourceTree = "<group>"; };
 		AE360E1BB3794511B4CB281A /* ReservationHistoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationHistoryContainer.swift; sourceTree = "<group>"; };
 		9918085499E64089AFB48769 /* ReservationHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationHistoryView.swift; sourceTree = "<group>"; };
@@ -295,6 +303,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EA97ECB2D73C49FE8CCA49B3 /* OpenedClass */ = {
+			isa = PBXGroup;
+			children = (
+				C1B4DAE42860487F9E6B608D /* OpenedClassListView.swift */,
+				A6251A963D6A48C09CC600DA /* OpenedClassListContainer.swift */,
+				AC440584D4974E9AB3749A38 /* OpenedClassCategoryFilterSheet.swift */,
+			);
+			path = OpenedClass;
+			sourceTree = "<group>";
+		};
 		EFCA171854864DB39177D2B5 /* ReservationHistory */ = {
 			isa = PBXGroup;
 			children = (
@@ -525,6 +543,7 @@
 		522CE5C12F12A6BF0063FDF5 /* MyPage */ = {
 			isa = PBXGroup;
 			children = (
+				EA97ECB2D73C49FE8CCA49B3 /* OpenedClass */,
 				EFCA171854864DB39177D2B5 /* ReservationHistory */,
 				522CE5BD2F12A6BF0063FDF5 /* Module */,
 				FD3B69997802F085F833F90D /* CenterManage */,
@@ -560,6 +579,7 @@
 		522CE5CC2F12A6BF0063FDF5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				1B8CBA31B30042C6BDEF0079 /* OpenedClassModels.swift */,
 				1021C7DEF70A4E85AF8DAC36 /* ReservationHistoryModels.swift */,
 				52D6F3DE2FA79A1C00EC9BE8 /* ClassDetail */,
 				52F987A52F51E59300C905D1 /* ClassRegister */,
@@ -952,6 +972,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B5D5FDE0F4F4967935BCE14 /* OpenedClassModels.swift in Sources */,
+				4A4DE153CC9D4B3F96D815AC /* OpenedClassCategoryFilterSheet.swift in Sources */,
+				911743FC1DA14C678DCF926E /* OpenedClassListContainer.swift in Sources */,
+				48B495C34BFE4C9AA6BE64A5 /* OpenedClassListView.swift in Sources */,
 				0BA59B98E9A2441CAEA3E92F /* ReservationHistoryModels.swift in Sources */,
 				F5D8264E2A7F457DBD7648CE /* ReservationHistoryContainer.swift in Sources */,
 				3A26C3460A644A9E91588A3B /* ReservationHistoryView.swift in Sources */,
