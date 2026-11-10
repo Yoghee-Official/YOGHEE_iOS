@@ -203,21 +203,16 @@ struct CenterDetailResponse: Codable {
 
 // MARK: - 요가원 정보 등록 API (POST /api/center)
 
-/// 신규 요가원 등록 요청 바디 (NewCenterDto). 도로명/지번은 둘 중 하나만 있어도 됨.
+/// 신규 요가원 등록 요청 바디 (스웨거 CreateCenterRequestDto). 도로명/지번은 둘 중 하나만 있어도 됨.
+/// sido·sigungu·zonecode·위경도·masterId·centerId는 서버가 생성하므로 보내지 않는다.
 struct NewCenterDto: Codable {
     var name: String
     var description: String?
-    var thumbnail: String?
-    var masterId: String?
-    var depth1: String?
-    var depth2: String?
-    var depth3: String?
     var roadAddress: String?
     var jibunAddress: String?
-    var zonecode: String?
-    var addressDetail: String?
-    var fullAddress: String?
-    var amenityCodes: [String]?
+    var detailAddress: String?
+    /// 선택한 제공물품·편의시설이 없으면 빈 배열
+    var amenityCodes: [String]
 }
 
 /// 요가원 등록 API 응답 (200 시 data: 메시지 문자열)
