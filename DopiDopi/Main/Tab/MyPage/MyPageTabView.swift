@@ -81,6 +81,8 @@ struct MyPageTabView: View {
                     CenterManageView()
                 case .reservationHistory:
                     ReservationHistoryView()
+                case .openedClassList:
+                    OpenedClassListView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
