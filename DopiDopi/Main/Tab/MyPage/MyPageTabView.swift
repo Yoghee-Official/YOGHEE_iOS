@@ -83,6 +83,10 @@ struct MyPageTabView: View {
                     ReservationHistoryView()
                 case .openedClassList:
                     OpenedClassListView()
+                case .terms:
+                    TermsView()
+                case .policy(let policy):
+                    PolicyWebView(policy: policy)
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in

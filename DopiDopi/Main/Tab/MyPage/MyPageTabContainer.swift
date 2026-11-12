@@ -20,6 +20,10 @@ enum MyPageNavigationDestination: Hashable {
     case reservationHistory
     /// 지도자 "수련 미리보기" 목록 더보기 → 개설한 수련 목록 (OC_MO_1)
     case openedClassList
+    /// 세부항목 "이용약관" → 약관 목록 (TM_MO_1)
+    case terms
+    /// 약관 상세 웹뷰 (TU_MO_1 ~ TU_MO_4)
+    case policy(PolicyType)
 }
 
 // MARK: - Intent
@@ -144,12 +148,13 @@ class MyPageTabContainer: ObservableObject {
                 state.navigationDestination = .licenseRegister
             case "요가원 등록 및 관리":
                 state.navigationDestination = .centerManage
+            case "이용약관":
+                state.navigationDestination = .terms
             default:
                 break
                 // TODO: 각 항목별 네비게이션 처리
                 // - "설정" → 세부 설정 페이지
                 // - "계정관리" → 계정관리 페이지
-                // - "이용약관" → 이용약관 페이지
                 // - "고객센터" → 고객센터 페이지
                 // - "환불정책" → 환불정책 페이지
             }

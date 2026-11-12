@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A9860B3A3726479494CA6824 /* TermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204359F87EAB47FEB393144B /* TermsView.swift */; };
+		6A3C3E6B15424BB49D91268C /* PolicyWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBBCA9618F1A4BE0A26778C8 /* PolicyWebView.swift */; };
+		3B5E524A59A44FC2AD49EB2D /* PolicyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD968C0998CD4B72AE02FB61 /* PolicyType.swift */; };
 		5B5D5FDE0F4F4967935BCE14 /* OpenedClassModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B8CBA31B30042C6BDEF0079 /* OpenedClassModels.swift */; };
 		4A4DE153CC9D4B3F96D815AC /* OpenedClassCategoryFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC440584D4974E9AB3749A38 /* OpenedClassCategoryFilterSheet.swift */; };
 		911743FC1DA14C678DCF926E /* OpenedClassListContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6251A963D6A48C09CC600DA /* OpenedClassListContainer.swift */; };
@@ -149,6 +152,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		204359F87EAB47FEB393144B /* TermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsView.swift; sourceTree = "<group>"; };
+		EBBCA9618F1A4BE0A26778C8 /* PolicyWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyWebView.swift; sourceTree = "<group>"; };
+		BD968C0998CD4B72AE02FB61 /* PolicyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyType.swift; sourceTree = "<group>"; };
 		1B8CBA31B30042C6BDEF0079 /* OpenedClassModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassModels.swift; sourceTree = "<group>"; };
 		AC440584D4974E9AB3749A38 /* OpenedClassCategoryFilterSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassCategoryFilterSheet.swift; sourceTree = "<group>"; };
 		A6251A963D6A48C09CC600DA /* OpenedClassListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassListContainer.swift; sourceTree = "<group>"; };
@@ -303,6 +309,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3D6B5362B5EC44F594A67C4F /* Terms */ = {
+			isa = PBXGroup;
+			children = (
+				204359F87EAB47FEB393144B /* TermsView.swift */,
+				EBBCA9618F1A4BE0A26778C8 /* PolicyWebView.swift */,
+				BD968C0998CD4B72AE02FB61 /* PolicyType.swift */,
+			);
+			path = Terms;
+			sourceTree = "<group>";
+		};
 		EA97ECB2D73C49FE8CCA49B3 /* OpenedClass */ = {
 			isa = PBXGroup;
 			children = (
@@ -545,6 +561,7 @@
 			children = (
 				EA97ECB2D73C49FE8CCA49B3 /* OpenedClass */,
 				EFCA171854864DB39177D2B5 /* ReservationHistory */,
+				3D6B5362B5EC44F594A67C4F /* Terms */,
 				522CE5BD2F12A6BF0063FDF5 /* Module */,
 				FD3B69997802F085F833F90D /* CenterManage */,
 				522CE5BF2F12A6BF0063FDF5 /* MyPageTabView.swift */,
@@ -979,6 +996,9 @@
 				0BA59B98E9A2441CAEA3E92F /* ReservationHistoryModels.swift in Sources */,
 				F5D8264E2A7F457DBD7648CE /* ReservationHistoryContainer.swift in Sources */,
 				3A26C3460A644A9E91588A3B /* ReservationHistoryView.swift in Sources */,
+				A9860B3A3726479494CA6824 /* TermsView.swift in Sources */,
+				6A3C3E6B15424BB49D91268C /* PolicyWebView.swift in Sources */,
+				3B5E524A59A44FC2AD49EB2D /* PolicyType.swift in Sources */,
 				522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */,
 				52735D21301F830B00515B0C /* ExploreModels.swift in Sources */,
 				522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */,
