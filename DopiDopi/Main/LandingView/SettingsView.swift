@@ -97,12 +97,13 @@ struct SettingsView: View {
             Text("(선택) 마케팅 수신 동의")
                 .pretendardFont(.medium, size: 16)
                 .foregroundColor(.DarkBlack)
-            Button("보기") {
-                // TODO: 마케팅 수신 동의 팝업 노출
-                print("📋 [Settings] 마케팅 수신 동의 보기 클릭")
+            // 마케팅 활용 동의서 웹뷰 (TU_MO_4)
+            NavigationLink(value: MyPageNavigationDestination.policy(.marketing)) {
+                Text("보기")
+                    .pretendardFont(.medium, size: 14)
+                    .foregroundColor(.MindOrange)
             }
-            .pretendardFont(.medium, size: 14)
-            .foregroundColor(.MindOrange)
+            .buttonStyle(.plain)
             Spacer()
             Toggle("", isOn: Binding(
                 get: { container.state.isMarketingNotificationEnabled },
