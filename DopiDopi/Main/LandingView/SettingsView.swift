@@ -51,9 +51,11 @@ struct SettingsView: View {
             settingsCard {
                 staticRow(title: "자동 로그인", value: "켜짐")
                 rowDivider
-                chevronRow(title: "회원 정보 관리") {
-                    container.handleIntent(.openMemberInfo) // TODO: MI_MO_1 이동
+                // 회원정보관리 (MI_MO_1)
+                NavigationLink(value: MyPageNavigationDestination.memberInfo) {
+                    chevronRowLabel(title: "회원 정보 관리")
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -183,18 +185,23 @@ struct SettingsView: View {
 
     private func chevronRow(title: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack {
-                Text(title)
-                    .pretendardFont(.medium, size: 16)
-                    .foregroundColor(.DarkBlack)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.Info)
-            }
-            .padding(.horizontal, 16)
-            .frame(height: 56)
+            chevronRowLabel(title: title)
         }
+    }
+
+    private func chevronRowLabel(title: String) -> some View {
+        HStack {
+            Text(title)
+                .pretendardFont(.medium, size: 16)
+                .foregroundColor(.DarkBlack)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.Info)
+        }
+        .padding(.horizontal, 16)
+        .frame(height: 56)
+        .contentShape(Rectangle())
     }
 
     private var rowDivider: some View {

@@ -10,6 +10,10 @@ import SwiftUI
 // MARK: - Navigation Destination
 enum MyPageNavigationDestination: Hashable {
     case settings
+    /// 설정 "회원 정보 관리" → 회원정보관리 (MI_MO_1)
+    case memberInfo
+    /// 회원정보관리 "회원탈퇴" → 회원 탈퇴 (DA_MO_1)
+    case withdrawal
     case messageBox
     case classRegister
     /// 지도자 세부항목 "지도자 인증" 진입점
@@ -31,6 +35,8 @@ enum MyPageTabIntent {
     case checkLoginStatus
 //    case login(userId: String, password: String)
     case logout
+    /// 회원정보관리(MI_MO_1)에서 로그아웃 완료 - 로그인 시트 없이 상태만 초기화 (홈으로 이동하므로)
+    case didLogoutFromMemberInfo
     case loadMyPageData
     
     // UserProfileModule 액션
@@ -110,6 +116,9 @@ class MyPageTabContainer: ObservableObject {
             break
         case .logout:
             logout()
+        case .didLogoutFromMemberInfo:
+            state.isLoggedIn = false
+            state.myPageData = nil
         case .loadMyPageData:
             loadMyPageData()
             
