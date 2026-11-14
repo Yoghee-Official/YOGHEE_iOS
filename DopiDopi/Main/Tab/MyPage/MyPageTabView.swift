@@ -71,6 +71,21 @@ struct MyPageTabView: View {
                 switch destination {
                 case .settings:
                     SettingsView()
+                case .memberInfo:
+                    MemberInfoView(onLogoutCompleted: {
+                        // A10 확인: 로그아웃 후 마이 탭 스택을 비우고 홈 화면 노출
+                        container.handleIntent(.didLogoutFromMemberInfo)
+                        navigationPath = NavigationPath()
+                        onNavigateToHome?()
+                    }, onNavigateToWithdrawal: {
+                        navigationPath.append(MyPageNavigationDestination.withdrawal)
+                    })
+                case .withdrawal:
+                    WithdrawalView(onWithdrawalCompleted: {
+                        // A11 확인: 회원 정보 삭제 후 마이 탭 스택을 비우고 로그인 화면 노출
+                        navigationPath = NavigationPath()
+                        container.handleIntent(.logout)
+                    })
                 case .messageBox:
                     MessageBoxView()
                 case .classRegister:

@@ -109,6 +109,9 @@ class APIService {
         case cancelMyReservation(reservationId: String)
         case leaderClasses
         case leaderClass(classId: String)
+        case myInfo
+        case withdrawal
+        case withdrawalCheck
 
         var path: String {
             switch self {
@@ -175,6 +178,12 @@ class APIService {
                 return "/api/my/reservations/\(reservationId)/cancel"
             case .leaderClasses:
                 return "/api/leader/classes"
+            case .myInfo:
+                return "/api/my/info"
+            case .withdrawal:
+                return "/api/my/withdrawal"
+            case .withdrawalCheck:
+                return "/api/my/withdrawal/check"
             case .leaderClass(let classId):
                 return "/api/leader/classes/\(classId)"
             }
@@ -243,7 +252,7 @@ class APIService {
                     "page": page,
                     "size": size
                 ]
-            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass:
+            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck:
                 return nil
             }
         }
@@ -560,6 +569,43 @@ class APIService {
         guard let token = await getAccessToken() else { throw APIError.unauthorized }
         let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
         let _: APIEmptyResponse = try await delete(endPoint: Endpoint.leaderClass(classId: classId).path, headers: headers)
+    }
+    
+    /// 개인정보 조회 (GET /api/my/info). 회원정보관리(MI_MO_1) 진입 시 호출.
+    func getMyInfo() async throws -> MyInfoDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: MyInfoResponse = try await get(endPoint: Endpoint.myInfo.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// 개인정보 변경 (PUT /api/my/info). 회원정보관리(MI_MO_1) 1c 저장하기.
+    /// 전달된(null이 아닌) 필드만 변경되며, 이메일·휴대폰번호 중복 시 409.
+    func updateMyInfo(body: UpdateUserInfoDto) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await put(endPoint: Endpoint.myInfo.path, parameters: parameters, headers: headers)
+    }
+    
+    /// 회원 탈퇴 가능 여부 확인 (GET /api/my/withdrawal/check). 예정 예약·처리 중 결제·소유 센터가 있으면 탈퇴 불가.
+    /// 조회만 하므로 실제 탈퇴는 일어나지 않는다.
+    func checkWithdrawal() async throws -> WithdrawalCheckResponseDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: WithdrawalCheckResponse = try await get(endPoint: Endpoint.withdrawalCheck.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// ⚠️ 회원 탈퇴 (POST /api/my/withdrawal). 개인정보 익명화 + 액세스/리프레시 토큰 폐기. 되돌릴 수 없음.
+    func withdraw(body: WithdrawalRequestDto) async throws -> WithdrawalResponseDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let response: WithdrawalResponse = try await post(endPoint: Endpoint.withdrawal.path, parameters: parameters, headers: headers)
+        return response.data
     }
     
     // MARK: - Internal Methods
