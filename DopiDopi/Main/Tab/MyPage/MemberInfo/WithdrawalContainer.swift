@@ -108,6 +108,12 @@ class WithdrawalContainer: ObservableObject {
         state.showConfirmAlert = true
     }
 
+    /// 서버 실패 사유가 비어 있으면 기본 문구
+    private static func failureMessage(_ serverMessage: String?) -> String {
+        let trimmed = serverMessage?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        return trimmed.isEmpty ? "회원 탈퇴에 실패했습니다.\n잠시 후 다시 시도해 주세요." : trimmed
+    }
+
     /// A11 확인: 회원 정보 삭제 및 팝업 종료 → 로그인 화면 노출
     private func withdraw() {
         guard !state.isSubmitting else { return }
@@ -128,17 +134,23 @@ class WithdrawalContainer: ObservableObject {
             defer { state.isSubmitting = false }
             do {
                 let response = try await APIService.shared.withdraw(body: body)
+                // 200이어도 탈퇴 처리가 안 됐다고 내려오면 실패로 보고 서버 메시지 노출
+                guard response.withdrawn != false else {
+                    print("⚠️ [Withdrawal] 회원 탈퇴 미처리: \(response.message ?? "")")
+                    state.message = Self.failureMessage(response.message)
+                    return
+                }
                 print("✅ [Withdrawal] 회원 탈퇴 완료: \(response.message ?? "")")
                 // 서버에서 토큰을 폐기했으므로 기기 토큰도 삭제
                 AuthManager.shared.logout()
                 onWithdrawalCompleted()
-            } catch APIError.serverError(_, _, let message) {
-                // 탈퇴 불가 사유(예정 예약 등) 재확인 실패 등 서버 안내 문구 노출
-                print("⚠️ [Withdrawal] 회원 탈퇴 불가: \(message)")
-                state.message = message
+            } catch APIError.serverError(let statusCode, let errorCode, let message) {
+                // status: "fail" → 서버가 errorMessage에 담아준 탈퇴 실패 사유를 팝업으로 노출
+                print("⚠️ [Withdrawal] 회원 탈퇴 실패(\(statusCode), \(errorCode ?? "-")): \(message)")
+                state.message = Self.failureMessage(message)
             } catch {
                 print("❌ [Withdrawal] 회원 탈퇴 실패: \(error)")
-                state.message = "회원 탈퇴에 실패했습니다.\n잠시 후 다시 시도해 주세요."
+                state.message = Self.failureMessage(nil)
             }
         }
     }
