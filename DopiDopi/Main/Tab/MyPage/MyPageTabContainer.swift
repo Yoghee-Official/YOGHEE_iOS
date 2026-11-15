@@ -10,12 +10,24 @@ import SwiftUI
 // MARK: - Navigation Destination
 enum MyPageNavigationDestination: Hashable {
     case settings
+    /// 설정 "회원 정보 관리" → 회원정보관리 (MI_MO_1)
+    case memberInfo
+    /// 회원정보관리 "회원탈퇴" → 회원 탈퇴 (DA_MO_1)
+    case withdrawal
     case messageBox
     case classRegister
     /// 지도자 세부항목 "지도자 인증" 진입점
     case licenseRegister
     /// 지도자 세부항목 "요가원 등록 및 관리" 진입점 (AP_MO_1)
     case centerManage
+    /// 요기니 "수련 미리보기" 목록 더보기 → 내역 보기 (RC_MO_1)
+    case reservationHistory
+    /// 지도자 "수련 미리보기" 목록 더보기 → 개설한 수련 목록 (OC_MO_1)
+    case openedClassList
+    /// 세부항목 "이용약관" → 약관 목록 (TM_MO_1)
+    case terms
+    /// 약관 상세 웹뷰 (TU_MO_1 ~ TU_MO_4)
+    case policy(PolicyType)
 }
 
 // MARK: - Intent
@@ -23,6 +35,8 @@ enum MyPageTabIntent {
     case checkLoginStatus
 //    case login(userId: String, password: String)
     case logout
+    /// 회원정보관리(MI_MO_1)에서 로그아웃 완료 - 로그인 시트 없이 상태만 초기화 (홈으로 이동하므로)
+    case didLogoutFromMemberInfo
     case loadMyPageData
     
     // UserProfileModule 액션
@@ -40,6 +54,9 @@ enum MyPageTabIntent {
     
     // 아이템 선택 액션
     case selectItem(String, String) // itemId, sectionId
+    
+    // 섹션 헤더 "목록 더보기" 액션
+    case tapMoreButton(String) // sectionId
     
     // 토글 액션
     case switchRole(UserRole)  // 역할 전환
@@ -99,6 +116,9 @@ class MyPageTabContainer: ObservableObject {
             break
         case .logout:
             logout()
+        case .didLogoutFromMemberInfo:
+            state.isLoggedIn = false
+            state.myPageData = nil
         case .loadMyPageData:
             loadMyPageData()
             
@@ -137,12 +157,13 @@ class MyPageTabContainer: ObservableObject {
                 state.navigationDestination = .licenseRegister
             case "요가원 등록 및 관리":
                 state.navigationDestination = .centerManage
+            case "이용약관":
+                state.navigationDestination = .terms
             default:
                 break
                 // TODO: 각 항목별 네비게이션 처리
                 // - "설정" → 세부 설정 페이지
                 // - "계정관리" → 계정관리 페이지
-                // - "이용약관" → 이용약관 페이지
                 // - "고객센터" → 고객센터 페이지
                 // - "환불정책" → 환불정책 페이지
             }
@@ -151,6 +172,10 @@ class MyPageTabContainer: ObservableObject {
         case .selectItem(let itemId, let sectionId):
             log("Selected item: \(itemId) from section: \(sectionId)")
             handleItemSelection(itemId: itemId, sectionId: sectionId)
+            
+        case .tapMoreButton(let sectionId):
+            log("목록 더보기 클릭: \(sectionId)")
+            handleMoreButton(sectionId: sectionId)
             
         // 토글 액션
         case .switchRole(let role):
@@ -165,6 +190,20 @@ class MyPageTabContainer: ObservableObject {
         // 네비게이션 액션
         case .clearNavigation:
             state.navigationDestination = nil
+        }
+    }
+    
+    private func handleMoreButton(sectionId: String) {
+        switch sectionId {
+        case "reservedClasses":
+            switch state.currentRole {
+            case .yogini:
+                state.navigationDestination = .reservationHistory
+            case .instructor:
+                state.navigationDestination = .openedClassList
+            }
+        default:
+            print("📋 [마이페이지] \(sectionId) 목록 더보기 클릭 - TODO: 찜한 수련/요가원 목록 화면 이동")
         }
     }
     

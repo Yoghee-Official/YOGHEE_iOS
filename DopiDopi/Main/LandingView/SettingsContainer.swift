@@ -13,7 +13,6 @@ import UserNotifications
 enum SettingsIntent {
     case loadSettings
     case toggleMarketingNotification(Bool)
-    case openMemberInfo
     case tapAppPermissionSettings
     case dismissNotificationPermissionAlert
     case dismissAppPermissionAlert
@@ -44,8 +43,6 @@ class SettingsContainer: ObservableObject {
             loadSettings()
         case .toggleMarketingNotification(let isEnabled):
             handleMarketingToggle(isEnabled: isEnabled)
-        case .openMemberInfo:
-            print("👤 [Settings] 회원 정보 관리 클릭 - TODO: MI_MO_1 이동")
         case .tapAppPermissionSettings:
             state.showAppPermissionAlert = true
         case .dismissNotificationPermissionAlert:

@@ -29,4 +29,11 @@ extension APIService {
             
             return try await post(endPoint: "/auth/refresh", parameters: parameters)
         }
+
+    /// 로그아웃 (POST /auth/logout) - 서버의 리프레시 토큰 무효화
+    func logout() async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let _: APIEmptyResponse = try await post(endPoint: "/auth/logout", parameters: nil, headers: headers)
+    }
 }

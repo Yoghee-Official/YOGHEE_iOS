@@ -116,6 +116,13 @@ class APIService {
         case sessionMembers(sessionId: String, status: String?)
         case sessionAttendance(sessionId: String)
         case cancelLeaderReservation(reservationId: String)
+        case myReservations(status: String?, sort: String?)
+        case cancelMyReservation(reservationId: String)
+        case leaderClasses
+        case leaderClass(classId: String)
+        case myInfo
+        case withdrawal
+        case withdrawalCheck
 
         var path: String {
             switch self {
@@ -176,6 +183,20 @@ class APIService {
                 return "/api/leader/sessions/\(sessionId)/attendance"
             case .cancelLeaderReservation(let reservationId):
                 return "/api/leader/reservations/\(reservationId)/cancel"
+            case .myReservations:
+                return "/api/my/reservations"
+            case .cancelMyReservation(let reservationId):
+                return "/api/my/reservations/\(reservationId)/cancel"
+            case .leaderClasses:
+                return "/api/leader/classes"
+            case .myInfo:
+                return "/api/my/info"
+            case .withdrawal:
+                return "/api/my/withdrawal"
+            case .withdrawalCheck:
+                return "/api/my/withdrawal/check"
+            case .leaderClass(let classId):
+                return "/api/leader/classes/\(classId)"
             }
         }
         
@@ -230,6 +251,11 @@ class APIService {
             case .sessionMembers(_, let status):
                 if let status { return ["status": status] }
                 return nil
+            case .myReservations(let status, let sort):
+                var params: Parameters = [:]
+                if let status { params["status"] = status }
+                if let sort { params["sort"] = sort }
+                return params.isEmpty ? nil : params
             case .notifications(let tab, let page, let size):
                 return [
                     "type": tab.typeParameter,
@@ -237,7 +263,7 @@ class APIService {
                     "page": page,
                     "size": size
                 ]
-            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation:
+            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck:
                 return nil
             }
         }
@@ -524,6 +550,79 @@ class APIService {
         let data = try JSONEncoder().encode(body)
         guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
         let _: APIEmptyResponse = try await post(endPoint: Endpoint.cancelLeaderReservation(reservationId: reservationId).path, parameters: parameters, headers: headers)
+    }
+
+    /// 요기니 예약 내역 조회 (GET /api/my/reservations). 내역 보기(RC_MO_1) 화면 데이터.
+    /// - status: UPCOMING / COMPLETED / CANCELLED (생략 시 전체), sort: recent / paid / reserved (생략 시 수업 시작 시각 순)
+    func getMyReservations(status: String? = nil, sort: String? = nil) async throws -> [ReservationDTO] {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let endpoint = Endpoint.myReservations(status: status, sort: sort)
+        let response: MyReservationListResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
+        return response.data
+    }
+
+    /// 요기니 예약 취소·환불 (POST /api/my/reservations/{reservationId}/cancel). 서버가 환불 정책을 다시 계산해 환불함.
+    /// 취소 요청(CL_MO_1) 화면의 "취소 요청" 버튼에서 취소 사유(reason)와 함께 호출 예정
+    func cancelMyReservation(reservationId: String, reason: String? = nil) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let body = CancelReservationRequestDTO(reason: reason)
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await post(endPoint: Endpoint.cancelMyReservation(reservationId: reservationId).path, parameters: parameters, headers: headers)
+    }
+    
+    /// 지도자가 개설한 수련 목록 (GET /api/leader/classes). 개설한 수련 목록(OC_MO_1) 화면 데이터.
+    func getLeaderClasses() async throws -> [LeaderClassDTO] {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: LeaderClassListResponse = try await get(endPoint: Endpoint.leaderClasses.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// 개설한 수련 삭제 (DELETE /api/leader/classes/{classId}). 이용권 구매·예약·결제·리뷰·공지 이력이 있으면 409(CLASS_DELETE_NOT_ALLOWED).
+    func deleteLeaderClass(classId: String) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let _: APIEmptyResponse = try await delete(endPoint: Endpoint.leaderClass(classId: classId).path, headers: headers)
+    }
+    
+    /// 개인정보 조회 (GET /api/my/info). 회원정보관리(MI_MO_1) 진입 시 호출.
+    func getMyInfo() async throws -> MyInfoDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: MyInfoResponse = try await get(endPoint: Endpoint.myInfo.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// 개인정보 변경 (PUT /api/my/info). 회원정보관리(MI_MO_1) 1c 저장하기.
+    /// 전달된(null이 아닌) 필드만 변경되며, 이메일·휴대폰번호 중복 시 409.
+    func updateMyInfo(body: UpdateUserInfoDto) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await put(endPoint: Endpoint.myInfo.path, parameters: parameters, headers: headers)
+    }
+    
+    /// 회원 탈퇴 가능 여부 확인 (GET /api/my/withdrawal/check). 예정 예약·처리 중 결제·소유 센터가 있으면 탈퇴 불가.
+    /// 조회만 하므로 실제 탈퇴는 일어나지 않는다.
+    func checkWithdrawal() async throws -> WithdrawalCheckResponseDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let response: WithdrawalCheckResponse = try await get(endPoint: Endpoint.withdrawalCheck.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// ⚠️ 회원 탈퇴 (POST /api/my/withdrawal). 개인정보 익명화 + 액세스/리프레시 토큰 폐기. 되돌릴 수 없음.
+    func withdraw(body: WithdrawalRequestDto) async throws -> WithdrawalResponseDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let response: WithdrawalResponse = try await post(endPoint: Endpoint.withdrawal.path, parameters: parameters, headers: headers)
+        return response.data
     }
     
     // MARK: - Internal Methods

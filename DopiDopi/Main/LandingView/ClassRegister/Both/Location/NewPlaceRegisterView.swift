@@ -403,22 +403,14 @@ struct NewPlaceRegisterView: View {
     }
     
     private func makeNewCenterDto() -> NewCenterDto {
-        let fullAddr = [roadAddress, detailAddress].filter { !$0.isEmpty }.joined(separator: " ")
         let allAmenityIds = selectedAmenityIds.union(selectedFacilityIds)
         let (road, jibun) = resolvedAddresses()
         return NewCenterDto(
             name: placeName.trimmingCharacters(in: .whitespacesAndNewlines),
             description: detailDescription.nilIfEmpty,
-            thumbnail: nil,
-            masterId: nil,
-            depth1: sido.nilIfEmpty,
-            depth2: sigungu.nilIfEmpty,
-            depth3: nil,
             roadAddress: road,
             jibunAddress: jibun,
-            zonecode: zonecode.nilIfEmpty,
-            addressDetail: detailAddress.nilIfEmpty,
-            fullAddress: fullAddr.nilIfEmpty,
+            detailAddress: detailAddress.nilIfEmpty,
             // 선택된 게 없어도 nil이 아니라 빈 배열로 전송 (스웨거: "선택한 편의시설이 없으면 amenityCodes에 빈 배열을 전달합니다")
             amenityCodes: Array(allAmenityIds)
         )

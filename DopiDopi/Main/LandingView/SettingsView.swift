@@ -51,9 +51,11 @@ struct SettingsView: View {
             settingsCard {
                 staticRow(title: "자동 로그인", value: "켜짐")
                 rowDivider
-                chevronRow(title: "회원 정보 관리") {
-                    container.handleIntent(.openMemberInfo) // TODO: MI_MO_1 이동
+                // 회원정보관리 (MI_MO_1)
+                NavigationLink(value: MyPageNavigationDestination.memberInfo) {
+                    chevronRowLabel(title: "회원 정보 관리")
                 }
+                .buttonStyle(.plain)
             }
         }
     }
@@ -97,12 +99,13 @@ struct SettingsView: View {
             Text("(선택) 마케팅 수신 동의")
                 .pretendardFont(.medium, size: 16)
                 .foregroundColor(.DarkBlack)
-            Button("보기") {
-                // TODO: 마케팅 수신 동의 팝업 노출
-                print("📋 [Settings] 마케팅 수신 동의 보기 클릭")
+            // 마케팅 활용 동의서 웹뷰 (TU_MO_4)
+            NavigationLink(value: MyPageNavigationDestination.policy(.marketing)) {
+                Text("보기")
+                    .pretendardFont(.medium, size: 14)
+                    .foregroundColor(.MindOrange)
             }
-            .pretendardFont(.medium, size: 14)
-            .foregroundColor(.MindOrange)
+            .buttonStyle(.plain)
             Spacer()
             Toggle("", isOn: Binding(
                 get: { container.state.isMarketingNotificationEnabled },
@@ -182,18 +185,23 @@ struct SettingsView: View {
 
     private func chevronRow(title: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack {
-                Text(title)
-                    .pretendardFont(.medium, size: 16)
-                    .foregroundColor(.DarkBlack)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(.Info)
-            }
-            .padding(.horizontal, 16)
-            .frame(height: 56)
+            chevronRowLabel(title: title)
         }
+    }
+
+    private func chevronRowLabel(title: String) -> some View {
+        HStack {
+            Text(title)
+                .pretendardFont(.medium, size: 16)
+                .foregroundColor(.DarkBlack)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.Info)
+        }
+        .padding(.horizontal, 16)
+        .frame(height: 56)
+        .contentShape(Rectangle())
     }
 
     private var rowDivider: some View {
