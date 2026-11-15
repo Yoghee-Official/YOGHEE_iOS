@@ -54,6 +54,17 @@ enum APIError: LocalizedError, Equatable {
 }
 
 /// 서버 에러 응답 바디 (예: {"code":400,"status":"fail","errorCode":"INVALID_REQUEST","errorMessage":"..."})
+/// JSON 객체가 아닌 단일 값을 요청 바디로 그대로 전송 (서버 @RequestBody String 대응)
+private struct RawBodyEncoding: ParameterEncoding {
+    let body: String
+
+    func encode(_ urlRequest: URLRequestConvertible, with parameters: Parameters?) throws -> URLRequest {
+        var request = try urlRequest.asURLRequest()
+        request.httpBody = Data(body.utf8)
+        return request
+    }
+}
+
 private struct APIErrorBody: Codable {
     let errorCode: String?
     let errorMessage: String?
@@ -284,11 +295,17 @@ class APIService {
     }
 
     /// 수련 찜/찜 해제 토글 (POST /api/class/favorite?classId=)
+    /// 요청 바디(Class ID 문자열)가 필수 — 바디 없이 보내면 400 INVALID_REQUEST
     func toggleClassFavorite(classId: String) async throws {
         guard let token = await getAccessToken() else { throw APIError.unauthorized }
         let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
         let endpoint = Endpoint.classFavorite(classId: classId)
-        let _: APIEmptyResponse = try await post(endPoint: endpoint.path, parameters: nil, headers: headers)
+        let _: APIEmptyResponse = try await request(
+            method: .post,
+            endPoint: endpoint.path,
+            encoding: RawBodyEncoding(body: classId),
+            headers: headers
+        )
     }
 
     /// 지역별 클래스 조회 (정규수련 - /api/class/address)
@@ -534,9 +551,21 @@ class APIService {
         } catch APIError.tokenExpired where !isRetryAfterRefresh && headers?["Authorization"] != nil {
             log("🔄 401 감지 - 토큰 갱신 후 재시도합니다")
 
-            guard await AuthManager.shared.ensureValidToken(),
-                  let newToken = await getAccessToken() else {
+            switch await AuthManager.shared.ensureValidToken() {
+            case .refreshed:
+                break
+            case .rejected:
                 log("❌ 토큰 갱신 실패 - 재시도하지 않습니다")
+                throw APIError.tokenExpired
+            case .failed(let refreshError):
+                // 서버/네트워크 일시 오류: 로그인 만료가 아니므로 tokenExpired 대신 원래 에러를 전달한다.
+                // → 화면에서는 로그인 시트가 아닌 일반 에러(재시도 안내)로 처리된다.
+                log("⚠️ 토큰 갱신 일시 실패 - 재시도하지 않고 에러를 전달합니다")
+                throw refreshError
+            }
+
+            guard let newToken = await getAccessToken() else {
+                log("❌ 갱신 후 토큰이 없습니다 - 재시도하지 않습니다")
                 throw APIError.tokenExpired
             }
 
