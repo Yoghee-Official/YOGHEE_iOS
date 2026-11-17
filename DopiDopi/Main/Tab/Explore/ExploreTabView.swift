@@ -343,7 +343,8 @@ struct ExploreGpsButton: View {
     }
 }
 
-// MARK: - 3d 해당 위치 재검색 (27:14434)
+// MARK: - 3d 해당 위치 재검색 (피그마 node-id 1180-21489, SearchIcon)
+// - 흰 배경 캡슐(radius 39) / 패딩 8 / 아이콘-텍스트 간격 4 / 너비 110 / 버튼 전체 opacity 0.9
 
 struct ExploreResearchButton: View {
     let onTap: () -> Void
@@ -351,20 +352,24 @@ struct ExploreResearchButton: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 4) {
-                Image(systemName: "arrow.clockwise")
+                Image("ReloadIcon")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 13, height: 13)
-                    .foregroundColor(.DarkBlack)
+                    .frame(width: 14, height: 13)
                 Text("해당 위치 재검색")
                     .pretendardFont(.medium, size: 12)
+                    .tracking(-0.408)
                     .foregroundColor(.DarkBlack)
+                    .lineLimit(1)
+                    .fixedSize()
             }
             .padding(8)
-            .background(Color.white.opacity(0.9))
+            .frame(minWidth: 110)
+            .background(Color.white)
             .clipShape(Capsule())
-            .shadow(color: .black.opacity(0.07), radius: 5, x: 0, y: 2)
+            .opacity(0.9)
         }
+        .buttonStyle(.plain)
     }
 }
 
