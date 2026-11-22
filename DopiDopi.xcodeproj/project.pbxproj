@@ -38,6 +38,7 @@
 		52295B252F389DB300E615E1 /* LeaderProfileModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */; };
 		52295B282F38E3D000E615E1 /* TodayClassesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */; };
 		52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */; };
+		5C9382FAE66C0829765AC291 /* MemberLookupModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29704685D3D31FE46FBD517D /* MemberLookupModuleView.swift */; };
 		52295B302F49F94400E615E1 /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B2F2F49F94400E615E1 /* CustomNavigationBar.swift */; };
 		52295B322F4A0B5E00E615E1 /* Extension+UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
@@ -194,6 +195,7 @@
 		52295B242F389DB300E615E1 /* LeaderProfileModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderProfileModuleView.swift; sourceTree = "<group>"; };
 		52295B262F38E3D000E615E1 /* TodayClassesModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayClassesModuleView.swift; sourceTree = "<group>"; };
 		52295B292F3B8FED00E615E1 /* ClassRegisterBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassRegisterBannerView.swift; sourceTree = "<group>"; };
+		29704685D3D31FE46FBD517D /* MemberLookupModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberLookupModuleView.swift; sourceTree = "<group>"; };
 		52295B2F2F49F94400E615E1 /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UINavigationController.swift"; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
@@ -410,6 +412,14 @@
 			path = ClassRegisterBanner;
 			sourceTree = "<group>";
 		};
+		AFC4131E94A2B3C009607EE0 /* MemberLookup */ = {
+			isa = PBXGroup;
+			children = (
+				29704685D3D31FE46FBD517D /* MemberLookupModuleView.swift */,
+			);
+			path = MemberLookup;
+			sourceTree = "<group>";
+		};
 		52295B2E2F49F81400E615E1 /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
@@ -563,6 +573,7 @@
 				522CE61E2F12A8A70063FDF5 /* FavoriteOnedayClasses */,
 				522CE61F2F12A8C50063FDF5 /* FavoriteRegularClasses */,
 				52295B2B2F3B93BC00E615E1 /* ClassRegisterBanner */,
+				AFC4131E94A2B3C009607EE0 /* MemberLookup */,
 				522CE61B2F12A75B0063FDF5 /* DetailContents */,
 			);
 			path = Module;
@@ -1174,6 +1185,7 @@
 				522CE60E2F12A6BF0063FDF5 /* APIService.swift in Sources */,
 				522CE60F2F12A6BF0063FDF5 /* APIService+Auth.swift in Sources */,
 				52295B2A2F3B8FED00E615E1 /* ClassRegisterBannerView.swift in Sources */,
+				5C9382FAE66C0829765AC291 /* MemberLookupModuleView.swift in Sources */,
 				52735D233020D1E800515B0C /* ExploreFilterLayerView.swift in Sources */,
 				522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */,
 				522CE6112F12A6BF0063FDF5 /* SplashView.swift in Sources */,
