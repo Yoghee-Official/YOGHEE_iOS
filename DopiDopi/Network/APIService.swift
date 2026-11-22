@@ -123,6 +123,11 @@ class APIService {
         case myInfo
         case withdrawal
         case withdrawalCheck
+        case faqCategories
+        case faqs(target: FaqTarget, category: String)
+        case inquiryCategories
+        case inquiries(page: Int, size: Int)
+        case inquiryCreate
 
         var path: String {
             switch self {
@@ -197,6 +202,14 @@ class APIService {
                 return "/api/my/withdrawal/check"
             case .leaderClass(let classId):
                 return "/api/leader/classes/\(classId)"
+            case .faqCategories:
+                return "/api/faqs/categories"
+            case .faqs:
+                return "/api/faqs"
+            case .inquiryCategories:
+                return "/api/inquiries/categories"
+            case .inquiries, .inquiryCreate:
+                return "/api/inquiries"
             }
         }
         
@@ -263,7 +276,11 @@ class APIService {
                     "page": page,
                     "size": size
                 ]
-            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck:
+            case .faqs(let target, let category):
+                return ["target": target.rawValue, "category": category]
+            case .inquiries(let page, let size):
+                return ["page": page, "size": size]
+            case .login,.classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck, .faqCategories, .inquiryCategories, .inquiryCreate:
                 return nil
             }
         }
@@ -593,6 +610,48 @@ class APIService {
         guard let token = await getAccessToken() else { throw APIError.unauthorized }
         let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
         let response: MyInfoResponse = try await get(endPoint: Endpoint.myInfo.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// FAQ 카테고리 칩 목록 (GET /api/faqs/categories). FAQ(CS_MO_1) 3a. 비로그인 조회 가능.
+    func getFaqCategories() async throws -> [FaqCategoryDto] {
+        let response: FaqListResponse<FaqCategoryDto> = try await get(endPoint: Endpoint.faqCategories.path)
+        return response.data
+    }
+
+    /// 대상·카테고리별 FAQ 목록 (GET /api/faqs?target=&category=). FAQ(CS_MO_1) 3b. 항목이 없으면 빈 배열.
+    func getFaqs(target: FaqTarget, category: String) async throws -> [FaqDto] {
+        let endpoint = Endpoint.faqs(target: target, category: category)
+        let response: FaqListResponse<FaqDto> = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
+        return response.data
+    }
+
+    /// 문의 유형 목록 (GET /api/inquiries/categories). 나의 문의(CS_MO_2) 4a 드롭다운.
+    func getInquiryCategories() async throws -> [InquiryCategoryDto] {
+        var headers: HTTPHeaders?
+        if let token = await getAccessToken() {
+            headers = ["Authorization": "Bearer \(token)"]
+        }
+        let response: InquiryCategoryResponse = try await get(endPoint: Endpoint.inquiryCategories.path, headers: headers)
+        return response.data
+    }
+
+    /// 1:1 문의 등록 (POST /api/inquiries). 나의 문의(CS_MO_2) 4c 문의 등록.
+    /// 접수완료(RECEIVED) 상태로 저장되며, 답변이 등록되면 메시지함으로 안내된다.
+    func createInquiry(body: InquiryCreateDto) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)", "Content-Type": "application/json"]
+        let data = try JSONEncoder().encode(body)
+        guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
+        let _: APIEmptyResponse = try await post(endPoint: Endpoint.inquiryCreate.path, parameters: parameters, headers: headers)
+    }
+
+    /// 나의 문의함 (GET /api/inquiries?page=&size=). 최신순 Page<InquiryDto>, 답변이 있으면 answer 포함.
+    func getMyInquiries(page: Int, size: Int = 20) async throws -> InquiryPageDto {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let endpoint = Endpoint.inquiries(page: page, size: size)
+        let response: InquiryPageResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
         return response.data
     }
 
