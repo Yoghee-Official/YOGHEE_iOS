@@ -28,6 +28,8 @@ enum MyPageNavigationDestination: Hashable {
     case terms
     /// 약관 상세 웹뷰 (TU_MO_1 ~ TU_MO_4)
     case policy(PolicyType)
+    /// 세부항목 "FAQ" → FAQ (CS_MO_1). 진입한 마이페이지 역할에 맞는 FAQ 노출
+    case faq(UserRole)
 }
 
 // MARK: - Intent
@@ -159,12 +161,14 @@ class MyPageTabContainer: ObservableObject {
                 state.navigationDestination = .centerManage
             case "이용약관":
                 state.navigationDestination = .terms
+            case "FAQ":
+                state.navigationDestination = .faq(state.currentRole)
             default:
                 break
                 // TODO: 각 항목별 네비게이션 처리
                 // - "설정" → 세부 설정 페이지
                 // - "계정관리" → 계정관리 페이지
-                // - "고객센터" → 고객센터 페이지
+                // - "나의 문의" → 나의 문의 페이지 (CS_MO_2, 요기니 전용)
                 // - "환불정책" → 환불정책 페이지
             }
             
