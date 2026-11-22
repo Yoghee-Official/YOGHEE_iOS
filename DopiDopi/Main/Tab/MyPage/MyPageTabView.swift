@@ -104,6 +104,8 @@ struct MyPageTabView: View {
                     PolicyWebView(policy: policy)
                 case .faq(let role):
                     FaqView(role: role)
+                case .inquiry:
+                    InquiryView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
