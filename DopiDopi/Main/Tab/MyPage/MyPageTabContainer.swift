@@ -32,6 +32,8 @@ enum MyPageNavigationDestination: Hashable {
     case faq(UserRole)
     /// 요기니 세부항목 "나의 문의" → 나의 문의 (CS_MO_2)
     case inquiry
+    /// 지도자 "회원 조회" 모듈 더보기 → 회원 조회 (SM_MO_1)
+    case memberLookup
 }
 
 // MARK: - Intent
@@ -212,8 +214,7 @@ class MyPageTabContainer: ObservableObject {
                 state.navigationDestination = .openedClassList
             }
         case "memberLookup":
-            // TODO: 회원 조회(SM_MO_1) 화면 개발 후 네비게이션 연결
-            print("📋 [마이페이지] 회원 조회 더보기 클릭 - SM_MO_1 화면 개발 예정")
+            state.navigationDestination = .memberLookup
         default:
             print("📋 [마이페이지] \(sectionId) 목록 더보기 클릭 - TODO: 찜한 수련/요가원 목록 화면 이동")
         }

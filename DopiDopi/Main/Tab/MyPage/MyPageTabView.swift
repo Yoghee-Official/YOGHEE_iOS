@@ -106,6 +106,8 @@ struct MyPageTabView: View {
                     FaqView(role: role)
                 case .inquiry:
                     InquiryView()
+                case .memberLookup:
+                    MemberLookupView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
