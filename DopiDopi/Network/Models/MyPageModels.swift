@@ -139,6 +139,7 @@ enum MyPageSectionType: String {
     
     // 지도자 전용
     case todayClasses
+    case memberLookup
     case classRegisterBanner
     
     // 공통 (의미가 다름: 요기니 = 예약한 수업, 지도자 = 예약된 수업)
@@ -179,6 +180,7 @@ struct MyPageSectionConfiguration {
             return [
                 .profile,              // 지도자 프로필
                 .todayClasses,         // 오늘의 수업
+                .memberLookup,         // 회원 조회 (TMP_MO_1 4a)
                 .reservedClasses,      // 예약된 수업
                 .classRegisterBanner,  // 클래스 등록하기 배너
                 .detailContents        // 세부 항목
@@ -229,6 +231,8 @@ enum MyPageSection: Identifiable {
     
     // 지도자 전용
     case todayClasses(items: [YogaClassScheduleDTO])
+    /// 회원 조회 (TMP_MO_1 4a). 더보기 → SM_MO_1
+    case memberLookup(previews: [LeaderMemberPreviewDTO])
     case classRegisterBanner
     
     // 공통 (의미가 다름)
@@ -246,6 +250,7 @@ enum MyPageSection: Identifiable {
         case .profile: return "profile"
         case .weekClasses: return "weekClasses"
         case .todayClasses: return "todayClasses"
+        case .memberLookup: return "memberLookup"
         case .reservedClasses: return "reservedClasses"
         case .favoriteClasses: return "favoriteClasses"
         case .favoriteCenters: return "favoriteCenters"
@@ -259,6 +264,7 @@ enum MyPageSection: Identifiable {
         case .profile: return ""
         case .weekClasses: return "이번주 참여 수련 목록"
         case .todayClasses: return "오늘 지도 수련 목록"
+        case .memberLookup: return "회원 조회"
         case .reservedClasses: return "수련 미리보기"
         case .favoriteClasses: return "찜한 수련 목록"
         case .favoriteCenters: return "찜한 요가원 목록"
@@ -273,7 +279,7 @@ enum MyPageSection: Identifiable {
             return .toggle
         case .reservedClasses, .favoriteClasses, .favoriteCenters:
             return .moreButton
-        case .profile, .classRegisterBanner, .detailContents:
+        case .profile, .memberLookup, .classRegisterBanner, .detailContents:
             return .none
         }
     }
@@ -284,6 +290,7 @@ enum MyPageSection: Identifiable {
         case .profile: return .profile
         case .weekClasses: return .weekClasses
         case .todayClasses: return .todayClasses
+        case .memberLookup: return .memberLookup
         case .reservedClasses: return .reservedClasses
         case .favoriteClasses: return .favoriteClasses
         case .favoriteCenters: return .favoriteCenters
