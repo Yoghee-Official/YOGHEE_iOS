@@ -123,6 +123,8 @@ class APIService {
         case myInfo
         case withdrawal
         case withdrawalCheck
+        case faqCategories
+        case faqs(target: FaqTarget, category: String)
 
         var path: String {
             switch self {
@@ -197,6 +199,10 @@ class APIService {
                 return "/api/my/withdrawal/check"
             case .leaderClass(let classId):
                 return "/api/leader/classes/\(classId)"
+            case .faqCategories:
+                return "/api/faqs/categories"
+            case .faqs:
+                return "/api/faqs"
             }
         }
         
@@ -263,7 +269,9 @@ class APIService {
                     "page": page,
                     "size": size
                 ]
-            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck:
+            case .faqs(let target, let category):
+                return ["target": target.rawValue, "category": category]
+            case .login, .classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck, .faqCategories:
                 return nil
             }
         }
@@ -593,6 +601,19 @@ class APIService {
         guard let token = await getAccessToken() else { throw APIError.unauthorized }
         let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
         let response: MyInfoResponse = try await get(endPoint: Endpoint.myInfo.path, parameters: nil, headers: headers)
+        return response.data
+    }
+
+    /// FAQ 카테고리 칩 목록 (GET /api/faqs/categories). FAQ(CS_MO_1) 3a. 비로그인 조회 가능.
+    func getFaqCategories() async throws -> [FaqCategoryDto] {
+        let response: FaqListResponse<FaqCategoryDto> = try await get(endPoint: Endpoint.faqCategories.path)
+        return response.data
+    }
+
+    /// 대상·카테고리별 FAQ 목록 (GET /api/faqs?target=&category=). FAQ(CS_MO_1) 3b. 항목이 없으면 빈 배열.
+    func getFaqs(target: FaqTarget, category: String) async throws -> [FaqDto] {
+        let endpoint = Endpoint.faqs(target: target, category: category)
+        let response: FaqListResponse<FaqDto> = try await get(endPoint: endpoint.path, parameters: endpoint.parameters)
         return response.data
     }
 
