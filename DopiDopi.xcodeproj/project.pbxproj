@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0F4546836DAE4987B4794431 /* InquiryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C76E409C0A044A99A4E8932 /* InquiryModels.swift */; };
+		182482432F433B4F0A9C26CA /* MemberLookupModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4767AB6206C6BBD37C134582 /* MemberLookupModels.swift */; };
 		496374EA8E0A4252B9DDCDCC /* InquiryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635C52DCF0C248AF8F586ED3 /* InquiryContainer.swift */; };
 		5E4367F4D50146C4BF1A7FAC /* InquiryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A513CA1CE7F94799B69E9B2E /* InquiryView.swift */; };
 		48B1C5D0402445C5BB0B9831 /* FaqModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC29B4344D842448F5F5616 /* FaqModels.swift */; };
@@ -165,6 +166,7 @@
 
 /* Begin PBXFileReference section */
 		3C76E409C0A044A99A4E8932 /* InquiryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryModels.swift; sourceTree = "<group>"; };
+		4767AB6206C6BBD37C134582 /* MemberLookupModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberLookupModels.swift; sourceTree = "<group>"; };
 		635C52DCF0C248AF8F586ED3 /* InquiryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryContainer.swift; sourceTree = "<group>"; };
 		A513CA1CE7F94799B69E9B2E /* InquiryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryView.swift; sourceTree = "<group>"; };
 		1FC29B4344D842448F5F5616 /* FaqModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqModels.swift; sourceTree = "<group>"; };
@@ -627,6 +629,7 @@
 				809455CF4BE6492F959B1151 /* MemberInfoModels.swift */,
 				1FC29B4344D842448F5F5616 /* FaqModels.swift */,
 				3C76E409C0A044A99A4E8932 /* InquiryModels.swift */,
+				4767AB6206C6BBD37C134582 /* MemberLookupModels.swift */,
 				52D6F3DE2FA79A1C00EC9BE8 /* ClassDetail */,
 				52F987A52F51E59300C905D1 /* ClassRegister */,
 				522CE5C82F12A6BF0063FDF5 /* AuthModels.swift */,
@@ -1072,6 +1075,7 @@
 				D5299276923943C1BCD05EFB /* MemberInfoModels.swift in Sources */,
 				48B1C5D0402445C5BB0B9831 /* FaqModels.swift in Sources */,
 				0F4546836DAE4987B4794431 /* InquiryModels.swift in Sources */,
+				182482432F433B4F0A9C26CA /* MemberLookupModels.swift in Sources */,
 				496374EA8E0A4252B9DDCDCC /* InquiryContainer.swift in Sources */,
 				5E4367F4D50146C4BF1A7FAC /* InquiryView.swift in Sources */,
 				8ABA3DEDBBE94CE5B098D65E /* FaqContainer.swift in Sources */,

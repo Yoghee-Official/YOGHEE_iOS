@@ -128,6 +128,9 @@ class APIService {
         case inquiryCategories
         case inquiries(page: Int, size: Int)
         case inquiryCreate
+        case leaderMembers(type: String?, page: Int, size: Int)
+        case leaderMemberTicketsPause(userUuid: String)
+        case leaderMemberTicketsResume(userUuid: String)
 
         var path: String {
             switch self {
@@ -210,6 +213,12 @@ class APIService {
                 return "/api/inquiries/categories"
             case .inquiries, .inquiryCreate:
                 return "/api/inquiries"
+            case .leaderMembers:
+                return "/api/leader/members"
+            case .leaderMemberTicketsPause(let userUuid):
+                return "/api/leader/members/\(userUuid)/tickets/pause"
+            case .leaderMemberTicketsResume(let userUuid):
+                return "/api/leader/members/\(userUuid)/tickets/resume"
             }
         }
         
@@ -280,7 +289,11 @@ class APIService {
                 return ["target": target.rawValue, "category": category]
             case .inquiries(let page, let size):
                 return ["page": page, "size": size]
-            case .login,.classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck, .faqCategories, .inquiryCategories, .inquiryCreate:
+            case .leaderMembers(let type, let page, let size):
+                var params: Parameters = ["page": page, "size": size]
+                if let type { params["type"] = type }
+                return params
+            case .login,.classFavorite, .categoryDetail, .notificationDetail, .notificationsReadAll, .notificationHide, .myPage, .centerList, .centerDetail, .imagePresign, .license, .classRegister, .feed, .classDetail, .reviews, .sessionAttendance, .cancelLeaderReservation, .cancelMyReservation, .leaderClasses, .leaderClass, .myInfo, .withdrawal, .withdrawalCheck, .faqCategories, .inquiryCategories, .inquiryCreate, .leaderMemberTicketsPause, .leaderMemberTicketsResume:
                 return nil
             }
         }
@@ -644,6 +657,32 @@ class APIService {
         let data = try JSONEncoder().encode(body)
         guard let parameters = try JSONSerialization.jsonObject(with: data) as? Parameters else { throw APIError.invalidResponse }
         let _: APIEmptyResponse = try await post(endPoint: Endpoint.inquiryCreate.path, parameters: parameters, headers: headers)
+    }
+
+    /// 지도자 수강생 목록 (GET /api/leader/members). 회원 조회(SM_MO_1) 화면 데이터.
+    /// - type: O(하루수련) / R(정규수련), 생략 시 전체
+    func getLeaderMembers(type: String?, page: Int, size: Int = 20) async throws -> LeaderMemberPageDTO {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let endpoint = Endpoint.leaderMembers(type: type, page: page, size: size)
+        let response: LeaderMemberPageResponse = try await get(endPoint: endpoint.path, parameters: endpoint.parameters, headers: headers)
+        return response.data
+    }
+
+    /// 회원 수강권 정지 (POST /api/leader/members/{userUuid}/tickets/pause). SM_MO_1 더보기 > 수강권 정지.
+    /// 본인 정규수련에 대한 회원의 사용 중(ACTIVE) 수강권을 모두 정지한다 (회원 단위).
+    func pauseMemberTickets(userUuid: String) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let _: APIEmptyResponse = try await post(endPoint: Endpoint.leaderMemberTicketsPause(userUuid: userUuid).path, headers: headers)
+    }
+
+    /// 회원 수강권 재개 (POST /api/leader/members/{userUuid}/tickets/resume). SM_MO_1 더보기 > 수강권 재개.
+    /// 정지한 날부터 오늘까지의 일수만큼 만료일이 연장된다.
+    func resumeMemberTickets(userUuid: String) async throws {
+        guard let token = await getAccessToken() else { throw APIError.unauthorized }
+        let headers: HTTPHeaders = ["Authorization": "Bearer \(token)"]
+        let _: APIEmptyResponse = try await post(endPoint: Endpoint.leaderMemberTicketsResume(userUuid: userUuid).path, headers: headers)
     }
 
     /// 나의 문의함 (GET /api/inquiries?page=&size=). 최신순 Page<InquiryDto>, 답변이 있으면 answer 포함.
