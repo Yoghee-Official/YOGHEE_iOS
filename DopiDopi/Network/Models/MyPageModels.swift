@@ -38,6 +38,10 @@ struct MyPageDataDTO: Codable, Equatable {
     // 지도자 전용
     let leaderProfile: LeaderProfileDTO?
     let todayClasses: [YogaClassScheduleDTO]?
+    /// TMP_MO_1 4a 회원 조회: 예약한 회원 수 (취소 제외, 회원 기준)
+    var memberCount: Int? = nil
+    /// TMP_MO_1 4a 회원 조회: 예약한 회원 중 무작위 최대 2명. 없으면 빈 배열 (프로필·+ 버튼 미노출)
+    var memberPreviews: [LeaderMemberPreviewDTO]? = nil
     
     // 공통
     let reservedClasses: [YogaClassScheduleDTO]?
@@ -66,6 +70,16 @@ struct LeaderProfileDTO: Codable, Equatable {
     let certificate: String?        // 자격증
     let popularCategory: String?    // 인기 카테고리
     let reservedCount: Int?         // 예약 수
+}
+
+/// 지도자 마이페이지 "회원 조회" 모듈에 노출되는 회원 미리보기 (GET /api/my/leader > memberPreviews)
+struct LeaderMemberPreviewDTO: Codable, Equatable, Identifiable {
+    let userUuid: String
+    let nickname: String?
+    /// 프로필 이미지 URL. 없으면 null
+    let profileImage: String?
+
+    var id: String { userUuid }
 }
 
 struct WeekClassDTO: Codable, Equatable {
