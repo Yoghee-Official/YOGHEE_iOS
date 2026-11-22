@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F4546836DAE4987B4794431 /* InquiryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C76E409C0A044A99A4E8932 /* InquiryModels.swift */; };
 		48B1C5D0402445C5BB0B9831 /* FaqModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC29B4344D842448F5F5616 /* FaqModels.swift */; };
 		8ABA3DEDBBE94CE5B098D65E /* FaqContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DE4318C0904F7182522471 /* FaqContainer.swift */; };
 		C8615D510FA84C90B9561A7D /* FaqView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60B613C6CAC46DB9D5BBB78 /* FaqView.swift */; };
@@ -160,6 +161,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C76E409C0A044A99A4E8932 /* InquiryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InquiryModels.swift; sourceTree = "<group>"; };
 		1FC29B4344D842448F5F5616 /* FaqModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqModels.swift; sourceTree = "<group>"; };
 		11DE4318C0904F7182522471 /* FaqContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqContainer.swift; sourceTree = "<group>"; };
 		E60B613C6CAC46DB9D5BBB78 /* FaqView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaqView.swift; sourceTree = "<group>"; };
@@ -599,6 +601,7 @@
 				1021C7DEF70A4E85AF8DAC36 /* ReservationHistoryModels.swift */,
 				809455CF4BE6492F959B1151 /* MemberInfoModels.swift */,
 				1FC29B4344D842448F5F5616 /* FaqModels.swift */,
+				3C76E409C0A044A99A4E8932 /* InquiryModels.swift */,
 				52D6F3DE2FA79A1C00EC9BE8 /* ClassDetail */,
 				52F987A52F51E59300C905D1 /* ClassRegister */,
 				522CE5C82F12A6BF0063FDF5 /* AuthModels.swift */,
@@ -1043,6 +1046,7 @@
 				8EFB01435014463ABCE63D44 /* MemberInfoContainer.swift in Sources */,
 				D5299276923943C1BCD05EFB /* MemberInfoModels.swift in Sources */,
 				48B1C5D0402445C5BB0B9831 /* FaqModels.swift in Sources */,
+				0F4546836DAE4987B4794431 /* InquiryModels.swift in Sources */,
 				8ABA3DEDBBE94CE5B098D65E /* FaqContainer.swift in Sources */,
 				C8615D510FA84C90B9561A7D /* FaqView.swift in Sources */,
 				6A3C3E6B15424BB49D91268C /* PolicyWebView.swift in Sources */,
