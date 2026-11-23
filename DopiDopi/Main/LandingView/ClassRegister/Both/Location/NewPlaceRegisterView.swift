@@ -66,7 +66,7 @@ struct NewPlaceRegisterView: View {
         .customNavigationBar(title: isEditMode ? "장소 수정" : "신규 장소 등록")
         .overlay {
             if isLoadingDetail {
-                ProgressView()
+                LoadingIconView()
             }
         }
         .onAppear {
@@ -283,7 +283,7 @@ struct NewPlaceRegisterView: View {
             if let list = list {
                 chipFlow(items: list, selectedIds: selectedIds)
             } else if showLoading {
-                ProgressView()
+                LoadingIconView(size: .small)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16.ratio())
             }

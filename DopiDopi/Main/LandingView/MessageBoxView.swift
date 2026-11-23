@@ -97,7 +97,7 @@ struct MessageBoxView: View {
     @ViewBuilder
     private var messageList: some View {
         if container.state.isLoading {
-            ProgressView()
+            LoadingIconView()
                 .frame(maxWidth: .infinity)
                 .padding(.top, 80)
         } else if let errorMessage = container.state.errorMessage {
@@ -129,7 +129,7 @@ struct MessageBoxView: View {
                     }
 
                     if container.state.isLoadingMore {
-                        ProgressView()
+                        LoadingIconView(size: .small)
                             .padding(.vertical, 16.ratio())
                     }
                 }
@@ -360,7 +360,7 @@ private struct MessageBoxItemView: View {
                     .foregroundColor(.DarkBlack)
                     .fixedSize(horizontal: false, vertical: true)
             } else if isLoadingDetail {
-                ProgressView()
+                LoadingIconView(size: .small)
                     .frame(maxWidth: .infinity)
             }
         }

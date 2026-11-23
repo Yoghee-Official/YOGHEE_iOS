@@ -267,12 +267,9 @@ private struct RegisteredImageCell: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             if item.isLoading {
-                Text("추후 로딩 이미지 등록 예정")
-                    .pretendardFont(.regular, size: 12)
-                    .foregroundColor(.Info)
-                    .multilineTextAlignment(.center)
+                LoadingIconView(size: .small)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.CleanWhite)
+                    .background(Color.Background)
                     .cornerRadius(8)
             } else if let uiImage = UIImage(data: item.imageData) {
                 Image(uiImage: uiImage)

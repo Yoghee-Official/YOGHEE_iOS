@@ -86,9 +86,7 @@ struct RegularClassManagementRegisterView: View {
             if isRegistering || isBuildingPreview {
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
-                ProgressView()
-                    .scaleEffect(1.2)
-                    .tint(.white)
+                LoadingIconView()
             }
         }
         .alert("등록 실패", isPresented: Binding(

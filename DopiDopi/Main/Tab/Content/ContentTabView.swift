@@ -102,7 +102,7 @@ struct ContentTabView: View {
                         case .failure:
                             Color.Background
                         case .empty:
-                            Color.Background.overlay(ProgressView())
+                            Color.Background.overlay(LoadingIconView(size: .small))
                         @unknown default:
                             Color.Background
                         }
