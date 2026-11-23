@@ -28,7 +28,7 @@ struct PolicyWebView: View {
             if loadFailed {
                 failureView
             } else if isLoading {
-                ProgressView()
+                LoadingIconView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

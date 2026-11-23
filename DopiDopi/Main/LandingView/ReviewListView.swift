@@ -169,7 +169,7 @@ struct ReviewListView: View {
 
                     if container.state.hasNext {
                         if container.state.isLoadingMore {
-                            ProgressView()
+                            LoadingIconView(size: .small)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 20)
                         } else {

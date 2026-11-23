@@ -104,7 +104,7 @@ struct CenterManageView: View {
         if container.state.isLoadingCenters && container.state.centers.isEmpty {
             HStack {
                 Spacer()
-                ProgressView()
+                LoadingIconView(size: .small)
                 Spacer()
             }
             .padding(.vertical, 24.ratio())

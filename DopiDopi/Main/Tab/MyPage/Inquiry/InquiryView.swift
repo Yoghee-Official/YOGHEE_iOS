@@ -259,7 +259,7 @@ struct InquiryView: View {
             .padding(.top, 40)
         } else if state.inquiries.isEmpty {
             if state.isLoadingList || !state.hasLoadedList {
-                ProgressView()
+                LoadingIconView(size: .small)
                     .frame(maxWidth: .infinity)
                     .padding(.top, 40)
             } else {
@@ -287,7 +287,7 @@ struct InquiryView: View {
                 }
 
                 if state.isLoadingList {
-                    ProgressView()
+                    LoadingIconView(size: .small)
                         .padding(.vertical, 16)
                 }
             }
