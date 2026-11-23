@@ -80,11 +80,11 @@ struct MemberLookupView: View {
             .padding(.horizontal, 24)
             Spacer()
         } else if list.members.isEmpty {
-            // TODO: 기획 확정 시 방어문구 교체 (SB에 회원이 없을 때 문구 미정의)
+            // 회원이 없을 경우 방어 화면 (피그마 node-id 1926-27246)
             Spacer()
-            Text("조회된 회원이 없습니다.")
+            Text("조회할 회원이 없습니다.")
                 .pretendardFont(.medium, size: 12)
-                .foregroundColor(.Info)
+                .foregroundColor(.DarkBlack)
                 .tracking(-0.408)
             Spacer()
         } else {
