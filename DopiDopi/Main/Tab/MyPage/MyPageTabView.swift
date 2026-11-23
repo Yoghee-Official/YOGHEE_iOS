@@ -106,6 +106,8 @@ struct MyPageTabView: View {
                     FaqView(role: role)
                 case .inquiry:
                     InquiryView()
+                case .memberLookup:
+                    MemberLookupView()
                 }
             }
             .onChange(of: container.state.navigationDestination) { _, newValue in
@@ -259,6 +261,12 @@ struct MyPageSectionView: View {
                     classes: classes,
                     onItemTap: { itemId in onItemTap(itemId, section.id) }
                 )
+                
+            case .memberLookup(let previews):
+                // 지도자 전용 - 회원 조회 (TMP_MO_1 4a)
+                MemberLookupModuleView(previews: previews) {
+                    container.handleIntent(.tapMoreButton(section.id))
+                }
                 
             case .reservedClasses(let classes):
                 ReservedClassesModuleView(

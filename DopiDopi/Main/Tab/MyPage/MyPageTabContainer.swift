@@ -32,6 +32,8 @@ enum MyPageNavigationDestination: Hashable {
     case faq(UserRole)
     /// 요기니 세부항목 "나의 문의" → 나의 문의 (CS_MO_2)
     case inquiry
+    /// 지도자 "회원 조회" 모듈 더보기 → 회원 조회 (SM_MO_1)
+    case memberLookup
 }
 
 // MARK: - Intent
@@ -211,6 +213,8 @@ class MyPageTabContainer: ObservableObject {
             case .instructor:
                 state.navigationDestination = .openedClassList
             }
+        case "memberLookup":
+            state.navigationDestination = .memberLookup
         default:
             print("📋 [마이페이지] \(sectionId) 목록 더보기 클릭 - TODO: 찜한 수련/요가원 목록 화면 이동")
         }
@@ -387,6 +391,10 @@ class MyPageTabContainer: ObservableObject {
             case .todayClasses:
                 // 지도자 전용 - 오늘의 수업
                 sections.append(.todayClasses(items: data.todayClasses ?? []))
+                
+            case .memberLookup:
+                // 지도자 전용 - 회원 조회 (예약된 회원이 없어도 모듈은 노출, 프로필·+ 버튼만 미노출)
+                sections.append(.memberLookup(previews: data.memberPreviews ?? []))
                 
             case .reservedClasses:
                 // 공통 (요기니: 예약한 수업, 지도자: 예약된 수업)

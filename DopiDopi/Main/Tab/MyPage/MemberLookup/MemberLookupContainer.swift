@@ -1,0 +1,227 @@
+//
+//  MemberLookupContainer.swift
+//  YOGHEE
+//
+//  회원 조회(SM_MO_1) - 지도자 마이페이지 > 회원 조회 모듈 "더보기"
+//  - 2a 하루수련 / 정규수련 토글 (탭별로 목록·페이지를 따로 유지)
+//  - 2d 더보기: 정규수련 탭에서만 노출. 활성 회원은 수강권 정지, 비활성 회원은 수강권 재개 (회원 단위)
+//
+
+import SwiftUI
+
+// MARK: - Intent
+enum MemberLookupIntent {
+    case load
+    /// 2a 하루수련 / 정규수련 토글
+    case selectTab(MemberLookupTab)
+    case loadMoreIfNeeded(currentId: String)
+    case retry
+    /// 2d 더보기 (nil이면 닫기)
+    case toggleMoreMenu(String?)
+    /// 수강권 정지/재개 클릭 → 확인 얼럿 노출
+    case requestTicketAction(LeaderMemberDTO)
+    case dismissTicketAction
+    case confirmTicketAction
+    case dismissAlert
+}
+
+// MARK: - 수강권 정지/재개
+enum MemberTicketAction: Equatable {
+    case pause
+    case resume
+
+    var menuTitle: String {
+        switch self {
+        case .pause: return "수강권 정지"
+        case .resume: return "수강권 재개"
+        }
+    }
+
+    /// TODO: 기획/디자인 확정 시 문구 교체 (SB에 "수강권 정지/재개 할 경우 알림창 노출" 메모만 있음)
+    var confirmMessage: String {
+        switch self {
+        case .pause: return "수강권을 정지하시겠습니까?"
+        case .resume: return "수강권을 재개하시겠습니까?"
+        }
+    }
+
+    var failureMessage: String {
+        switch self {
+        case .pause: return "수강권 정지에 실패했습니다.\n잠시 후 다시 시도해주세요."
+        case .resume: return "수강권 재개에 실패했습니다.\n잠시 후 다시 시도해주세요."
+        }
+    }
+}
+
+// MARK: - 탭별 목록 상태
+struct MemberLookupListState: Equatable {
+    var members: [LeaderMemberDTO] = []
+    var nextPage: Int = 0
+    var hasNext: Bool = true
+    var isLoading: Bool = false
+    var hasLoaded: Bool = false
+    var errorMessage: String? = nil
+}
+
+// MARK: - State
+struct MemberLookupState: Equatable {
+    var selectedTab: MemberLookupTab = .oneDay
+    var lists: [MemberLookupTab: MemberLookupListState] = [:]
+
+    /// 2d 더보기 메뉴가 열린 회원
+    var moreMenuMemberId: String? = nil
+    var pendingMember: LeaderMemberDTO? = nil
+    var isProcessing: Bool = false
+    /// 정지/재개 실패 등 안내 팝업 문구
+    var alertMessage: String? = nil
+
+    var currentList: MemberLookupListState {
+        lists[selectedTab] ?? MemberLookupListState()
+    }
+
+    var pendingAction: MemberTicketAction? {
+        guard let pendingMember else { return nil }
+        return pendingMember.isTicketPaused ? .resume : .pause
+    }
+}
+
+// MARK: - Container
+@MainActor
+class MemberLookupContainer: ObservableObject {
+    @Published private(set) var state = MemberLookupState()
+
+    private let pageSize = 20
+
+    func handleIntent(_ intent: MemberLookupIntent) {
+        switch intent {
+        case .load:
+            if !state.currentList.hasLoaded { reload(state.selectedTab) }
+
+        case .selectTab(let tab):
+            state.moreMenuMemberId = nil
+            state.selectedTab = tab
+            if !state.currentList.hasLoaded { reload(tab) }
+
+        case .loadMoreIfNeeded(let currentId):
+            let list = state.currentList
+            guard currentId == list.members.last?.userUuid,
+                  list.hasNext, !list.isLoading, list.errorMessage == nil else { return }
+            loadPage(list.nextPage, tab: state.selectedTab, replacing: false)
+
+        case .retry:
+            reload(state.selectedTab)
+
+        case .toggleMoreMenu(let memberId):
+            state.moreMenuMemberId = state.moreMenuMemberId == memberId ? nil : memberId
+
+        case .requestTicketAction(let member):
+            state.moreMenuMemberId = nil
+            state.pendingMember = member
+
+        case .dismissTicketAction:
+            state.pendingMember = nil
+
+        case .confirmTicketAction:
+            performTicketAction()
+
+        case .dismissAlert:
+            state.alertMessage = nil
+        }
+    }
+
+    // MARK: - 목록 조회
+
+    private func reload(_ tab: MemberLookupTab) {
+        state.lists[tab] = MemberLookupListState()
+        loadPage(0, tab: tab, replacing: true)
+    }
+
+    private func loadPage(_ page: Int, tab: MemberLookupTab, replacing: Bool) {
+        state.lists[tab, default: MemberLookupListState()].isLoading = true
+
+        Task {
+            do {
+                let result = try await APIService.shared.getLeaderMembers(type: tab.typeParameter, page: page, size: pageSize)
+                var list = state.lists[tab] ?? MemberLookupListState()
+                if replacing {
+                    list.members = result.items
+                } else {
+                    // 페이지 경계에서 중복 항목이 들어오지 않도록 걸러낸다
+                    let existing = Set(list.members.map(\.userUuid))
+                    list.members += result.items.filter { !existing.contains($0.userUuid) }
+                }
+                list.nextPage = page + 1
+                list.hasNext = result.hasNext ?? false
+                list.isLoading = false
+                list.hasLoaded = true
+                state.lists[tab] = list
+                log("✅ [MemberLookup] \(tab.title) \(page)페이지 조회 완료: \(result.items.count)명 (전체 \(result.totalCount ?? 0)명)")
+            } catch {
+                log("❌ [MemberLookup] \(tab.title) 회원 목록 조회 실패: \(error)")
+                var list = state.lists[tab] ?? MemberLookupListState()
+                if replacing { list.members = [] }
+                list.isLoading = false
+                list.hasLoaded = true
+                list.errorMessage = errorMessage(for: error, fallback: "회원 목록을 불러오지 못했습니다.")
+                state.lists[tab] = list
+            }
+        }
+    }
+
+    // MARK: - 2d 수강권 정지 / 재개 (회원 단위)
+
+    private func performTicketAction() {
+        guard let member = state.pendingMember, let action = state.pendingAction, !state.isProcessing else { return }
+        state.pendingMember = nil
+        state.isProcessing = true
+
+        Task {
+            do {
+                switch action {
+                case .pause:
+                    try await APIService.shared.pauseMemberTickets(userUuid: member.userUuid)
+                case .resume:
+                    try await APIService.shared.resumeMemberTickets(userUuid: member.userUuid)
+                }
+                log("✅ [MemberLookup] \(action.menuTitle) 완료: \(member.userUuid)")
+                // 정지 여부는 회원 단위이므로 두 탭에 있는 같은 회원을 모두 갱신
+                updateTicketPaused(userUuid: member.userUuid, paused: action == .pause)
+            } catch {
+                log("❌ [MemberLookup] \(action.menuTitle) 실패: \(error)")
+                state.alertMessage = errorMessage(for: error, fallback: action.failureMessage)
+            }
+            state.isProcessing = false
+        }
+    }
+
+    private func updateTicketPaused(userUuid: String, paused: Bool) {
+        for tab in state.lists.keys {
+            guard var list = state.lists[tab],
+                  let index = list.members.firstIndex(where: { $0.userUuid == userUuid }) else { continue }
+            list.members[index].ticketPaused = paused
+            state.lists[tab] = list
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func errorMessage(for error: Error, fallback: String) -> String {
+        if let apiError = error as? APIError {
+            switch apiError {
+            case .unauthorized, .tokenExpired:
+                return "로그인이 필요합니다.\n다시 로그인해주세요."
+            case .serverError(_, _, let message) where !message.isEmpty:
+                return message
+            default:
+                break
+            }
+        }
+        return fallback
+    }
+
+    private func log(_ message: String) {
+        #if DEBUG
+        print(message)
+        #endif
+    }
+}

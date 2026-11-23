@@ -38,6 +38,10 @@ struct MyPageDataDTO: Codable, Equatable {
     // 지도자 전용
     let leaderProfile: LeaderProfileDTO?
     let todayClasses: [YogaClassScheduleDTO]?
+    /// TMP_MO_1 4a 회원 조회: 예약한 회원 수 (취소 제외, 회원 기준)
+    var memberCount: Int? = nil
+    /// TMP_MO_1 4a 회원 조회: 예약한 회원 중 무작위 최대 2명. 없으면 빈 배열 (프로필·+ 버튼 미노출)
+    var memberPreviews: [LeaderMemberPreviewDTO]? = nil
     
     // 공통
     let reservedClasses: [YogaClassScheduleDTO]?
@@ -66,6 +70,16 @@ struct LeaderProfileDTO: Codable, Equatable {
     let certificate: String?        // 자격증
     let popularCategory: String?    // 인기 카테고리
     let reservedCount: Int?         // 예약 수
+}
+
+/// 지도자 마이페이지 "회원 조회" 모듈에 노출되는 회원 미리보기 (GET /api/my/leader > memberPreviews)
+struct LeaderMemberPreviewDTO: Codable, Equatable, Identifiable {
+    let userUuid: String
+    let nickname: String?
+    /// 프로필 이미지 URL. 없으면 null
+    let profileImage: String?
+
+    var id: String { userUuid }
 }
 
 struct WeekClassDTO: Codable, Equatable {
@@ -125,6 +139,7 @@ enum MyPageSectionType: String {
     
     // 지도자 전용
     case todayClasses
+    case memberLookup
     case classRegisterBanner
     
     // 공통 (의미가 다름: 요기니 = 예약한 수업, 지도자 = 예약된 수업)
@@ -165,6 +180,7 @@ struct MyPageSectionConfiguration {
             return [
                 .profile,              // 지도자 프로필
                 .todayClasses,         // 오늘의 수업
+                .memberLookup,         // 회원 조회 (TMP_MO_1 4a)
                 .reservedClasses,      // 예약된 수업
                 .classRegisterBanner,  // 클래스 등록하기 배너
                 .detailContents        // 세부 항목
@@ -215,6 +231,8 @@ enum MyPageSection: Identifiable {
     
     // 지도자 전용
     case todayClasses(items: [YogaClassScheduleDTO])
+    /// 회원 조회 (TMP_MO_1 4a). 더보기 → SM_MO_1
+    case memberLookup(previews: [LeaderMemberPreviewDTO])
     case classRegisterBanner
     
     // 공통 (의미가 다름)
@@ -232,6 +250,7 @@ enum MyPageSection: Identifiable {
         case .profile: return "profile"
         case .weekClasses: return "weekClasses"
         case .todayClasses: return "todayClasses"
+        case .memberLookup: return "memberLookup"
         case .reservedClasses: return "reservedClasses"
         case .favoriteClasses: return "favoriteClasses"
         case .favoriteCenters: return "favoriteCenters"
@@ -245,6 +264,7 @@ enum MyPageSection: Identifiable {
         case .profile: return ""
         case .weekClasses: return "이번주 참여 수련 목록"
         case .todayClasses: return "오늘 지도 수련 목록"
+        case .memberLookup: return "회원 조회"
         case .reservedClasses: return "수련 미리보기"
         case .favoriteClasses: return "찜한 수련 목록"
         case .favoriteCenters: return "찜한 요가원 목록"
@@ -259,7 +279,7 @@ enum MyPageSection: Identifiable {
             return .toggle
         case .reservedClasses, .favoriteClasses, .favoriteCenters:
             return .moreButton
-        case .profile, .classRegisterBanner, .detailContents:
+        case .profile, .memberLookup, .classRegisterBanner, .detailContents:
             return .none
         }
     }
@@ -270,6 +290,7 @@ enum MyPageSection: Identifiable {
         case .profile: return .profile
         case .weekClasses: return .weekClasses
         case .todayClasses: return .todayClasses
+        case .memberLookup: return .memberLookup
         case .reservedClasses: return .reservedClasses
         case .favoriteClasses: return .favoriteClasses
         case .favoriteCenters: return .favoriteCenters
