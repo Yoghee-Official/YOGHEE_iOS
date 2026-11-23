@@ -176,7 +176,7 @@ class InquiryContainer: ObservableObject {
         let content = state.content.trimmingCharacters(in: .whitespacesAndNewlines)
         let body = InquiryCreateDto(
             category: category.code,
-            title: InquiryCreateDto.makeTitle(from: content),
+            title: InquiryCreateDto.makeTitle(from: category),
             content: content
         )
 
