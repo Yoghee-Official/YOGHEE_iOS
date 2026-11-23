@@ -28,7 +28,7 @@ struct InquiryCategoryResponse: Codable {
 // MARK: - 문의 등록 (POST /api/inquiries)
 
 /// 1:1 문의 등록 요청. title·content·category 모두 필수
-/// - 디자인(CS_MO_2)엔 제목 입력칸이 없어, 내용 앞부분으로 제목을 만들어 보낸다 (기획 확정 전 임시 처리)
+/// - 디자인(CS_MO_2)엔 제목 입력칸이 없어, 선택한 문의 유형 표시명을 제목으로 보낸다
 struct InquiryCreateDto: Codable {
     let category: String
     /// 문의 제목 (50자 이내)
@@ -39,14 +39,9 @@ struct InquiryCreateDto: Codable {
     static let titleMaxLength = 50
     static let contentMaxLength = 500
 
-    /// 내용의 첫 줄을 최대 50자까지 잘라 제목으로 사용
-    static func makeTitle(from content: String) -> String {
-        let firstLine = content
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .components(separatedBy: .newlines)
-            .first?
-            .trimmingCharacters(in: .whitespaces) ?? ""
-        return String(firstLine.prefix(titleMaxLength))
+    /// 문의 유형 표시명(예: 예약/출석 관련)을 제목으로 사용
+    static func makeTitle(from category: InquiryCategoryDto) -> String {
+        String(category.label.prefix(titleMaxLength))
     }
 }
 
