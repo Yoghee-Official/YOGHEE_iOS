@@ -267,7 +267,7 @@ private struct RegisteredImageCell: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             if item.isLoading {
-                LoadingIconView(size: .small)
+                LoadingIconView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.Background)
                     .cornerRadius(8)

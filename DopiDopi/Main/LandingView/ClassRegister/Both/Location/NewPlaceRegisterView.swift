@@ -283,7 +283,7 @@ struct NewPlaceRegisterView: View {
             if let list = list {
                 chipFlow(items: list, selectedIds: selectedIds)
             } else if showLoading {
-                LoadingIconView(size: .small)
+                LoadingIconView()
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 16.ratio())
             }

@@ -251,7 +251,7 @@ struct OnedayClassExplanationRegisterView: View {
             if container.state.isLoadingCodeList {
                 HStack {
                     Spacer()
-                    LoadingIconView(size: .small)
+                    LoadingIconView()
                     Spacer()
                 }
                 .padding(.vertical, 24.ratio())

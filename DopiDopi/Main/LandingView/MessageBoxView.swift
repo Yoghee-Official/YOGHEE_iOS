@@ -129,7 +129,7 @@ struct MessageBoxView: View {
                     }
 
                     if container.state.isLoadingMore {
-                        LoadingIconView(size: .small)
+                        LoadingIconView()
                             .padding(.vertical, 16.ratio())
                     }
                 }
@@ -363,7 +363,7 @@ private struct MessageBoxItemView: View {
                     .foregroundColor(.DarkBlack)
                     .fixedSize(horizontal: false, vertical: true)
             } else if isLoadingDetail {
-                LoadingIconView(size: .small)
+                LoadingIconView()
                     .frame(maxWidth: .infinity)
             }
         }

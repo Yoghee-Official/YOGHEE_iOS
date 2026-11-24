@@ -107,7 +107,7 @@ struct MemberLookupView: View {
                     }
 
                     if list.isLoading {
-                        LoadingIconView(size: .small)
+                        LoadingIconView()
                             .padding(.vertical, 12)
                     }
                 }

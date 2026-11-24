@@ -105,7 +105,7 @@ struct ContentTabView: View {
                         case .failure:
                             Color.Background
                         case .empty:
-                            Color.Background.overlay(LoadingIconView(size: .small))
+                            Color.Background.overlay(LoadingIconView())
                         @unknown default:
                             Color.Background
                         }

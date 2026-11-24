@@ -132,7 +132,7 @@ struct LicenseRegisterView: View {
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color.black.opacity(0.15))
                             .frame(width: selectedImageWidth.ratio(), height: imageAreaHeight.ratio())
-                        LoadingIconView(size: .small)
+                        LoadingIconView()
                     }
                 }
             } else {
@@ -182,7 +182,7 @@ struct LicenseRegisterView: View {
         VStack(spacing: 0) {
             Button(action: { container.handleIntent(.register) }) {
                 if container.state.isRegistering {
-                    LoadingIconView(size: .small)
+                    LoadingIconView()
                         .frame(maxWidth: .infinity)
                         .frame(height: 48.ratio())
                         .background(Color.Background)

@@ -119,6 +119,7 @@
 		52D6F3E52FA9886600EC9BE8 /* ClassInfoModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E42FA9886600EC9BE8 /* ClassInfoModuleView.swift */; };
 		52D6F3E72FA9886600EC9BE8 /* InstructorClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E62FA9886600EC9BE8 /* InstructorClassModuleView.swift */; };
 		52D6F3E82FAB768000EC9BE8 /* KakaoMapsSDK-SPM in Frameworks */ = {isa = PBXBuildFile; productRef = 52D6F3E72FAB768000EC9BE8 /* KakaoMapsSDK-SPM */; };
+		5E1A7703A0B0C0D0E0F00003 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 5E1A7702A0B0C0D0E0F00002 /* Lottie */; };
 		52D6F3E92FA9886600EC9BE8 /* FacilitiesModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3E82FA9886600EC9BE8 /* FacilitiesModuleView.swift */; };
 		52D6F3EB2FA9886600EC9BE8 /* ScheduleModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3EA2FA9886600EC9BE8 /* ScheduleModuleView.swift */; };
 		52D6F3EC2FA9886600EC9BE8 /* LocationModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6F3ED2FA9886600EC9BE8 /* LocationModuleView.swift */; };
@@ -335,6 +336,7 @@
 				52D6B92C2E50DEBF00F60E39 /* KakaoSDK in Frameworks */,
 				52D6B92F2E50E27B00F60E39 /* Alamofire in Frameworks */,
 				52D6F3E82FAB768000EC9BE8 /* KakaoMapsSDK-SPM in Frameworks */,
+				5E1A7703A0B0C0D0E0F00003 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1012,6 +1014,7 @@
 				52D6B92E2E50E27B00F60E39 /* Alamofire */,
 				52A174602EF7F11D00208298 /* SwiftUIIntrospect */,
 				52D6F3E72FAB768000EC9BE8 /* KakaoMapsSDK-SPM */,
+				5E1A7702A0B0C0D0E0F00002 /* Lottie */,
 			);
 			productName = DopiDopi;
 			productReference = 52F308812E3F4CD10066ED1B /* DopiDopi.app */;
@@ -1046,6 +1049,7 @@
 				52D6B92D2E50E27B00F60E39 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				52A1745F2EF7F11D00208298 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 				52D6F3E62FAB768000EC9BE8 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */,
+				5E1A7701A0B0C0D0E0F00001 /* XCRemoteSwiftPackageReference "lottie-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 52F308822E3F4CD10066ED1B /* Products */;
@@ -1479,6 +1483,14 @@
 				minimumVersion = 2.12.10;
 			};
 		};
+		5E1A7701A0B0C0D0E0F00001 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.6.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1501,6 +1513,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 52D6F3E62FAB768000EC9BE8 /* XCRemoteSwiftPackageReference "KakaoMapsSDK-SPM" */;
 			productName = "KakaoMapsSDK-SPM";
+		};
+		5E1A7702A0B0C0D0E0F00002 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5E1A7701A0B0C0D0E0F00001 /* XCRemoteSwiftPackageReference "lottie-spm" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

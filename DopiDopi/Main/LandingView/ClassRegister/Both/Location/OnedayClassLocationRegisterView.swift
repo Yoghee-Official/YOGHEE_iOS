@@ -96,7 +96,7 @@ struct OnedayClassLocationRegisterView: View {
             if container.state.isLoadingCenters {
                 HStack {
                     Spacer()
-                    LoadingIconView(size: .small)
+                    LoadingIconView()
                     Spacer()
                 }
                 .padding(.vertical, 24.ratio())
