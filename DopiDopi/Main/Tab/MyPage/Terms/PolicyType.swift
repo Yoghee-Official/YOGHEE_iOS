@@ -2,7 +2,7 @@
 //  PolicyType.swift
 //  YOGHEE
 //
-//  약관 문서 종류 및 웹 URL (TM_MO_1 메뉴 / TU_MO_1 ~ TU_MO_4)
+//  약관 문서 종류 및 웹 URL (TM_MO_1 메뉴 / TU_MO_1 ~ TU_MO_4, 환불 정책)
 //
 
 import Foundation
@@ -16,6 +16,8 @@ enum PolicyType: String, CaseIterable, Hashable, Identifiable {
     case location
     /// 마케팅 활용 동의서 (TU_MO_4)
     case marketing
+    /// 환불 정책
+    case refund
 
     var id: String { rawValue }
 
@@ -26,6 +28,7 @@ enum PolicyType: String, CaseIterable, Hashable, Identifiable {
         case .privacy: return "개인정보 처리방침"
         case .location: return "위치정보 이용약관"
         case .marketing: return "마케팅 활용 동의서"
+        case .refund: return "환불 정책"
         }
     }
 
@@ -36,6 +39,7 @@ enum PolicyType: String, CaseIterable, Hashable, Identifiable {
         case .privacy: return "개인정보 처리방침 (Privacy Policy)"
         case .location: return "위치정보 이용약관 (Location Terms)"
         case .marketing: return "마케팅 활용 동의서 (Marketing Agreement)"
+        case .refund: return "환불 정책 (Refund Policy)"
         }
     }
 
