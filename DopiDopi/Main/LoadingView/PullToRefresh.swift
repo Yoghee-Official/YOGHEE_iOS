@@ -97,8 +97,8 @@ private struct PullToRefreshModifier: ViewModifier {
             // 빈 공간이 아이콘 영역보다 작으면 콘텐츠 바로 위에 붙어 함께 내려오고, 크면 빈 공간 가운데에 위치
             let centerY = gap - max(Metric.refreshingHeight, gap) / 2
 
-            LoadingIconView(size: .small)
-                .scaleEffect(0.6 + 0.4 * progress)
+            // 크기는 103x47 고정, 당기는 정도에 따라 투명도만 변함
+            LoadingIconView()
                 .opacity(progress)
                 .frame(height: Metric.refreshingHeight)
                 .offset(y: centerY - Metric.refreshingHeight / 2)

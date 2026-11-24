@@ -24,50 +24,23 @@ struct LoadingView: View {
 
 // MARK: - LoadingIconView
 
-/// 로딩 애니메이션 아이콘 (피그마 기준 103x47)
+/// 로딩 애니메이션 아이콘. 어느 화면에서든 피그마 원본 크기 103x47pt로 고정
 struct LoadingIconView: View {
-    enum Size {
-        /// 피그마 원본 크기 (103x47) - 화면 전체 / 오버레이 로딩
-        case regular
-        /// 60% 크기 (약 62x28) - 섹션 안, 목록 하단, 버튼, 이미지 셀 로딩
-        case small
-
-        var scale: CGFloat {
-            switch self {
-            case .regular: return 1
-            case .small: return 0.6
-            }
-        }
-    }
-
-    /// 피그마 크기(103x47) 대비 배율. 화면 비율(ratio)은 내부에서 함께 적용됨
-    var scale: CGFloat = 1
-
-    init(size: Size = .regular) {
-        self.scale = size.scale
-    }
-
-    init(scale: CGFloat) {
-        self.scale = scale
-    }
-
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// 여러 곳에서 동시에 떠도 JSON은 한 번만 읽도록 공유
     private static let animation = LottieAnimation.asset("LoadingIconLottie")
 
     var body: some View {
-        let factor = CGFloat(1).ratio() * scale
-
         LottieView(animation: Self.animation)
             .playbackMode(reduceMotion ? .paused(at: .progress(0)) : .playing(.toProgress(1, loopMode: .loop)))
             .resizable()
-            .frame(width: Metric.width * factor, height: Metric.height * factor)
+            .frame(width: Metric.width, height: Metric.height)
             .accessibilityElement()
             .accessibilityLabel("로딩 중")
     }
 
-    private enum Metric {
+    enum Metric {
         static let width: CGFloat = 103
         static let height: CGFloat = 47
     }
@@ -78,6 +51,6 @@ struct LoadingIconView: View {
         LoadingView()
             .frame(height: 300)
             .background(Color.SandBeige)
-        LoadingIconView(size: .small)
+        LoadingIconView()
     }
 }
