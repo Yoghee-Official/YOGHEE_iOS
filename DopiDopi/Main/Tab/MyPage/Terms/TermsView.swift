@@ -12,7 +12,7 @@ struct TermsView: View {
     var body: some View {
         // 2a: 메뉴
         VStack(alignment: .leading, spacing: 0) {
-            ForEach(PolicyType.allCases) { policy in
+            ForEach(PolicyType.termsMenuCases) { policy in
                 NavigationLink(value: MyPageNavigationDestination.policy(policy)) {
                     HStack(spacing: 8) {
                         Text(policy.menuTitle)
