@@ -26,7 +26,7 @@ enum MyPageNavigationDestination: Hashable {
     case openedClassList
     /// 세부항목 "이용약관" → 약관 목록 (TM_MO_1)
     case terms
-    /// 약관 상세 웹뷰 (TU_MO_1 ~ TU_MO_4)
+    /// 약관 상세 웹뷰 (TU_MO_1 ~ TU_MO_4), 세부항목 "환불정책" 웹뷰
     case policy(PolicyType)
     /// 세부항목 "FAQ" → FAQ (CS_MO_1). 진입한 마이페이지 역할에 맞는 FAQ 노출
     case faq(UserRole)
@@ -167,6 +167,8 @@ class MyPageTabContainer: ObservableObject {
                 state.navigationDestination = .terms
             case "FAQ":
                 state.navigationDestination = .faq(state.currentRole)
+            case "환불정책":
+                state.navigationDestination = .policy(.refund)
             case "나의 문의":
                 // 요기니 세부 항목에만 노출되는 메뉴
                 guard state.currentRole == .yogini else { break }
@@ -176,7 +178,6 @@ class MyPageTabContainer: ObservableObject {
                 // TODO: 각 항목별 네비게이션 처리
                 // - "설정" → 세부 설정 페이지
                 // - "계정관리" → 계정관리 페이지
-                // - "환불정책" → 환불정책 페이지
             }
             
         // 아이템 선택 액션
