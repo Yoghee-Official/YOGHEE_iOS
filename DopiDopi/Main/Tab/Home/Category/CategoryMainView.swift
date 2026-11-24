@@ -95,6 +95,9 @@ struct CategoryMainView: View {
                         .padding(.top, 0)
                         .padding(.bottom, 36)
                     }
+                    .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                        container.handleIntent(.refresh)
+                    }
                 }
             }
             .background(Color.SandBeige)

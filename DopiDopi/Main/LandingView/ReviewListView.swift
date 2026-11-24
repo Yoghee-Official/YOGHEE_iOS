@@ -31,6 +31,9 @@ struct ReviewListView: View {
                     reviewList
                 }
             }
+            .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                container.handleIntent(.refresh)
+            }
         }
         .background(Color.SandBeige.ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)

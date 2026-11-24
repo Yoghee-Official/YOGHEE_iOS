@@ -195,6 +195,9 @@ struct OpenedClassListView: View {
                     }
                 }
             }
+            .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                container.handleIntent(.refresh)
+            }
         }
     }
 }

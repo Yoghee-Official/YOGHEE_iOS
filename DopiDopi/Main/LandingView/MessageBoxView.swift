@@ -137,6 +137,9 @@ struct MessageBoxView: View {
                 .padding(.top, 22.ratio())
                 .padding(.bottom, 40)
             }
+            .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                container.handleIntent(.refresh)
+            }
         }
     }
 }
