@@ -10,6 +10,8 @@ import SwiftUI
 // MARK: - Intent
 enum OpenedClassListIntent {
     case load
+    /// 당겨서 새로고침 - 기존 목록을 유지한 채 다시 불러옴
+    case refresh
     /// 2a: 카테고리 필터 팝업
     case showCategoryFilter(Bool)
     case applyCategoryFilter(Set<String>)
@@ -36,6 +38,8 @@ struct OpenedClassListState: Equatable {
     /// 필터가 적용된 노출 목록 (필터 변경·로딩 시에만 다시 계산)
     var visibleClasses: [LeaderClassDTO] = []
     var isLoading: Bool = false
+    /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 목록 유지)
+    var isRefreshing: Bool = false
     var errorMessage: String? = nil
 
     var selectedTab: OpenedClassTab = .all
@@ -61,6 +65,9 @@ class OpenedClassListContainer: ObservableObject {
         switch intent {
         case .load:
             load()
+        case .refresh:
+            guard !state.isLoading, !state.isRefreshing else { return }
+            load(isRefresh: true)
         case .showCategoryFilter(let isPresented):
             state.moreMenuClassId = nil
             state.showCategoryFilter = isPresented
@@ -99,8 +106,12 @@ class OpenedClassListContainer: ObservableObject {
         }
     }
 
-    private func load() {
-        state.isLoading = true
+    private func load(isRefresh: Bool = false) {
+        if isRefresh {
+            state.isRefreshing = true
+        } else {
+            state.isLoading = true
+        }
         state.errorMessage = nil
 
         Task { @MainActor in
@@ -108,10 +119,12 @@ class OpenedClassListContainer: ObservableObject {
                 state.classes = try await APIService.shared.getLeaderClasses()
                 applyFilters()
                 state.isLoading = false
+                state.isRefreshing = false
             } catch {
                 log("❌ 개설한 수련 목록 로딩 에러: \(error)")
                 state.errorMessage = error.localizedDescription
                 state.isLoading = false
+                state.isRefreshing = false
             }
         }
     }

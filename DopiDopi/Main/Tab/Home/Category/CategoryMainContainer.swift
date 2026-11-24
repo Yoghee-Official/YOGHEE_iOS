@@ -16,6 +16,8 @@ enum CategoryMainIntent {
     case selectClass(String)
     case toggleFavorite(classId: String)
     case toggleFilterSheet
+    /// 당겨서 새로고침 - 기존 목록을 유지한 채 다시 불러옴
+    case refresh
 }
 
 // MARK: - State
@@ -24,6 +26,8 @@ struct CategoryMainState: Equatable {
     var selectedFilter: FilterOption = .recommended
     var selectedCategoryId: String = ""
     var isLoading: Bool = false
+    /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 목록 유지)
+    var isRefreshing: Bool = false
     var errorMessage: String?
     var showFilterSheet: Bool = false
 }
@@ -88,11 +92,19 @@ class CategoryMainContainer: ObservableObject {
             
         case .toggleFilterSheet:
             state.showFilterSheet.toggle()
+
+        case .refresh:
+            guard !state.isLoading, !state.isRefreshing else { return }
+            loadClasses(categoryId: state.selectedCategoryId, sort: state.selectedFilter.apiValue, isRefresh: true)
         }
     }
     
-    private func loadClasses(categoryId: String, sort: String?) {
-        state.isLoading = true
+    private func loadClasses(categoryId: String, sort: String?, isRefresh: Bool = false) {
+        if isRefresh {
+            state.isRefreshing = true
+        } else {
+            state.isLoading = true
+        }
         state.errorMessage = nil
 
         Task {
@@ -106,10 +118,12 @@ class CategoryMainContainer: ObservableObject {
                 }
                 self.state.classes = classes
                 self.state.isLoading = false
+                self.state.isRefreshing = false
                 print("✅ 카테고리 클래스 로드 완료: \(classes.count)개")
             } catch {
                 self.state.errorMessage = error.localizedDescription
                 self.state.isLoading = false
+                self.state.isRefreshing = false
                 print("❌ 카테고리 클래스 로드 실패: \(error)")
             }
         }
