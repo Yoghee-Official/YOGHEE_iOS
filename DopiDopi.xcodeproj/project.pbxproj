@@ -157,6 +157,7 @@
 		A1C0FFEE0000000000000003 /* MessageBoxAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0FFEE0000000000000004 /* MessageBoxAlertView.swift */; };
 		A9860B3A3726479494CA6824 /* TermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204359F87EAB47FEB393144B /* TermsView.swift */; };
 		AEDE08A47FB14997B7125CF6 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EB34BC78EC14B1D977C281B /* LoadingView.swift */; };
+		FF260A21E8E8499CAB673F3B /* PullToRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FB5A87E71C4383A5377C51 /* PullToRefresh.swift */; };
 		D5299276923943C1BCD05EFB /* MemberInfoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 809455CF4BE6492F959B1151 /* MemberInfoModels.swift */; };
 		DA29BE9FF771228E9DFA359F /* AttendanceCheckContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3E7391ECD20DFD8465254B /* AttendanceCheckContainer.swift */; };
 		E12F5485C27F35D81F708ED6 /* ImagePickerComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */; };
@@ -310,6 +311,7 @@
 		8236EB37AF0F52694B00BB39 /* CenterManageAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenterManageAlertView.swift; sourceTree = "<group>"; };
 		9918085499E64089AFB48769 /* ReservationHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationHistoryView.swift; sourceTree = "<group>"; };
 		9EB34BC78EC14B1D977C281B /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		E4FB5A87E71C4383A5377C51 /* PullToRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefresh.swift; sourceTree = "<group>"; };
 		A1C0FFEE0000000000000002 /* NotificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModels.swift; sourceTree = "<group>"; };
 		A1C0FFEE0000000000000004 /* MessageBoxAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBoxAlertView.swift; sourceTree = "<group>"; };
 		A6251A963D6A48C09CC600DA /* OpenedClassListContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenedClassListContainer.swift; sourceTree = "<group>"; };
@@ -370,6 +372,7 @@
 			isa = PBXGroup;
 			children = (
 				9EB34BC78EC14B1D977C281B /* LoadingView.swift */,
+				E4FB5A87E71C4383A5377C51 /* PullToRefresh.swift */,
 			);
 			path = LoadingView;
 			sourceTree = "<group>";
@@ -1210,6 +1213,7 @@
 				522CE6102F12A6BF0063FDF5 /* AuthManager.swift in Sources */,
 				522CE6112F12A6BF0063FDF5 /* SplashView.swift in Sources */,
 				AEDE08A47FB14997B7125CF6 /* LoadingView.swift in Sources */,
+				FF260A21E8E8499CAB673F3B /* PullToRefresh.swift in Sources */,
 				522CE6122F12A6BF0063FDF5 /* ContentView.swift in Sources */,
 				52295B232F324D5900E615E1 /* MyPageEmptyView.swift in Sources */,
 				52F987A02F4D06EE00C905D1 /* OnedayClassExplanationRegisterView.swift in Sources */,

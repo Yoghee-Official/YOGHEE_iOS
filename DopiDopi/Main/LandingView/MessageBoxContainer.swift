@@ -10,6 +10,8 @@ import SwiftUI
 // MARK: - Intent
 enum MessageBoxIntent {
     case loadMessages
+    /// 당겨서 새로고침 - 기존 목록을 유지한 채 첫 페이지부터 다시 불러옴
+    case refresh
     case loadNextPage
     case selectTab(MessageBoxTab)
     /// 메세지 유닛 탭 - 접혀 있으면 상세조회(읽음 처리) 후 펼치고, 펼쳐져 있으면 접는다
@@ -32,6 +34,8 @@ struct MessageBoxState: Equatable {
     var page: Int = 0
     var hasNext: Bool = false
     var isLoading: Bool = false
+    /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 목록 유지)
+    var isRefreshing: Bool = false
     var isLoadingMore: Bool = false
     var errorMessage: String? = nil
     /// 삭제·모두 읽음 실패 등 안내 팝업 메세지
@@ -54,6 +58,9 @@ class MessageBoxContainer: ObservableObject {
         switch intent {
         case .loadMessages:
             loadMessages()
+        case .refresh:
+            guard !state.isLoading, !state.isRefreshing else { return }
+            loadMessages(isRefresh: true)
         case .loadNextPage:
             loadNextPage()
         case .selectTab(let tab):
@@ -73,12 +80,16 @@ class MessageBoxContainer: ObservableObject {
 
     // MARK: - Private Methods
 
-    private func loadMessages() {
+    private func loadMessages(isRefresh: Bool = false) {
         let requestId = UUID()
         listRequestId = requestId
         let tab = state.selectedTab
 
-        state.isLoading = true
+        if isRefresh {
+            state.isRefreshing = true
+        } else {
+            state.isLoading = true
+        }
         state.errorMessage = nil
         state.expandedMessageIds = []
 
@@ -91,6 +102,7 @@ class MessageBoxContainer: ObservableObject {
                 state.page = response.page ?? 0
                 state.hasNext = response.hasNext ?? false
                 state.isLoading = false
+                state.isRefreshing = false
             } catch {
                 guard listRequestId == requestId else { return }
                 log("❌ 메세지 목록 조회 에러: \(error)")
@@ -98,12 +110,13 @@ class MessageBoxContainer: ObservableObject {
                 state.hasNext = false
                 state.errorMessage = error.localizedDescription
                 state.isLoading = false
+                state.isRefreshing = false
             }
         }
     }
 
     private func loadNextPage() {
-        guard state.hasNext, !state.isLoading, !state.isLoadingMore else { return }
+        guard state.hasNext, !state.isLoading, !state.isRefreshing, !state.isLoadingMore else { return }
         let requestId = listRequestId
         let tab = state.selectedTab
         let nextPage = state.page + 1

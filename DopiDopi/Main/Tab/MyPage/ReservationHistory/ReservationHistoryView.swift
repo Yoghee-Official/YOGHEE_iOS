@@ -130,6 +130,9 @@ struct ReservationHistoryView: View {
                 .padding(.horizontal, 16.ratio())
                 .padding(.bottom, 40.ratio())
             }
+            .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                container.handleIntent(.refresh)
+            }
         }
     }
 }

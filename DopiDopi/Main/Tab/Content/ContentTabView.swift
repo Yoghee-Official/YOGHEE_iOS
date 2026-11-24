@@ -86,6 +86,9 @@ struct ContentTabView: View {
             }
             .padding(.bottom, 32)
         }
+        .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+            container.handleIntent(.refresh)
+        }
     }
 
     // MARK: - Image Slider

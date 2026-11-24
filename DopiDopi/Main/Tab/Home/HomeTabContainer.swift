@@ -11,6 +11,8 @@ import Foundation
 // MARK: - Intent
 enum HomeIntent {
     case loadMainData
+    /// 당겨서 새로고침 - 기존 화면을 유지한 채 다시 불러옴
+    case refresh
     case selectItem(String, String) // itemId, sectionId
     case toggleClassType(ClassType)
     case clearNavigation
@@ -21,12 +23,15 @@ struct HomeState: Equatable {
     var sections: [HomeSection] = []
     var selectedClassType: ClassType = .oneDay
     var isLoading: Bool = false
+    /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 섹션 유지)
+    var isRefreshing: Bool = false
     var errorMessage: String?
     var navigationDestination: NavigationDestination?
     
     static func == (lhs: HomeState, rhs: HomeState) -> Bool {
         return lhs.selectedClassType == rhs.selectedClassType &&
                lhs.isLoading == rhs.isLoading &&
+               lhs.isRefreshing == rhs.isRefreshing &&
                lhs.errorMessage == rhs.errorMessage &&
                lhs.sections.count == rhs.sections.count &&
                lhs.navigationDestination == rhs.navigationDestination
@@ -53,6 +58,9 @@ class HomeTabContainer: ObservableObject {
         switch intent {
         case .loadMainData:
             loadMainData()
+        case .refresh:
+            guard !state.isLoading, !state.isRefreshing else { return }
+            loadMainData(isRefresh: true)
         case .selectItem(let itemId, let sectionId):
             print("Selected item: \(itemId) from section: \(sectionId)")
             handleItemSelection(itemId: itemId, sectionId: sectionId)
@@ -89,8 +97,12 @@ class HomeTabContainer: ObservableObject {
         }
     }
     
-    private func loadMainData() {
-        state.isLoading = true
+    private func loadMainData(isRefresh: Bool = false) {
+        if isRefresh {
+            state.isRefreshing = true
+        } else {
+            state.isLoading = true
+        }
         state.errorMessage = nil
         
         Task { @MainActor in
@@ -103,6 +115,7 @@ class HomeTabContainer: ObservableObject {
                 await MainActor.run {
                     self.state.sections = self.createSections(from: response.data, classType: self.state.selectedClassType)
                     self.state.isLoading = false
+                    self.state.isRefreshing = false
                 }
                 
             } catch let decodingError as DecodingError {
@@ -139,6 +152,7 @@ class HomeTabContainer: ObservableObject {
                     }
                     
                     self.state.isLoading = false
+                    self.state.isRefreshing = false
                 }
                 
             } catch {
@@ -149,6 +163,7 @@ class HomeTabContainer: ObservableObject {
                 await MainActor.run {
                     self.state.errorMessage = "데이터 로딩 실패: \(error.localizedDescription)"
                     self.state.isLoading = false
+                    self.state.isRefreshing = false
                 }
             }
         }

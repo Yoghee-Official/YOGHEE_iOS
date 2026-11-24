@@ -108,6 +108,9 @@ struct HomeTabView: View {
                             }
                         )
                     }
+                    .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                        container.handleIntent(.refresh)
+                    }
                     .onAppear {
                         scrollViewHeight = scrollGeometry.size.height
                     }

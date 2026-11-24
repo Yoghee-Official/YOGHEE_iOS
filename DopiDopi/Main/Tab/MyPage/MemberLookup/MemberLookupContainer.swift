@@ -12,6 +12,8 @@ import SwiftUI
 // MARK: - Intent
 enum MemberLookupIntent {
     case load
+    /// 당겨서 새로고침 - 현재 탭 목록을 유지한 채 첫 페이지부터 다시 불러옴
+    case refresh
     /// 2a 하루수련 / 정규수련 토글
     case selectTab(MemberLookupTab)
     case loadMoreIfNeeded(currentId: String)
@@ -67,6 +69,8 @@ struct MemberLookupListState: Equatable {
 struct MemberLookupState: Equatable {
     var selectedTab: MemberLookupTab = .oneDay
     var lists: [MemberLookupTab: MemberLookupListState] = [:]
+    /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 목록 유지)
+    var isRefreshing: Bool = false
 
     /// 2d 더보기 메뉴가 열린 회원
     var moreMenuMemberId: String? = nil
@@ -97,6 +101,10 @@ class MemberLookupContainer: ObservableObject {
         case .load:
             if !state.currentList.hasLoaded { reload(state.selectedTab) }
 
+        case .refresh:
+            guard !state.currentList.isLoading, !state.isRefreshing else { return }
+            loadPage(0, tab: state.selectedTab, replacing: true, isRefresh: true)
+
         case .selectTab(let tab):
             state.moreMenuMemberId = nil
             state.selectedTab = tab
@@ -105,7 +113,7 @@ class MemberLookupContainer: ObservableObject {
         case .loadMoreIfNeeded(let currentId):
             let list = state.currentList
             guard currentId == list.members.last?.userUuid,
-                  list.hasNext, !list.isLoading, list.errorMessage == nil else { return }
+                  list.hasNext, !list.isLoading, !state.isRefreshing, list.errorMessage == nil else { return }
             loadPage(list.nextPage, tab: state.selectedTab, replacing: false)
 
         case .retry:
@@ -136,8 +144,13 @@ class MemberLookupContainer: ObservableObject {
         loadPage(0, tab: tab, replacing: true)
     }
 
-    private func loadPage(_ page: Int, tab: MemberLookupTab, replacing: Bool) {
-        state.lists[tab, default: MemberLookupListState()].isLoading = true
+    /// - Parameter isRefresh: 당겨서 새로고침. 목록 로딩 표시 없이 응답이 올 때까지 기존 목록을 유지
+    private func loadPage(_ page: Int, tab: MemberLookupTab, replacing: Bool, isRefresh: Bool = false) {
+        if isRefresh {
+            state.isRefreshing = true
+        } else {
+            state.lists[tab, default: MemberLookupListState()].isLoading = true
+        }
 
         Task {
             do {
@@ -145,6 +158,7 @@ class MemberLookupContainer: ObservableObject {
                 var list = state.lists[tab] ?? MemberLookupListState()
                 if replacing {
                     list.members = result.items
+                    list.errorMessage = nil
                 } else {
                     // 페이지 경계에서 중복 항목이 들어오지 않도록 걸러낸다
                     let existing = Set(list.members.map(\.userUuid))
@@ -155,6 +169,7 @@ class MemberLookupContainer: ObservableObject {
                 list.isLoading = false
                 list.hasLoaded = true
                 state.lists[tab] = list
+                if isRefresh { state.isRefreshing = false }
                 log("✅ [MemberLookup] \(tab.title) \(page)페이지 조회 완료: \(result.items.count)명 (전체 \(result.totalCount ?? 0)명)")
             } catch {
                 log("❌ [MemberLookup] \(tab.title) 회원 목록 조회 실패: \(error)")
@@ -164,6 +179,7 @@ class MemberLookupContainer: ObservableObject {
                 list.hasLoaded = true
                 list.errorMessage = errorMessage(for: error, fallback: "회원 목록을 불러오지 못했습니다.")
                 state.lists[tab] = list
+                if isRefresh { state.isRefreshing = false }
             }
         }
     }

@@ -10,6 +10,8 @@ import SwiftUI
 // MARK: - Intent
 enum ReservationHistoryIntent {
     case load
+    /// 당겨서 새로고침 - 기존 목록을 유지한 채 다시 불러옴
+    case refresh
     case selectTab(ReservationHistoryTab)
     case toggleSortPopup
     case changeSort(ReservationHistorySort)
@@ -32,6 +34,8 @@ struct ReservationHistoryState: Equatable {
     /// 2d: 완료된 내역
     var expiredItems: [ReservationDTO] = []
     var isLoading: Bool = false
+    /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 목록 유지)
+    var isRefreshing: Bool = false
     var errorMessage: String? = nil
 
     var pendingCancel: ReservationDTO? = nil
@@ -55,6 +59,9 @@ class ReservationHistoryContainer: ObservableObject {
         switch intent {
         case .load:
             load()
+        case .refresh:
+            guard !state.isLoading, !state.isRefreshing else { return }
+            load(isRefresh: true)
         case .selectTab(let tab):
             state.selectedTab = tab
             state.showSortPopup = false
@@ -78,9 +85,13 @@ class ReservationHistoryContainer: ObservableObject {
         }
     }
 
-    private func load() {
+    private func load(isRefresh: Bool = false) {
         loadTask?.cancel()
-        state.isLoading = true
+        if isRefresh {
+            state.isRefreshing = true
+        } else {
+            state.isLoading = true
+        }
         state.errorMessage = nil
         let sort = state.sort
 
@@ -92,11 +103,13 @@ class ReservationHistoryContainer: ObservableObject {
                 state.reservedItems = reservations.filter { !$0.isCompleted }
                 state.expiredItems = reservations.filter { $0.isCompleted }
                 state.isLoading = false
+                state.isRefreshing = false
             } catch {
                 guard !Task.isCancelled else { return }
                 log("❌ 내역 보기 로딩 에러: \(error)")
                 state.errorMessage = error.localizedDescription
                 state.isLoading = false
+                state.isRefreshing = false
             }
         }
     }

@@ -121,6 +121,9 @@ struct MemberLookupView: View {
                     }
                 }
             }
+            .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                container.handleIntent(.refresh)
+            }
         }
     }
 }
