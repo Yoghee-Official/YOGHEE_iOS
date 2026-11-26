@@ -4,7 +4,8 @@
 //
 //  회원 조회(SM_MO_1) - 지도자 마이페이지 > 회원 조회 모듈 "더보기"
 //  - 2a 하루수련 / 정규수련 토글 (탭별로 목록·페이지를 따로 유지)
-//  - 2d 더보기: 정규수련 탭에서만 노출. 활성 회원은 수강권 정지, 비활성 회원은 수강권 재개 (회원 단위)
+//  - 2d 더보기: 정규수련 탭에서만 노출 (하루수련은 정지 기능 없음). 활성 회원은 수강권 정지, 비활성 회원은 수강권 재개
+//    정지·재개 API는 요가원(centerId) 단위라 회원 상세에서 대상 요가원을 확인한 뒤 요청한다
 //
 
 import SwiftUI
@@ -44,6 +45,21 @@ enum MemberTicketAction: Equatable {
         switch self {
         case .pause: return "수강권을 정지하시겠습니까?"
         case .resume: return "수강권을 재개하시겠습니까?"
+        }
+    }
+
+    /// 회원 상세 tickets 중 이 동작의 대상이 되는 수강권 상태
+    var targetTicketStatus: String {
+        switch self {
+        case .pause: return "ACTIVE"
+        case .resume: return "PAUSED"
+        }
+    }
+
+    var noTargetMessage: String {
+        switch self {
+        case .pause: return "정지할 수 있는 사용 중인 수강권이 없습니다."
+        case .resume: return "재개할 수 있는 정지된 수강권이 없습니다."
         }
     }
 
@@ -184,29 +200,65 @@ class MemberLookupContainer: ObservableObject {
         }
     }
 
-    // MARK: - 2d 수강권 정지 / 재개 (회원 단위)
+    // MARK: - 2d 수강권 정지 / 재개
 
+    /// 1) 회원 상세에서 대상 수강권(정지: ACTIVE, 재개: PAUSED)의 요가원(centerId)을 모으고
+    /// 2) 요가원마다 정지/재개를 요청한다. 화면은 회원 단위라 해당 회원의 모든 요가원 정규수련 수강권이 대상.
     private func performTicketAction() {
         guard let member = state.pendingMember, let action = state.pendingAction, !state.isProcessing else { return }
         state.pendingMember = nil
         state.isProcessing = true
 
         Task {
+            defer { state.isProcessing = false }
+
+            let centerIds: [String]
             do {
-                switch action {
-                case .pause:
-                    try await APIService.shared.pauseMemberTickets(userUuid: member.userUuid)
-                case .resume:
-                    try await APIService.shared.resumeMemberTickets(userUuid: member.userUuid)
-                }
-                log("✅ [MemberLookup] \(action.menuTitle) 완료: \(member.userUuid)")
-                // 정지 여부는 회원 단위이므로 두 탭에 있는 같은 회원을 모두 갱신
-                updateTicketPaused(userUuid: member.userUuid, paused: action == .pause)
+                let detail = try await APIService.shared.getLeaderMemberDetail(userUuid: member.userUuid)
+                centerIds = detail.centerIds(forTicketStatus: action.targetTicketStatus)
             } catch {
-                log("❌ [MemberLookup] \(action.menuTitle) 실패: \(error)")
+                log("❌ [MemberLookup] \(action.menuTitle) 대상 확인(회원 상세) 실패: \(error)")
                 state.alertMessage = errorMessage(for: error, fallback: action.failureMessage)
+                return
             }
-            state.isProcessing = false
+
+            guard !centerIds.isEmpty else {
+                log("⚠️ [MemberLookup] \(action.menuTitle) 대상 수강권 없음: \(member.userUuid)")
+                state.alertMessage = action.noTargetMessage
+                return
+            }
+
+            var succeededCount = 0
+            var lastError: Error?
+            for centerId in centerIds {
+                do {
+                    switch action {
+                    case .pause:
+                        try await APIService.shared.pauseMemberTickets(userUuid: member.userUuid, centerId: centerId)
+                    case .resume:
+                        try await APIService.shared.resumeMemberTickets(userUuid: member.userUuid, centerId: centerId)
+                    }
+                    succeededCount += 1
+                    log("✅ [MemberLookup] \(action.menuTitle) 완료: \(member.userUuid) / center \(centerId)")
+                } catch {
+                    lastError = error
+                    log("❌ [MemberLookup] \(action.menuTitle) 실패: \(member.userUuid) / center \(centerId) - \(error)")
+                }
+            }
+
+            // 서버 ticketPaused 기준(정지된 정규수련 수강권이 하나라도 있으면 true)에 맞춰 갱신
+            switch action {
+            case .pause where succeededCount > 0:
+                updateTicketPaused(userUuid: member.userUuid, paused: true)
+            case .resume where lastError == nil:
+                updateTicketPaused(userUuid: member.userUuid, paused: false)
+            default:
+                break
+            }
+
+            if let lastError {
+                state.alertMessage = errorMessage(for: lastError, fallback: action.failureMessage)
+            }
         }
     }
 
