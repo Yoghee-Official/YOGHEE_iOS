@@ -3,7 +3,8 @@
 //  YOGHEE
 //
 //  회원 조회(SM_MO_1) - 지도자 수강생 목록 (GET /api/leader/members)
-//  수강권 정지/재개 (POST /api/leader/members/{userUuid}/tickets/pause|resume)
+//  수강생 상세 (GET /api/leader/members/{userUuid}) - 정지·재개할 요가원(centerId) 확인용
+//  수강권 정지/재개 (POST /api/leader/members/{userUuid}/tickets/pause|resume, body: centerId)
 //
 
 import Foundation
@@ -105,6 +106,57 @@ struct LeaderMemberPageResponse: Codable {
             self.data = data
         } else {
             self.data = try LeaderMemberPageDTO(from: decoder)
+        }
+    }
+}
+
+// MARK: - 수강생 상세 (정지·재개 대상 요가원 확인용)
+/// GET /api/leader/members/{userUuid} 응답 중 수강권 정지·재개에 필요한 tickets 만 사용
+struct LeaderMemberDetailDTO: Codable, Equatable {
+    let userUuid: String?
+    let tickets: [LeaderMemberTicketDTO]?
+}
+
+struct LeaderMemberTicketDTO: Codable, Equatable {
+    let userTicketId: String?
+    let classId: String?
+    let className: String?
+    /// 수강권 클래스의 요가원 ID. 수강권 정지·재개 요청의 centerId 로 쓴다
+    let centerId: String?
+    /// PERIOD / SESSION / ONE_DAY
+    let ticketType: String?
+    /// UNUSED / ACTIVE / EXPIRED / USED_UP / PAUSED / REFUNDED
+    let status: String?
+
+    /// 정규수련 수강권 여부 (하루수련 이용권 제외)
+    var isRegular: Bool { ticketType != "ONE_DAY" }
+}
+
+extension LeaderMemberDetailDTO {
+    /// 정지(ACTIVE 수강권) 또는 재개(PAUSED 수강권) 대상 요가원 ID 목록 (중복 제거, 순서 유지)
+    func centerIds(forTicketStatus status: String) -> [String] {
+        var seen = Set<String>()
+        return (tickets ?? []).compactMap { ticket in
+            guard ticket.isRegular, ticket.status == status,
+                  let centerId = ticket.centerId, !centerId.isEmpty,
+                  seen.insert(centerId).inserted else { return nil }
+            return centerId
+        }
+    }
+}
+
+/// {code,status,data} 래핑/직접 응답 모두 디코딩
+struct LeaderMemberDetailResponse: Codable {
+    let data: LeaderMemberDetailDTO
+
+    private enum CodingKeys: String, CodingKey { case data }
+
+    init(from decoder: Decoder) throws {
+        if let container = try? decoder.container(keyedBy: CodingKeys.self),
+           let data = try? container.decode(LeaderMemberDetailDTO.self, forKey: .data) {
+            self.data = data
+        } else {
+            self.data = try LeaderMemberDetailDTO(from: decoder)
         }
     }
 }

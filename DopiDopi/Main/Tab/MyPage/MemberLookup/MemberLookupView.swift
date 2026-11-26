@@ -189,8 +189,8 @@ private struct MemberLookupCardView: View {
 
     /// 2d 더보기는 정규수련 탭에서만 노출
     private var showsMoreButton: Bool { tab == .regular }
-    /// 수강권 정지 회원은 비활성화(회색) 처리
-    private var isPaused: Bool { member.isTicketPaused }
+    /// 수강권 정지 회원은 비활성화(회색) 처리. 정지는 정규수련 수강권 기준이라 정규수련 탭에서만 적용
+    private var isPaused: Bool { tab == .regular && member.isTicketPaused }
     private var textColor: Color { isPaused ? .Info : .DarkBlack }
 
     var body: some View {
