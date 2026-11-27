@@ -28,82 +28,89 @@ struct ClassDetailView: View {
             let showHeader = scrollOffsetY >= headerThreshold
 
             ZStack(alignment: .top) {
-                // 1. 배경 이미지 — safeArea 까지 확장
-                backgroundImageView
-                    .frame(width: screenWidth, height: imageHeight)
-                    .ignoresSafeArea(edges: .top)
+                if let connectionError = container.state.connectionError {
+                    // 연결 오류: 이미지·디테일 시트 대신 오류 화면 (뒤로가기 헤더는 아래 3에서 그대로 노출)
+                    Color.SandBeige
+                        .ignoresSafeArea()
+                    ConnectionErrorView(kind: connectionError)
+                } else {
+                    // 1. 배경 이미지 — safeArea 까지 확장
+                    backgroundImageView
+                        .frame(width: screenWidth, height: imageHeight)
+                        .ignoresSafeArea(edges: .top)
 
-                // 2. 스크롤 컨텐츠 (디테일 시트)
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(spacing: 0) {
-                        Color.clear
-                            .frame(width: screenWidth, height: cardTopOffset)
+                    // 2. 스크롤 컨텐츠 (디테일 시트)
+                    ScrollView(.vertical, showsIndicators: false) {
+                        VStack(spacing: 0) {
+                            Color.clear
+                                .frame(width: screenWidth, height: cardTopOffset)
 
-                        // 디테일 시트
-                        VStack(spacing: 24) {
-                            // 개발된 모듈
-                            if let detail = container.state.detail {
-                                ClassInfoModuleView(
-                                    detail: detail,
-                                    onReviewTap: {
-                                        // TODO: 리뷰 모듈 추가 시 앵커링 이동 연결
-                                    },
-                                    onFeatureTap: { _ in
-                                        // 디스크립션상 반응 없음
-                                    }
-                                )
-                                .padding(.top, 24)
-
-                                InstructorClassModuleView(detail: detail)
-
-                                FacilitiesModuleView(detail: detail)
-
-                                ScheduleModuleView(
-                                    detail: detail,
-                                    onScheduleTap: { _ in
-                                        // TODO: 일정 탭 시 동작 (예: 예약 화면)
-                                    }
-                                )
-
-                                LocationModuleView(detail: detail)
-
-                                ReviewModuleView(
-                                    detail: detail,
-                                    onShowAll: {
-                                        showReviewList = true
-                                    },
-                                    onItemTap: { reviewId in
-                                        print("리뷰 아이템 탭 - reviewId: \(reviewId)")
-                                    }
-                                )
-                                .navigationDestination(isPresented: $showReviewList) {
-                                    ReviewListView(
-                                        classId: detail.classId,
-                                        initialRating: detail.rating,
-                                        initialReviewCount: detail.reviewCount
+                            // 디테일 시트
+                            VStack(spacing: 24) {
+                                // 개발된 모듈
+                                if let detail = container.state.detail {
+                                    ClassInfoModuleView(
+                                        detail: detail,
+                                        onReviewTap: {
+                                            // TODO: 리뷰 모듈 추가 시 앵커링 이동 연결
+                                        },
+                                        onFeatureTap: { _ in
+                                            // 디스크립션상 반응 없음
+                                        }
                                     )
+                                    .padding(.top, 24)
+
+                                    InstructorClassModuleView(detail: detail)
+
+                                    FacilitiesModuleView(detail: detail)
+
+                                    ScheduleModuleView(
+                                        detail: detail,
+                                        onScheduleTap: { _ in
+                                            // TODO: 일정 탭 시 동작 (예: 예약 화면)
+                                        }
+                                    )
+
+                                    LocationModuleView(detail: detail)
+
+                                    ReviewModuleView(
+                                        detail: detail,
+                                        onShowAll: {
+                                            showReviewList = true
+                                        },
+                                        onItemTap: { reviewId in
+                                            print("리뷰 아이템 탭 - reviewId: \(reviewId)")
+                                        }
+                                    )
+                                    .navigationDestination(isPresented: $showReviewList) {
+                                        ReviewListView(
+                                            classId: detail.classId,
+                                            initialRating: detail.rating,
+                                            initialReviewCount: detail.reviewCount
+                                        )
+                                    }
                                 }
                             }
+                            .frame(width: screenWidth)
+                            .frame(minHeight: geo.size.height)
+                            .background(Color.white)
+                            .clipShape(UnevenRoundedRectangle(
+                                topLeadingRadius: 24,
+                                bottomLeadingRadius: 0,
+                                bottomTrailingRadius: 0,
+                                topTrailingRadius: 24
+                            ))
                         }
                         .frame(width: screenWidth)
-                        .frame(minHeight: geo.size.height)
-                        .background(Color.white)
-                        .clipShape(UnevenRoundedRectangle(
-                            topLeadingRadius: 24,
-                            bottomLeadingRadius: 0,
-                            bottomTrailingRadius: 0,
-                            topTrailingRadius: 24
-                        ))
                     }
-                    .frame(width: screenWidth)
-                }
-                .safeAreaInset(edge: .bottom, spacing: 0) {
-                    Color.clear.frame(height: 92-16)
-                }
-                .onScrollGeometryChange(for: CGFloat.self) { geometry in
-                    geometry.contentOffset.y
-                } action: { _, newValue in
-                    scrollOffsetY = newValue
+                    .safeAreaInset(edge: .bottom, spacing: 0) {
+                        Color.clear.frame(height: 92-16)
+                    }
+                    .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                        geometry.contentOffset.y
+                    } action: { _, newValue in
+                        scrollOffsetY = newValue
+                    }
                 }
 
                 // 3. 뒤로가기 헤더

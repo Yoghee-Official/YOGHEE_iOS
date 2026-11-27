@@ -63,12 +63,8 @@ struct CategoryMainView: View {
                     Spacer()
                     LoadingView()
                     Spacer()
-                } else if let errorMessage = container.state.errorMessage {
-                    Spacer()
-                    Text("오류 발생: \(errorMessage)")
-                        .pretendardFont(.regular, size: 12)
-                        .foregroundColor(.red)
-                    Spacer()
+                } else if let connectionError = container.state.connectionError {
+                    ConnectionErrorView(kind: connectionError)
                 } else if container.state.classes.isEmpty {
                     Spacer()
                     Text("예약 가능한 수업이 없습니다.")

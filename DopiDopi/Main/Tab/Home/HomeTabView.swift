@@ -31,19 +31,10 @@ struct HomeTabView: View {
                                 // 헤더를 제외한 스크롤 영역 전체(뷰포트 높이)를 채우는 로딩 화면
                                 LoadingView()
                                     .frame(width: scrollGeometry.size.width, height: scrollGeometry.size.height)
-                            } else if let errorMessage = container.state.errorMessage {
-                                VStack(spacing: 16) {
-                                    Text("오류가 발생했습니다")
-                                        .pretendardFont(.semiBold, size: 17)
-                                    Text(errorMessage)
-                                        .pretendardFont(.regular, size: 12)
-                                        .foregroundColor(.gray)
-                                    Button("다시 시도") {
-                                        container.handleIntent(.loadMainData)
-                                    }
-                                    .buttonStyle(.bordered)
-                                }
-                                .frame(maxWidth: .infinity, minHeight: 200)
+                            } else if let connectionError = container.state.connectionError {
+                                // 헤더 아래 스크롤 영역(뷰포트)만 채움 — 당겨서 새로고침으로 재시도 가능
+                                ConnectionErrorView(kind: connectionError)
+                                    .frame(width: scrollGeometry.size.width, height: scrollGeometry.size.height)
                             } else {
                                 ForEach(Array(container.state.sections.enumerated()), id: \.element.id) { index, section in
                                     SectionView(

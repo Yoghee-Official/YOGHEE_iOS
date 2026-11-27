@@ -49,6 +49,17 @@ struct ContentTabView: View {
         if container.state.isLoading {
             // 헤더를 제외한 나머지 영역 전체를 채우는 로딩 화면 (LoadingView 자체가 꽉 채움)
             LoadingView()
+        } else if let connectionError = container.state.connectionError {
+            // 헤더 아래 영역만 채움 (탭바 유지). 당겨서 새로고침으로 재시도 가능
+            GeometryReader { proxy in
+                ScrollView(.vertical, showsIndicators: false) {
+                    ConnectionErrorView(kind: connectionError)
+                        .frame(width: proxy.size.width, height: proxy.size.height)
+                }
+                .pullToRefresh(isRefreshing: container.state.isRefreshing) {
+                    container.handleIntent(.refresh)
+                }
+            }
         } else if container.state.items.isEmpty {
             emptyStateView
         } else {

@@ -22,7 +22,8 @@ struct ContentTabState: Equatable {
     /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 피드 유지)
     var isRefreshing: Bool = false
     var isEmpty: Bool = false
-    var errorMessage: String?
+    /// 피드 로드 실패 시 노출할 연결 오류 화면 (404 '이번 주 피드 없음'은 빈 상태로 처리하므로 제외)
+    var connectionError: ConnectionErrorKind?
 }
 
 @MainActor
@@ -50,7 +51,6 @@ class ContentTabContainer: ObservableObject {
             state.isLoading = true
             state.isEmpty = false
         }
-        state.errorMessage = nil
 
         Task { @MainActor in
             do {
@@ -58,16 +58,24 @@ class ContentTabContainer: ObservableObject {
                 state.weekLabel = response.data.weekLabel
                 state.items = response.data.items
                 state.isEmpty = false
+                state.connectionError = nil
                 state.isLoading = false
                 state.isRefreshing = false
             } catch APIError.notFound {
                 // 새로고침 중 이번 주 피드가 내려간 경우에도 빈 화면으로 바뀌도록 기존 항목을 비움
                 state.items = []
                 state.isEmpty = true
+                state.connectionError = nil
                 state.isLoading = false
                 state.isRefreshing = false
             } catch {
-                state.errorMessage = error.localizedDescription
+                print("❌ 피드 로딩 실패: \(error)")
+                // 비로그인(토큰 없음/만료)은 연결 오류가 아니므로 기존처럼 빈 상태로 둔다.
+                // 새로고침 실패 시 기존 피드가 있으면 그대로 유지하고, 없을 때만 오류 화면 노출
+                let isAuthError = (error as? APIError).map { $0 == .unauthorized || $0 == .tokenExpired } ?? false
+                if !isAuthError && (!isRefresh || state.items.isEmpty) {
+                    state.connectionError = .service
+                }
                 state.isLoading = false
                 state.isRefreshing = false
             }

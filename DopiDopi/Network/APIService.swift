@@ -53,7 +53,26 @@ enum APIError: LocalizedError, Equatable {
     }
 }
 
-/// 서버 에러 응답 바디 (예: {"code":400,"status":"fail","errorCode":"INVALID_REQUEST","errorMessage":"..."})
+// MARK: - Connection Error Kind
+/// 화면의 주 데이터를 불러오지 못했을 때 띄울 오류 화면 종류 (피그마 SB_MVP > Error)
+/// - service: ER_MO_1 서비스 연결 오류 — 네트워크 끊김·타임아웃·서버 장애 등 "잠시 후 다시 시도"할 상황
+/// - page:    ER_MO_2 페이지 연결 오류 — 요청한 데이터가 없음(404). 5초 뒤 홈으로 자동 이동
+enum ConnectionErrorKind: Equatable {
+    case service
+    case page
+}
+
+extension Error {
+    /// 화면 주 데이터 로드 실패를 오류 화면 종류로 분류한다.
+    /// 404가 "빈 상태"를 뜻하는 API(예: 이번 주 피드 없음)는 호출부에서 먼저 걸러야 한다.
+    var connectionErrorKind: ConnectionErrorKind {
+        if let apiError = self as? APIError, apiError == .notFound {
+            return .page
+        }
+        return .service
+    }
+}
+
 /// JSON 객체가 아닌 단일 값을 요청 바디로 그대로 전송 (서버 @RequestBody String 대응)
 private struct RawBodyEncoding: ParameterEncoding {
     let body: String
@@ -65,16 +84,24 @@ private struct RawBodyEncoding: ParameterEncoding {
     }
 }
 
+/// 서버 에러 응답 바디 (예: {"code":400,"status":"fail","errorCode":"INVALID_REQUEST","errorMessage":"..."})
+/// 일부 API(클래스 상세·피드·카테고리 404 등)는 errorMessage 대신 message 키로 내려준다.
 private struct APIErrorBody: Codable {
     let errorCode: String?
     let errorMessage: String?
+    let message: String?
+
+    var resolvedMessage: String? { errorMessage ?? message }
 }
 
 class APIService {
     static let shared = APIService()
     
     private let baseURL = "https://www.dopidopi.xyz"
-    
+
+    /// GET 요청 타임아웃 (초)
+    private static let getRequestTimeout: TimeInterval = 15
+
     private init() {}
     
     // MARK: - Debug Logging
@@ -807,7 +834,13 @@ class APIService {
         log("Headers: \(headers ?? [:])")
         
         return try await withCheckedThrowingContinuation { continuation in
-            AF.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers)
+            AF.request(url, method: method, parameters: parameters, encoding: encoding, headers: headers) { urlRequest in
+                // 조회(GET)는 기본 60초 대신 15초 안에 응답이 없으면 실패 처리해 서비스 연결 오류 화면을 빨리 보여준다.
+                // POST/PUT/DELETE는 서버에서 처리됐는데 앱만 타임아웃 나는 중복 요청 위험이 있어 기본값 유지.
+                if method == .get {
+                    urlRequest.timeoutInterval = Self.getRequestTimeout
+                }
+            }
                 .validate()
                 .responseData { [weak self] response in
                     self?.log("📡 API 응답 받음")
@@ -836,7 +869,7 @@ class APIService {
                                 continuation.resume(throwing: APIError.notFound)
                             } else if let data = response.data,
                                       let body = try? JSONDecoder().decode(APIErrorBody.self, from: data),
-                                      let message = body.errorMessage {
+                                      let message = body.resolvedMessage {
                                 self?.log("⚠️ 서버 에러 메시지: \(message)")
                                 continuation.resume(throwing: APIError.serverError(statusCode: statusCode, errorCode: body.errorCode, message: message))
                             } else {

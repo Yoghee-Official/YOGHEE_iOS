@@ -76,7 +76,8 @@ struct MyPageTabState: Equatable {
     var sections: [MyPageSection] = []
     var myPageData: MyPageDataDTO?
     var isLoading: Bool = false
-    var errorMessage: String?
+    /// 마이페이지 데이터 로드 실패 시 노출할 연결 오류 화면 (ER_MO_1/2)
+    var connectionError: ConnectionErrorKind?
     var selectedDetailItem: String?
     var isLoggedIn: Bool = false
     var showLoginSheet: Bool = false
@@ -92,7 +93,7 @@ struct MyPageTabState: Equatable {
     static func == (lhs: MyPageTabState, rhs: MyPageTabState) -> Bool {
         return lhs.sections.count == rhs.sections.count &&
                lhs.isLoading == rhs.isLoading &&
-               lhs.errorMessage == rhs.errorMessage &&
+               lhs.connectionError == rhs.connectionError &&
                lhs.isLoggedIn == rhs.isLoggedIn &&
                lhs.currentRole == rhs.currentRole &&
                lhs.navigationDestination == rhs.navigationDestination
@@ -330,7 +331,7 @@ class MyPageTabContainer: ObservableObject {
     ///   미인증 상태일 경우 지도자 인증 안내 팝업(showLicensePrompt)을 띄운다. 지도자 토글에 "새로 진입"할 때만 true로 넘긴다.
     private func loadMyPageData(checkInstructorCertification: Bool = false) {
         state.isLoading = true
-        state.errorMessage = nil
+        state.connectionError = nil
 
         Task { @MainActor in
             do {
@@ -433,17 +434,9 @@ class MyPageTabContainer: ObservableObject {
         #endif
     }
     
-    private func errorMessage(from error: Error, context: String) -> String {
-        if let apiError = error as? APIError {
-            return "\(context) 실패: \(apiError.localizedDescription)"
-        } else {
-            return "\(context) 실패: \(error.localizedDescription)"
-        }
-    }
-    
     private func handleError(_ error: Error, context: String) {
         log("❌ \(context) 에러: \(error)")
-        state.errorMessage = errorMessage(from: error, context: context)
+        state.connectionError = error.connectionErrorKind
         state.isLoading = false
     }
 }

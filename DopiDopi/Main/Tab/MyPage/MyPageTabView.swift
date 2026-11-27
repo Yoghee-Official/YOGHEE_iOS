@@ -34,19 +34,10 @@ struct MyPageTabView: View {
                             // 화면 전체(geometry)를 채우는 로딩 화면
                             LoadingView()
                                 .frame(width: geometry.size.width, height: geometry.size.height)
-                        } else if let errorMessage = container.state.errorMessage {
-                            VStack(spacing: 16) {
-                                Text("오류가 발생했습니다")
-                                    .pretendardFont(.semiBold, size: 17)
-                                Text(errorMessage)
-                                    .pretendardFont(.regular, size: 12)
-                                    .foregroundColor(.gray)
-                                Button("다시 시도") {
-                                    container.handleIntent(.loadMyPageData)
-                                }
-                                .buttonStyle(.bordered)
-                            }
-                            .frame(maxWidth: .infinity, minHeight: 200)
+                        } else if let connectionError = container.state.connectionError {
+                            // 탭 영역만 채움 — 다른 탭에 갔다가 돌아오면 다시 불러옴
+                            ConnectionErrorView(kind: connectionError)
+                                .frame(width: geometry.size.width, height: geometry.size.height)
                         } else {
                             LazyVStack(spacing: 20) {
                                 ForEach(container.state.sections) { section in

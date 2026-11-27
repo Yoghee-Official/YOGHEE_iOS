@@ -25,14 +25,15 @@ struct HomeState: Equatable {
     var isLoading: Bool = false
     /// 당겨서 새로고침 진행 중 (전체 화면 로딩 없이 기존 섹션 유지)
     var isRefreshing: Bool = false
-    var errorMessage: String?
+    /// 메인 데이터 로드 실패 시 노출할 연결 오류 화면 (ER_MO_1/2)
+    var connectionError: ConnectionErrorKind?
     var navigationDestination: NavigationDestination?
     
     static func == (lhs: HomeState, rhs: HomeState) -> Bool {
         return lhs.selectedClassType == rhs.selectedClassType &&
                lhs.isLoading == rhs.isLoading &&
                lhs.isRefreshing == rhs.isRefreshing &&
-               lhs.errorMessage == rhs.errorMessage &&
+               lhs.connectionError == rhs.connectionError &&
                lhs.sections.count == rhs.sections.count &&
                lhs.navigationDestination == rhs.navigationDestination
     }
@@ -103,7 +104,6 @@ class HomeTabContainer: ObservableObject {
         } else {
             state.isLoading = true
         }
-        state.errorMessage = nil
         
         Task { @MainActor in
             do {
@@ -114,54 +114,20 @@ class HomeTabContainer: ObservableObject {
                 
                 await MainActor.run {
                     self.state.sections = self.createSections(from: response.data, classType: self.state.selectedClassType)
-                    self.state.isLoading = false
-                    self.state.isRefreshing = false
-                }
-                
-            } catch let decodingError as DecodingError {
-                // 🔍 디코딩 에러 상세 로깅
-                await MainActor.run {
-                    switch decodingError {
-                    case .keyNotFound(let key, let context):
-                        print("❌ 디코딩 에러: 키 '\(key.stringValue)' 없음")
-                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-                        print("   설명: \(context.debugDescription)")
-                        self.state.errorMessage = "데이터 구조 오류: \(key.stringValue) 필드 누락"
-                        
-                    case .typeMismatch(let type, let context):
-                        print("❌ 디코딩 에러: 타입 불일치 (예상: \(type))")
-                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-                        print("   설명: \(context.debugDescription)")
-                        self.state.errorMessage = "데이터 타입 오류"
-                        
-                    case .valueNotFound(let type, let context):
-                        print("❌ 디코딩 에러: 값 없음 (예상 타입: \(type))")
-                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-                        print("   설명: \(context.debugDescription)")
-                        self.state.errorMessage = "데이터 값 누락"
-                        
-                    case .dataCorrupted(let context):
-                        print("❌ 디코딩 에러: 데이터 손상")
-                        print("   경로: \(context.codingPath.map { $0.stringValue }.joined(separator: " -> "))")
-                        print("   설명: \(context.debugDescription)")
-                        self.state.errorMessage = "데이터 손상"
-                        
-                    @unknown default:
-                        print("❌ 알 수 없는 디코딩 에러: \(decodingError)")
-                        self.state.errorMessage = "알 수 없는 디코딩 에러"
-                    }
-                    
+                    self.state.connectionError = nil
                     self.state.isLoading = false
                     self.state.isRefreshing = false
                 }
                 
             } catch {
-                // 🔍 기타 에러 로깅
-                print("❌ 네트워크/기타 에러: \(error)")
-                print("   상세: \(error.localizedDescription)")
-                
+                // 디코딩 오류도 APIService에서 APIError.decodingError로 감싸져 이곳으로 온다
+                print("❌ 홈 메인 데이터 로딩 실패: \(error)")
+
                 await MainActor.run {
-                    self.state.errorMessage = "데이터 로딩 실패: \(error.localizedDescription)"
+                    // 새로고침 실패 시 기존 섹션이 있으면 그대로 유지하고, 없을 때만 오류 화면 노출
+                    if !isRefresh || self.state.sections.isEmpty {
+                        self.state.connectionError = error.connectionErrorKind
+                    }
                     self.state.isLoading = false
                     self.state.isRefreshing = false
                 }
