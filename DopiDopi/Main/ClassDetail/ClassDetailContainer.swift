@@ -13,12 +13,13 @@ enum ClassDetailIntent {
 // MARK: - State
 struct ClassDetailState: Equatable {
     var isLoading: Bool = true
-    var errorMessage: String?
+    /// 상세 로드 실패 시 노출할 연결 오류 화면 (404 CLASS_NOT_FOUND → 페이지 연결 오류)
+    var connectionError: ConnectionErrorKind?
     var detail: YogaClassDetailDTO?
 
     static func == (lhs: ClassDetailState, rhs: ClassDetailState) -> Bool {
         lhs.isLoading == rhs.isLoading &&
-        lhs.errorMessage == rhs.errorMessage &&
+        lhs.connectionError == rhs.connectionError &&
         lhs.detail?.classId == rhs.detail?.classId
     }
 }
@@ -37,7 +38,7 @@ class ClassDetailContainer: ObservableObject {
 
     private func load(classId: String) {
         state.isLoading = true
-        state.errorMessage = nil
+        state.connectionError = nil
 
         Task {
             do {
@@ -45,7 +46,8 @@ class ClassDetailContainer: ObservableObject {
                 self.state.detail = response.data
                 self.state.isLoading = false
             } catch {
-                self.state.errorMessage = error.localizedDescription
+                print("❌ 클래스 상세 로딩 실패: \(error)")
+                self.state.connectionError = error.connectionErrorKind
                 self.state.isLoading = false
             }
         }
