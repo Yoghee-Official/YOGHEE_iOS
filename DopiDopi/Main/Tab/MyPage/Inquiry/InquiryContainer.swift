@@ -8,7 +8,6 @@
 //
 
 import SwiftUI
-import KakaoSDKTalk
 
 // MARK: - Tab
 enum InquiryTab: CaseIterable, Equatable {
@@ -96,8 +95,6 @@ struct InquiryState: Equatable {
 class InquiryContainer: ObservableObject {
     @Published private(set) var state = InquiryState()
 
-    /// 도피도피 카카오톡 채널 ID (pf.kakao.com/_xcExhvn)
-    private let kakaoChannelPublicId = "_xcExhvn"
     private let pageSize = 20
 
     func handleIntent(_ intent: InquiryIntent) {
@@ -243,12 +240,8 @@ class InquiryContainer: ObservableObject {
 
     /// A18 확인: 카카오톡 채널 채팅 연결 (카카오톡 미설치 시 SDK가 웹으로 연결)
     private func openKakaoChannelChat() {
-        TalkApi.shared.chatChannel(channelPublicId: kakaoChannelPublicId) { [weak self] error in
-            guard let error else { return }
-            print("❌ [Inquiry] 카카오톡 채널 채팅 연결 실패: \(error)")
-            Task { @MainActor in
-                self?.state.message = "카카오톡을 열 수 없습니다.\n잠시 후 다시 시도해주세요."
-            }
+        KakaoChannelChat.open { [weak self] in
+            self?.state.message = "카카오톡을 열 수 없습니다.\n잠시 후 다시 시도해주세요."
         }
     }
 

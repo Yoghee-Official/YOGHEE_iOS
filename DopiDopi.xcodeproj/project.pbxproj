@@ -46,6 +46,7 @@
 		52295B322F4A0B5E00E615E1 /* Extension+UINavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */; };
 		522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */; };
 		522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */; };
+		C0EE00042F40000000A1B2C3 /* KakaoChannelChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EE00032F40000000A1B2C3 /* KakaoChannelChat.swift */; };
 		522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */; };
 		522CE5DB2F12A6BF0063FDF5 /* Extension+Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5862F12A6BF0063FDF5 /* Extension+Int.swift */; };
 		522CE5DC2F12A6BF0063FDF5 /* Extension+UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522CE5872F12A6BF0063FDF5 /* Extension+UIViewController.swift */; };
@@ -208,6 +209,7 @@
 		52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UINavigationController.swift"; sourceTree = "<group>"; };
 		522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+CGFloat.swift"; sourceTree = "<group>"; };
 		522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Color.swift"; sourceTree = "<group>"; };
+		C0EE00032F40000000A1B2C3 /* KakaoChannelChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KakaoChannelChat.swift; sourceTree = "<group>"; };
 		522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Font.swift"; sourceTree = "<group>"; };
 		522CE5862F12A6BF0063FDF5 /* Extension+Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+Int.swift"; sourceTree = "<group>"; };
 		522CE5872F12A6BF0063FDF5 /* Extension+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UIViewController.swift"; sourceTree = "<group>"; };
@@ -469,6 +471,7 @@
 				52295B312F4A0B5E00E615E1 /* Extension+UINavigationController.swift */,
 				522CE5832F12A6BF0063FDF5 /* Extension+CGFloat.swift */,
 				522CE5842F12A6BF0063FDF5 /* Extension+Color.swift */,
+				C0EE00032F40000000A1B2C3 /* KakaoChannelChat.swift */,
 				522CE5852F12A6BF0063FDF5 /* Extension+Font.swift */,
 				522CE5862F12A6BF0063FDF5 /* Extension+Int.swift */,
 				522CE5872F12A6BF0063FDF5 /* Extension+UIViewController.swift */,
@@ -1108,6 +1111,7 @@
 				522CE5D82F12A6BF0063FDF5 /* Extension+CGFloat.swift in Sources */,
 				52735D21301F830B00515B0C /* ExploreModels.swift in Sources */,
 				522CE5D92F12A6BF0063FDF5 /* Extension+Color.swift in Sources */,
+				C0EE00042F40000000A1B2C3 /* KakaoChannelChat.swift in Sources */,
 				52F987B22F572F2D00C905D1 /* ScheduleCardView.swift in Sources */,
 				522CE5DA2F12A6BF0063FDF5 /* Extension+Font.swift in Sources */,
 				522CE5DB2F12A6BF0063FDF5 /* Extension+Int.swift in Sources */,
