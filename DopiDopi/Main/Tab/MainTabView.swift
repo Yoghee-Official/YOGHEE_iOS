@@ -46,6 +46,12 @@ struct MainTabView: View {
             }
             .animation(.easeInOut(duration: 0.25), value: shouldShowTabBar)
         }
+        // 페이지 연결 오류(ER_MO_2) 등에서 홈으로 돌아갈 때 사용
+        .environment(\.navigateToHome, {
+            homeNavigationPath = NavigationPath()
+            mypageNavigationPath = NavigationPath()
+            selectedTab = .home
+        })
         .overlayPreferenceValue(ToggleAnchorKey.self) { anchor in
             if !coachMarkDismissed && selectedTab == .home, let anchor = anchor {
                 GeometryReader { proxy in

@@ -31,6 +31,7 @@
 		48B495C34BFE4C9AA6BE64A5 /* OpenedClassListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1B4DAE42860487F9E6B608D /* OpenedClassListView.swift */; };
 		4A4DE153CC9D4B3F96D815AC /* OpenedClassCategoryFilterSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC440584D4974E9AB3749A38 /* OpenedClassCategoryFilterSheet.swift */; };
 		52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B132F27B46C00E615E1 /* GlassUI.swift */; };
+		C0EE00022F40000000A1B2C3 /* ConnectionErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0EE00012F40000000A1B2C3 /* ConnectionErrorView.swift */; };
 		52295B162F2F5A9500E615E1 /* FavoriteCenterModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */; };
 		52295B182F2F5AA600E615E1 /* FavoriteClassModuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */; };
 		52295B1B2F2F943B00E615E1 /* MessageBoxContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */; };
@@ -194,6 +195,7 @@
 		4522CFF9668448BBA550CE9F585293F0 /* ReviewListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewListView.swift; sourceTree = "<group>"; };
 		4CE7910E25A53D5A2D046CBF /* AttendanceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceModels.swift; sourceTree = "<group>"; };
 		52295B132F27B46C00E615E1 /* GlassUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassUI.swift; sourceTree = "<group>"; };
+		C0EE00012F40000000A1B2C3 /* ConnectionErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionErrorView.swift; sourceTree = "<group>"; };
 		52295B152F2F5A9500E615E1 /* FavoriteCenterModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCenterModuleView.swift; sourceTree = "<group>"; };
 		52295B172F2F5AA600E615E1 /* FavoriteClassModuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteClassModuleView.swift; sourceTree = "<group>"; };
 		52295B192F2F943B00E615E1 /* MessageBoxContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageBoxContainer.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 			isa = PBXGroup;
 			children = (
 				52295B132F27B46C00E615E1 /* GlassUI.swift */,
+				C0EE00012F40000000A1B2C3 /* ConnectionErrorView.swift */,
 				52295B222F324D5900E615E1 /* MyPageEmptyView.swift */,
 				1456303841FF0F1E3A121B0A /* ImagePickerComponents.swift */,
 			);
@@ -1155,6 +1158,7 @@
 				52295B252F389DB300E615E1 /* LeaderProfileModuleView.swift in Sources */,
 				522CE5ED2F12A6BF0063FDF5 /* InterestedClassModuleView.swift in Sources */,
 				52295B142F27B46C00E615E1 /* GlassUI.swift in Sources */,
+				C0EE00022F40000000A1B2C3 /* ConnectionErrorView.swift in Sources */,
 				E12F5485C27F35D81F708ED6 /* ImagePickerComponents.swift in Sources */,
 				5A9576FF098E34E4E714AA69 /* LicenseRegisterContainer.swift in Sources */,
 				0BFDC07770C4FD44F432D732 /* LicenseRegisterView.swift in Sources */,
